@@ -63,11 +63,8 @@
 %Bibtex
 \bibliographystyle{plain}		% styl primarnich zdroju
 
-\newcites{sec}{Obrazový materiál}	% sekundarni zdroje
+\newcites{sec}{Secondary sources}	% sekundarni zdroje
 \bibliographystylesec{plain}		% styl sekundarnich zdroju
-
-\newcites{url}{Odkazy}			% odkazy
-\bibliographystyleurl{plain}		% styl odkazu
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Vytvoření indexu pro rejstřík a citace - index
@@ -111,7 +108,7 @@ language=C++,                % choose the language of the code
 basicstyle=\small\tt\color{black},          % print whole listing small
 keywordstyle=\small\color{LightBlue},	% bold black keywords
 identifierstyle=\small\color{black},           % nothing happens
-commentstyle=\small\color{Rhodamine}, % white comments
+commentstyle=\small\color{black}, % white comments
 stringstyle=\ttfamily,      % typewriter type for strings
 showstringspaces=false,     % no special string spaces
 numbers=left,                   % where to put the line-numbers
@@ -132,7 +129,15 @@ breakatwhitespace=false,        % sets if automatic breaks should only happen at
 escapechar=!,
 }
 
-\renewcommand{\lstlistingname}{Kód}
+%\renewcommand{\lstlistingname}{Kód}
+
+
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\topfraction}{0.2}	% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.2}	% max fraction of floats at bottom
+
+%\setlength{\topsep}{10pt}
+%\setlength{\itemsep}{10pt}
 
 \newcommand{\redlist}[1]{{\color{LightRed}#1}}
 \newcommand{\greenlist}[1]{{\color{LightGreen}#1}}
@@ -262,29 +267,15 @@ I would really like to thank my supervisor Ing. Pavel Strachota for his outstand
 
 \input{Text/0.Introduction.tex}
 \input{Text/1.Viewer.tex}
-
-%%%%%%%%%%%%%%%%%%%%%%  DODATKY  %%%%%%%%%%%%%%%%%%%%%%
-
-%\chapter{Dodatky}
-%\section{Import kódu}
-%\input{Text/07.Import.tex}
+\input{Text/GUI.programming.tex}
+\input{Text/Plugins.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%  LITERATURA  %%%%%%%%%%%%%%%%%%%%%%
 
 \nocite{*}				% zobrazuj i necitovane primarni zdroje
 \bibliography{Text/Literature}
 \nocitesec{*}				% sek. zdroje
-\bibliographysec{Text/Zdroje}
-\bibliographyurl{Text/Odkazy}
-
-
-%%%%%%%%%%%%%%%%%%%%%%  PŘÍLOHY %%%%%%%%%%%%%%%%%%%%%%
-
-% \chapter{Přílohy}
-
-% \input{vnitrek_priloha1.tex} % pøíloha 1: vloená z externího souboru
-% \input{vnitrek_priloha2.tex} % pøíloha 2: vloená z externího souboru
-
+\bibliographysec{Text/Sec}
 
 
 \end{document}

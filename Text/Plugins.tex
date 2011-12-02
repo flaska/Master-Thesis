@@ -1,0 +1,6 @@
+\section*{C++ plugins programming}
+\addcontentsline{toc}{section}{C++ plugins programming}
+
+Plugin in computer sciences is an optional addition to some application. It is not usually distributed with application itself, but can be added by user according to his needs. An example of a plugin can be an additional python script to Gimp program which allows user to apply 'sepia effect' on his photos. According to mentioned example, plugins can be written in another language than application itself. They obtain some new functionality to application.
+
+There is a need of image segmentation support in DicomPresenter. It could be written as a part of DicomPresenter. However, it seems much more useful to solve this by creating a plugin API. Image segmentation will be done in standalone modules, which will return their result to DicomPresenter. There are three students on FNSPE faculty who develop some image segmentation algorithm, so all their three algorithms could take place in DicomPresenter. Moreover, any other algorithm can be converted to be used in DicomPresenter by implementing it in C++ with respect to required assumptions on input and output.
