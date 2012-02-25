@@ -1,5 +1,5 @@
-\section*{C++ plugins programming}
-\addcontentsline{toc}{section}{C++ plugins programming}
+\chapter*{C++ plugins programming}
+\addcontentsline{toc}{chapter}{C++ plugins programming}
 
 Plugin in computer sciences is an optional addition to some application. It is not usually distributed with application itself, but can be added by user according to his needs. An example of a plugin can be an additional python script to Gimp program which allows user to apply 'sepia effect' on his photos. According to mentioned example, plugins can be written in another language than application itself. They obtain some new functionality to application.
 
@@ -80,7 +80,30 @@ It is needed to set rules for plugin libraries. Every library following these ru
 
 All three algorithms receive input image only as a file path on a disk. Images in Dicom-Presenter which user can see are two-dimensional projections of a three-dimensional picture - they are not stored in a file but just in a memory. Therefore, it will be needed to save them into a file to be processed by a segmentation algorithm.
 
-\subsection*{Plugins system implementation}
-\addcontentsline{toc}{subsection}{Plugins system implementation}
+\subsection*{Generating plugins GUI}
+\addcontentsline{toc}{subsection}{Generating plugins GUI}
 
-Dicom-Presenter plugins can use different number of parameters. A C/C++ function from dynamically loaded library is ran trough a pointer to the function as we saw in \ref{sec:runtimeloading}. This pointer must have a fixed number and fixed types of parameters given at compiliation. Thus, it is not possible to call any function which needs any set of parameters from a dynamically loaded library.
+Dicom-Presenter GUI is written with use of Qt framework. GUI elements are created as objects of Qt classes and assigned to existing GUI elements. Dicom-Presenter plugin API has to be prepared for various number of number and text input fields. It is not possible to get the informanion about the number of input parameters from a .dll library. Therefore a Dicom-Presenter plugin has to include one more file with a GUI description. This file could describe GUI in various ways - it was a goal to find a language for a GUI decsription.
+
+First idea was to use our own way to describe plugin GUI. The first version of plugins system used it's own primitive language. Lines in description file were corresponding to GUI elements. First word of a line determined a type of an element. Other words on the line described element behaviour such as default value, minimum and maximum value or a corresponding function in a library. This own language of GUI description was sufficient but it was unnecessary to force plugin programmer to use our own language. Instead it would be better to use some existing standard.
+
+Other way how to describe a plugin GUI was to use XML language. XML is often use in computer science to pass information in an easily processable form. Moreover Qt library includes extended tools for XML processing.
+
+Last option
+
+
+
+\subsection*{Dynamically loading plugin functions}
+\addcontentsline{toc}{subsection}{Dynamically loading plugin functions}
+
+Dicom-Presenter plugins can use different number of parameters. A C/C++ function from dynamically loaded library is ran trough a pointer to the function as we saw in \ref{sec:runtimeloading}. This pointer must have a fixed number and fixed types of parameters given at compiliation. Thus, it is not possible to call any function which needs any set of parameters from a dynamically loaded library. It is possible to run only a finite number of types of functions according to a set of given parameters. There were several solutions how to make the Dicom-Presenter plugin system enough variable to load and run various functions:
+
+\begin{enumerate}
+\item It is possible to try to define sufficient number of function pointer types at a compilation time. Then set a rule that every Dicom-Presenter plugin can have input function only of predefined type.
+\item Another solution is based on a fact that a function pointer can have more parameters than targeted function. F.e. a function pointer having five integer parameters can point to a function receiving only three integer parameters - the last two given parameters will be ignored. Therefore it would be possible to define function pointers with excessing number of float, integer and char parameters. A function pointer would be assigned to a function to fit with the first couple of parameters ignoring the rest.
+\item Another way which seem applicable but still presuming too much conditions from a loaded plugin was too allow only one-parameter functions in the plugin. These functions would set parameters in a library as global variables. Before running a computation all functions setting some parameter would be ran. This solution has a great advantage: It is possible to call the functions to set parameters right when user is manipulating with relevant GUI elements. So, there can be a feedback from the library telling user he set some incompatible set of values. This solution was implemented at first but it seemed too restrictive for a library design. 
+\item Last option is inspired by an obligatory passing command line arguments to a standard C/C++ application. C/C++ Main Function receives a pointer to an array of all arguments. As in this case a plugin library function can receive three pointer to three array types: pointer to int, pointer to double and pointer to char. The arrays can be of any length.
+\end{enumerate}
+
+At first the third option was used in implementation (See an example on encloced CD). Function setting algorithm parameters were called while setting parameters in GUI. But there were no real benefit of a library response while setting GUI parameters. More than that the rules for plugins were too bounding. So therefore, the final version of plugins API were implemented using option 4.
+
