@@ -1,9 +1,9 @@
 \chapter*{C++ plugins programming}
 \addcontentsline{toc}{chapter}{C++ plugins programming}
 
-Plugin in computer sciences is an optional addition to some application. It is not usually distributed with application itself, but can be added by user according to his needs. An example of a plugin can be an additional python script to Gimp program which allows user to apply 'sepia effect' on his photos. According to mentioned example, plugins can be written in another language than application itself. They obtain some new functionality to application.
+Plugin in computer sciences is an optional addition to some application. It is not usually distributed with application itself, but can be added by user according to his needs. An example of a plugin can be an additional python script to Gimp program which allows user to apply 'sepia effect' on his photos. According to the mentioned example, plugins can be written in another language than application itself. They obtain some new functionality to application.
 
-There is a need of image segmentation support in DicomPresenter. It could be written as a part of DicomPresenter. However, it seems much more useful to solve this by creating a plugin API. Image segmentation will be done in standalone modules, which will return their result to DicomPresenter. There are three students on FNSPE faculty who develop some image segmentation algorithm, so all their three algorithms could take place in DicomPresenter. Moreover, any other algorithm could possibly be converted to DicomPresenter's plugin then.
+There is a need of image segmentation support in DicomPresenter. It could be written as a part of DicomPresenter. However, it seems much more useful to solve this by creating a plugin API. Image segmentation will be done in standalone modules, which will return their result to DicomPresenter. There are three students at FNSPE faculty who create some image segmentation algorithm, therefore all their three programs could take place in DicomPresenter. Moreover, any other algorithm could possibly be converted to DicomPresenter's plugin then.
 
 All three algorithms were written in C language. Plugins in C language are compiled to a Dynamic-Link library and loaded at a run-time.
 
@@ -15,7 +15,7 @@ C++ language allows some parts of code to be compiled in separated units which c
 \subsection*{Compiling Dynamic Loaded Libraries}
 \addcontentsline{toc}{subsection}{Compiling Dynamic Loaded Libraries}
 
-A \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler need to know which functions have to be exported. There are two ways to declare this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} on a Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen on Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell compiler to export the function.
+A \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler needs to know which functions have to be exported. There are two ways for declaring this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} in Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen in Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell a compiler to export the function.
 
 \begin{lstlisting}[label=DEF,caption={A \clist{Module Definition File} of a library called ``Mathfuncs'' including a function called ``PrimeTest''.}]
 LIBRARY   MATHFUNCS
@@ -83,27 +83,55 @@ All three algorithms receive input image only as a file path on a disk. Images i
 \subsection*{Generating plugins GUI}
 \addcontentsline{toc}{subsection}{Generating plugins GUI}
 
-Dicom-Presenter GUI is written with use of Qt framework. GUI elements are created as objects of Qt classes and assigned to existing GUI elements. Dicom-Presenter plugin API has to be prepared for various number of number and text input fields. It is not possible to get the informanion about the number of input parameters from a .dll library. Therefore a Dicom-Presenter plugin has to include one more file with a GUI description. This file could describe GUI in various ways - it was a goal to find a language for a GUI decsription.
+Dicom-Presenter GUI is written with use of Qt framework. GUI elements are created as objects of Qt classes and assigned to existing GUI elements. Dicom-Presenter plugin API has to be prepared for various number of text and numeric input fields. It is not possible to get the informanion about the number of input parameters from a .dll library. Therefore a Dicom-Presenter plugin has to include one more file with a GUI description. This file could describe GUI in various ways - it was a goal to find a language for a GUI decsription.
 
+Qt library offers it's own way for GUI description. There's a tool in Qt SDK which offers an interactive GUI creation. It produces a XML file which describes the GUI. A strong argument for using this solution is that Qt library offers its own tools for loading these files.
+
+Another possible way was to declare our own language for plugins GUI description. Firstly it was implemented easily: Lines in a description file were corresponding to GUI elements. First word of a line determined a type of an element. Other words on the line described element behaviour such as default value, minimum and maximum value or a corresponding function in a library. In a second step GUI description was improved according to modern standards and implemented in XML - in a simillar way like in previous case.
+
+It would seem that the first solution is more reasonable. We don't declare some new language but we use an existing standard from Qt library. This is in many cases right way of thinking. Unfortunately the Qt library syntax was primarly supposed to be generated by their tool. Their XML code was too complicated to be written manually - there were too much required phrases in their code. Morover, GUI elements were described by their class-names in Qt library - so it would be needed to know Qt library to write description manually. The only option would be to generate the code by their interactive tool. Unfortunately the tool was still too complex and complicated to create extensive GUI layouts for large applications. In our case we need just description of few numeric and text input fields and one or more buttons. It seemed much more easier for a programmer to just follow our few rules for GUI description instead of using Qt library's extensive standard.
+
+As mentioned above, external libraries for image segmentation just need a few numeric input fields for giving computation parameters and then a filename of an input image. For a better flexibility of our plugin solution there were added an option for passing char-type parameters and a possibility to run more functions in a library.
+
+For every numeric input field it is needed to know: a required variable type (integer or float), minimal and maximal possible value, default value, parameter description. Passing char parameters was realised by a combobox element. So it is needed to know all possible values, text description of values and an overall description of the property. 
+
+The language for Dicom-Presenter GUI description is supposed to be simple. A numeric field is declared by a string:
+
+\clist{<numinput type="..." min="..." max="..." default="..." name="..."/>}
+
+Where \clist{type} determines a C/C++ type (integer of double), \clist{min}, \clist{max}, \clist{default} determine minimum, maximum and default value and \clist{name} determines a parameter description.
+
+A combobox can be declared in a similar way like in (X)HTML:
+
+\noindent \indent \clist{<combobox type="..." name="...">}\\
+\indent \indent \clist{<option value="..." name="..."/>}\\
+\indent \indent \clist{<option value="..." name="..."/>}\\
+\indent \clist{</combobox>}
+
+Where \clist{type} determines a variable type passed to a library. \clist{name} in \clist{combobox} tag is a text description of property. The \clist{name} property in \clist{option} tag is a text description of a \clist{value} which is passed to a library.
+
+
+\begin{comment}
 First idea was to use our own way to describe plugin GUI. The first version of plugins system used it's own primitive language. Lines in description file were corresponding to GUI elements. First word of a line determined a type of an element. Other words on the line described element behaviour such as default value, minimum and maximum value or a corresponding function in a library. This own language of GUI description was sufficient but it was unnecessary to force plugin programmer to use our own language. Instead it would be better to use some existing standard.
 
 Other way how to describe a plugin GUI was to use XML language. XML is often use in computer science to pass information in an easily processable form. Moreover Qt library includes extended tools for XML processing.
 
-Last option
+Last option is to use Qt language for UI description. Qt library uses it's own form to describe application GUI - description is in a special file with a \clist{.ui} extension. It is a strong argument for this option that it is a native way for Qt library to use this langage. Qt library provides a utility for interactive GUI creating. 
+\end{comment}
 
 
 
 \subsection*{Dynamically loading plugin functions}
 \addcontentsline{toc}{subsection}{Dynamically loading plugin functions}
 
-Dicom-Presenter plugins can use different number of parameters. A C/C++ function from dynamically loaded library is ran trough a pointer to the function as we saw in \ref{sec:runtimeloading}. This pointer must have a fixed number and fixed types of parameters given at compiliation. Thus, it is not possible to call any function which needs any set of parameters from a dynamically loaded library. It is possible to run only a finite number of types of functions according to a set of given parameters. There were several solutions how to make the Dicom-Presenter plugin system enough variable to load and run various functions:
+Dicom-Presenter plugins can use different number of parameters. A C/C++ function from dynamically loaded library is ran through a pointer to the function as we saw in \ref{sec:runtimeloading}. This pointer must have a fixed number and fixed types of parameters given at compiliation. Thus, it is not possible to call any function which needs any set of parameters from a dynamically loaded library. It is possible to run only a finite number of types of functions according to a set of given parameters. There were several solutions how to make the Dicom-Presenter plugin system variable enough to load and run various functions:
 
 \begin{enumerate}
 \item It is possible to try to define sufficient number of function pointer types at a compilation time. Then set a rule that every Dicom-Presenter plugin can have input function only of predefined type.
-\item Another solution is based on a fact that a function pointer can have more parameters than targeted function. F.e. a function pointer having five integer parameters can point to a function receiving only three integer parameters - the last two given parameters will be ignored. Therefore it would be possible to define function pointers with excessing number of float, integer and char parameters. A function pointer would be assigned to a function to fit with the first couple of parameters ignoring the rest.
-\item Another way which seem applicable but still presuming too much conditions from a loaded plugin was too allow only one-parameter functions in the plugin. These functions would set parameters in a library as global variables. Before running a computation all functions setting some parameter would be ran. This solution has a great advantage: It is possible to call the functions to set parameters right when user is manipulating with relevant GUI elements. So, there can be a feedback from the library telling user he set some incompatible set of values. This solution was implemented at first but it seemed too restrictive for a library design. 
-\item Last option is inspired by an obligatory passing command line arguments to a standard C/C++ application. C/C++ Main Function receives a pointer to an array of all arguments. As in this case a plugin library function can receive three pointer to three array types: pointer to int, pointer to double and pointer to char. The arrays can be of any length.
+\item Another solution is based on a fact that a function pointer can have more parameters than targeted function. For example a function pointer having five integer parameters can point to a function receiving only three integer parameters - the last two given parameters will be ignored. Therefore it would be possible to define function pointers with excessing number of float, integer and char parameters. A function pointer would be assigned to a function to fit with the first couple of parameters ignoring the rest.
+\item Another way which seems applicable but still presuming too much conditions from a loaded plugin was too allow only one-parameter functions in the plugin. These functions would set parameters in a library as global variables. Before running a computation all functions setting some parameter would be ran. This solution has a great advantage: It is possible to call the functions to set parameters right when user is manipulating with relevant GUI elements. So, there can be a feedback from the library telling user he set some incompatible set of values. This solution was implemented at first but it seemed too restrictive for a library design. 
+\item Last option is inspired by an obligatory passing command line arguments to a standard C/C++ application. C/C++ Main Function receives a pointer to an array of all arguments. As in this case a plugin library function can receive three pointers to three array types: pointer to int, pointer to double and pointer to char. The arrays can be of any length.
 \end{enumerate}
 
-At first the third option was used in implementation (See an example on encloced CD). Function setting algorithm parameters were called while setting parameters in GUI. But there were no real benefit of a library response while setting GUI parameters. More than that the rules for plugins were too bounding. So therefore, the final version of plugins API were implemented using option 4.
+At first the third option was used in implementation (See an example on encloced CD). Function setting algorithm parameters were called while setting parameters in GUI. But there were no real benefits of a library response while setting GUI parameters. More than that the rules for plugins were too bounding. So therefore, the final version of plugins API were implemented using option 4.
 
