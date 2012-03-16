@@ -1,0 +1,86 @@
+\chapter*{Image manipulation in C++}
+\addcontentsline{toc}{chapter}{Image manipulation in C++}
+
+Dicom-Presenter is an application for viewing image data. Entire image manipulation was solved with use of OpenGL library in early version of Dicom-Presenter. Because OpenGL was expected to be removed from Dicom-Presenter there was a need to reimplement all classes handling image manipulation. Images must be loaded from a file, stored in memory and drew on a screen. According to user need Dicom-Presenter must be able to change image's contrast and brightness. 
+
+\section*{Image storing}
+\addcontentsline{toc}{section}{Image storing}
+
+\subsection*{Plain C++}
+\addcontentsline{toc}{subsection}{Plain C++}
+
+\subsection*{Qt}
+\addcontentsline{toc}{subsection}{Qt}
+
+\subsection*{OpenGL}
+\addcontentsline{toc}{subsection}{OpenGL}
+
+
+\section*{Image properties}
+\addcontentsline{toc}{section}{Image properties}
+
+One of important tasks to reimplement in Dicom-Presenter was an ability to change image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with various imaging properties. The ability to increase image brightness and contrast is mandatory to ensure sufficient display quality. Too dark or too gray images need to be brightened or need to increase contrast to allow observation of smaller physiological findings.
+
+For further needs of this text let's define brightness and contrast. 
+
+A grayscale image can be considered as a matrix of numbers: 
+
+\[
+ Im_{res_{x},res_{y}} =
+ \begin{pmatrix}
+  Im(1,1) & Im(1,2) & \cdots & Im(1,res_{x}) \\
+  Im(2,1) & Im(2,2) & \cdots & Im(2,res_{x}) \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  Im(res_{y},1) & Im(res_{y},2) & \cdots & Im(res_{y},res_{x})
+ \end{pmatrix}
+\]
+
+where $ res_{x} $, $res_{y}$ are dimensions of the image. $Im(x,y)$ is a lightness of a pixel.
+
+Brightness then can be defined as:
+\[
+  Brightness(Im) = \frac{1}{res_{x}  \cdot res_{y}}\sum_{\substack{0 \leq x \leq res_{x} \\ 0 \leq y \leq res_{y}}} Im(x,y)
+\]
+
+Contrast is understood as overall difference in luminosity between bright and dark pixels. There are more possible definitions of contrast. One possible definition is:
+
+\[
+Contrast(Im) = \sqrt{\frac{1}{res_{x} \cdot res_{y}}\sum_{\substack{ 0 \leq x \leq res_{x} \\ 0 \leq y \leq res_{y} }}(Im_{x,y}-Brightness(Im))^2}
+\]
+
+An argument for using these two definitions for brightness and contrast is that they are analogies for mean value and variance of set of values.
+
+If there is a need of increasing or decreasing image brightness in computer applications simply a constant id added to all image points:
+
+\begin{equation}
+\label{brightness}
+  Im(x,y) \longmapsto Im(x,y) + c_{brightness} 
+\end{equation}
+
+Image contrast is usually adjusted by a linear transformation applied to all image points:
+
+\begin{equation}
+\label{contrast}
+  Im(x,y) \longmapsto   (Im(x,y) - 0.5) \cdot c_{contrast} + 0.5
+\end{equation}
+
+A disadvantage of both ways is that some image information is lost. Let's consider an image described by a matrix with elements of integers in range from zero to 255. Let the brightness of the picture increased according to formula \eqref{brightness} with a positive constant $ c_{brightness} $. Then all the points brighter than $ 255 - c_{brightness} $ on original image will have luminosity of 255 regardless their original luminosity. Similarly if contrast would be increased according to formula \eqref{contrast} with a constant $ c_{contrast} $ then all points brighter than $ \frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1) $ will have the same color (maximum white). As well all pixels darker than $ \frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}}) $ will have the same color (maximum black).
+
+\subsection*{Qt}
+\addcontentsline{toc}{subsection}{Qt}
+
+\subsection*{OpenGL}
+\addcontentsline{toc}{subsection}{OpenGL}
+
+
+\section*{Image rendering}
+\addcontentsline{toc}{section}{Image rendering}
+
+\subsection*{Qt}
+\addcontentsline{toc}{subsection}{Qt}
+
+\subsection*{OpenGL}
+\addcontentsline{toc}{subsection}{OpenGL}
+
+\section*{OpenGL and Qt performance}
+\addcontentsline{toc}{section}{OpenGL and Qt performance}
