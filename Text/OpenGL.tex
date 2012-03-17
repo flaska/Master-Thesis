@@ -1,19 +1,34 @@
 \chapter*{Image manipulation in C++}
 \addcontentsline{toc}{chapter}{Image manipulation in C++}
 
-Dicom-Presenter is an application for viewing image data. Entire image manipulation was solved with use of OpenGL library in early version of Dicom-Presenter. Because OpenGL was expected to be removed from Dicom-Presenter there was a need to reimplement all classes handling image manipulation. Images must be loaded from a file, stored in memory and drew on a screen. According to user need Dicom-Presenter must be able to change image's contrast and brightness. 
+Dicom-Presenter is an application for viewing image data. Entire image manipulation was solved with use of OpenGL library in early version of Dicom-Presenter. OpenGL was used for image storing, for changing image properties and for drawing images on screen. Unfortunately, OpenGL brought complications to application compatibility with various hardware. Therefore, author of this work decided to remove OpenGL from application and replace all classes using OpenGL with their non-OpenGL equivalents. 
+
+Before rewriting all image processing classes without OpenGL it was a need to study how to complete all image processing tasks without OpenGL. Moreover, OpenGL uses GPU to perform it's tasks so it was a need to calculate the loss of performance when OpenGL will be removed. 
 
 \section*{Image storing}
 \addcontentsline{toc}{section}{Image storing}
 
-\subsection*{Plain C++}
-\addcontentsline{toc}{subsection}{Plain C++}
+\red{
+Potrebujeme nejak uklada snimky! \\
+Ukazat, jak chape pocitac snimek - je to jen retezec cisel.\\
+Ukazat, jak je ulozen RGB obrazek - podle barevne hloubky zvolime pocet charu na pixel a pak tam naskladame informaci o slozkach R, G, B. Bohuzel jsou ruzne zpusoby jak tam naskladat RGB a tak existuji ruzne zpusoby ukladani obrazku (5-5-5, 5-6-5, atd.)\\
+}
+
 
 \subsection*{Qt}
 \addcontentsline{toc}{subsection}{Qt}
 
+\red{
+Ukazat, jake tridy nam nabizi Qt k ukladani snimku a jak je lze pak jednoduse kreslit, upravovat, atd. \\
+}
+
 \subsection*{OpenGL}
 \addcontentsline{toc}{subsection}{OpenGL}
+\red{
+Ukazat, jak neohrabana je prace s OpenGL pro snimky. Snimky lze ukladat jen jako textury a pak si musime pamatovat nejake handlery na textury. \\
+Mnohem logictejsi by bylo predavat si pointer na objekt snimku nez si predavat nejaky int - handler na snimek.\\
+Zduraznit, ze OpenGL je neohrabane, nesystemove. Qt je mnohem prehlednejsi, ale ma horsi performance.\\
+}
 
 
 \section*{Image properties}
@@ -69,9 +84,16 @@ A disadvantage of both ways is that some image information is lost. Let's consid
 \subsection*{Qt}
 \addcontentsline{toc}{subsection}{Qt}
 
+\red{
+Ukazat, jak jde zmenit jas/kontrast pomoci Qt. \\
+}
+
 \subsection*{OpenGL}
 \addcontentsline{toc}{subsection}{OpenGL}
 
+\red{
+Ukazat, jak neohrabane lze menit jas a kontrast pomoci OpenGL (viz vyzkumak(github)). \\
+}
 
 \section*{Image rendering}
 \addcontentsline{toc}{section}{Image rendering}
@@ -79,8 +101,24 @@ A disadvantage of both ways is that some image information is lost. Let's consid
 \subsection*{Qt}
 \addcontentsline{toc}{subsection}{Qt}
 
+\red{
+Renderovani snimku na ruzna mista na obrazovce pomoci Qt.\\
+Ukazat bezpecny zpusob pomoci Qt.\\
+Ukazat nebezpecny zpusob pomoci primych zasahu do pameti.\\
+Zduvodnit proc se radeji priklonime k prehlednemu a bezpecnemu zpusobu pomoci Qt.\\
+Zpisob primeho zapisu do pameti at dela jiny student - je to prace na cca pul roku, ale pujde krasne navazat na moji verzi DP.\\
+}
+
 \subsection*{OpenGL}
 \addcontentsline{toc}{subsection}{OpenGL}
 
+\red{
+Renderovani snimku na ruzna mista pomoci OpenGL.\\
+}
+
 \section*{OpenGL and Qt performance}
 \addcontentsline{toc}{section}{OpenGL and Qt performance}
+
+\red{
+Ukazat mereni performance a ukazat vzorecek na odhad rychlosti vykreslovani.\\
+}

@@ -2,6 +2,10 @@
 \addcontentsline{toc}{chapter}{GUI Applications Programming}
 \vspace{-10mm}
 
+\red{
+Co je to GUI?\\
+}
+
 \section*{Windows API}
 \addcontentsline{toc}{section}{Windows API}
 
@@ -58,9 +62,11 @@ There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{ma
 \section*{GUI Frameworks}
 \addcontentsline{toc}{section}{GUI Frameworks}
 
-Ukazat, jak funguje programovani GUI pomoci frameworku
-- dedictvi trid
-- signaly a sloty
+\red{
+Proc bychom meli pouzivat nejaky framework? Vyrazne nam to usnadni praci. Nemusime resit smycku programu. Nemusime resit predavani zprav. Mame predem hotove tridy pro vsechny bezne uzivatelske prvky.\\
+Jak nam pouziti frameworku usnadni praci? Ukazat dedictvi puvodnich trid a jejich prizpusobeni nasim pozadavkum.\\
+Jak zajistim funkcnost programu, tj. kdyz uzivatel klikne tam a tam stane se to a to? Ukazat system signalu a slotu, ktery je v Qt i v GTK+. Ukazat eleganci a jednoduchost tohoto systemu.\\
+}
 
 %\subsection*{Qt Library}
 %\addcontentsline{toc}{subsection}{Qt Library}
@@ -70,4 +76,7 @@ Ukazat, jak funguje programovani GUI pomoci frameworku
 \section*{Dicom-Presenter GUI model}
 \addcontentsline{toc}{section}{Dicom-Presenter GUI model}
 
-Popis hierarchie trid
+\clist{
+Jak je tedy GUI resene v dicom presenteru? Ukazat settings panel, cwidget.\\
+Mozna ukazat predavani uzivatelskych zprav z CWidget na workspaceManager, na CWorkspace, na CImage.\\
+}

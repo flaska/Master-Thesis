@@ -1,15 +1,97 @@
-\chapter*{C++ compilation}
-\addcontentsline{toc}{chapter}{C++ compilation}
+\chapter*{Compilation in C++}
+\addcontentsline{toc}{chapter}{Compilation in C++}
+
+Dicom-Presenter is a large application. It consists of 5.000 source-code lines and it uses six external libraries. Therefore, it is not easy to compile it. Compilation of such a large project should be divided into parts, then a linking process should be described somehow. Moreover, external libraries have to be compilad in compatible configuration. This chapter's goal is to describe compilation process of larger projects.
 
 \section*{Libraries}
 \addcontentsline{toc}{section}{Libraries}
-Proc se pouzivaji v C++ knihovny
-Rozdil mezi statickymi a dynamickymi knihovnami
 
+A C++ application usually isn't compiled all in one step. It is divided into smaller logic parts usually called libraries. These libraries are compiled individually and then the application is linked together at the end. The benefit is that if source code of the application is changed it is not needed to recompile the whole application. While, only the library including the change is recompiled. 
+
+There are three kinds of libraries: static library, dynamic library and assemblies.
+
+A compiled static library is inserted directly into the final binary exeutable (.exe). Dynamic library is not inserted into executable file. It is compiled into a .dll (.so) file which has to be distributed with the application. An assembly is an reusable code to be used outside of a C++ environment. The advantage of .dll libraries is that they don't need to be loaded into computer memory unless they're used. So, if a large C++ application is compiled it is better to link it dynamically since the rarely used libraries don't occupy memory. A smaller C++ application is better to be compiled statically because the result is only one file and not a set of .dll files and an .exe file.
+
+
+
+
+\section*{Configurations}
+\addcontentsline{toc}{section}{Configurations}
+\red{
+Co to je konfigurace prekladu? \\
+Proc musime rozlisovat jednotlive konfigurace? Ty konfigurace jsou navzajem nekompatibilni? \\
+Proc jsou konfigurace prekladu navzajem nekompatibilni? Kvuli C++ Runtime library, ktera se linkuje v ruznych verzich a tak muze vickrat definovat stejne funkce, coz odporuje pravidlum C++. Proto tedy musime rozlisovat jednotlive konfigurace pri prekladu a nemichat je tak dohromady. Problem pak nastava, kdyz potrebujeme pouzit cizi knihovny. Ty si pak bud musime sami prelozit, nebo nam je autor musi dodat prelozene ve stejne konfiguraci, v jake prekladame program my. Toto byl velky problem pri vyvoji dicom presenteru, kvuli pouziti knihovny plib a podobne u dcmtk. \\
+}
+
+\section*{CMake}
+\addcontentsline{toc}{section}{CMake}
+\red{
+Co je to Cmake? \\
+Podobnost Cmake a gnumake.\\
+}
+
+\subsection*{Dicom-Presenter CMake script}
+\addcontentsline{toc}{subsection}{Dicom-Presenter CMake script}
+\red{
+Ukazat na svem skriptu pro dicom presenter, jak vypada syntaxe Cmake.\\
+Ukazat vyhodu toho, ze pomoci meho skriptu lze bezproblemove prelozit dicom presenter na Linuxu a stejne snadno si nechat vygenerovat projekt do visual studia.\\
+}
 
 \section*{Run-time loaded libraries}
 \addcontentsline{toc}{section}{Run-time loaded libraries}
+\red{
+Co to znamena run-time loaded library?\\
+Proc potrebujeme run-time loaded library? No kvuli pluginum.\\
+}
+
+\subsection*{Compilation}
+\addcontentsline{toc}{subsection}{Compilation}
+
+A run-time loaded \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler needs to know which functions have to be exported. There are two ways for declaring this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} in Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen in Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell a compiler to export the function.
+
+\begin{lstlisting}[label=DEF,caption={A \clist{Module Definition File} of a library called ``Mathfuncs'' including a function called ``PrimeTest''.}]
+LIBRARY   MATHFUNCS
+EXPORTS
+   PrimeTest	@1
+\end{lstlisting}
 
 
-\subsection*{Run-time libraries compilation}
-\addcontentsline{toc}{subsection}{Run-time libraries compilation}
+\begin{lstlisting}[label=dllspec,caption={An example of exporting a function by using a \clist{dllexport} macro.},escapeinside={@}{@}]
+#include <iostream>
+#include <cmath>
+#include "mathfuncs.h"
+
+extern "C"{
+	__declspec(dllexport) bool PrimeTest(int n){
+	bool isPrime=true;
+	for (int d=2;d<=sqrt((float)n);d++){
+		if (n%d==0) isPrime=false;
+	}
+	return isPrime;
+}
+\end{lstlisting}
+
+\subsection*{Loading}
+\addcontentsline{toc}{subsection}{Loading}
+\label{sec:runtimeloading}
+
+\begin{lstlisting}[label=WinAPI,caption={An application loading a .dll library at runtime.},escapeinside={@}{@}]
+#include <iostream>
+#include <windows.h>
+
+typedef bool PrimeTestFunction(int);
+
+int main (){
+	HINSTANCE LoadedLibrary;
+	LoadedLibrary=LoadLibrary(TEXT("MathFuncs.dll"));
+	if (LoadedLibrary!=NULL){
+		FARPROC ProcessAdress;
+		ProcessAdress=GetProcAddress(LoadedLibrary,"PrimeTest");
+		PrimeTestFunction* _PrimeTestFunction=(PrimeTestFunction*)ProcessAdress;
+		if(_PrimeTestFunction){
+			std::cout << "23 is prime number:" << _PrimeTestFunction(23) << std::endl;
+		}
+		FreeLibrary(LoadedLibrary);
+	}
+}
+\end{lstlisting}

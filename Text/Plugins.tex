@@ -1,5 +1,5 @@
-\chapter*{C++ plugins programming}
-\addcontentsline{toc}{chapter}{C++ plugins programming}
+\chapter*{Plugin system}
+\addcontentsline{toc}{chapter}{Plugin system}
 
 Plugin in computer sciences is an optional addition to some application. It is not usually distributed with application itself, but can be added by user according to his needs. An example of a plugin can be an additional python script to Gimp program which allows user to apply 'sepia effect' on his photos. According to the mentioned example, plugins can be written in another language than application itself. They obtain some new functionality to application.
 
@@ -7,84 +7,21 @@ There is a need of image segmentation support in DicomPresenter. It could be wri
 
 All three algorithms were written in C language. Plugins in C language are compiled to a Dynamic-Link library and loaded at a run-time.
 
-\section*{Dynamic-Link Libraries}
-\addcontentsline{toc}{section}{Dynamic-Link Libraries}
-
-C++ language allows some parts of code to be compiled in separated units which can be shared by more programs and easily replaced to upgrade. These units are called Dynamic-link Libraries and have \clist{.dll} extension.
-
-\subsection*{Compiling Dynamic Loaded Libraries}
-\addcontentsline{toc}{subsection}{Compiling Dynamic Loaded Libraries}
-
-A \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler needs to know which functions have to be exported. There are two ways for declaring this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} in Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen in Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell a compiler to export the function.
-
-\begin{lstlisting}[label=DEF,caption={A \clist{Module Definition File} of a library called ``Mathfuncs'' including a function called ``PrimeTest''.}]
-LIBRARY   MATHFUNCS
-EXPORTS
-   PrimeTest	@1
-\end{lstlisting}
-
-
-\begin{lstlisting}[label=dllspec,caption={An example of exporting a function by using a \clist{dllexport} macro.},escapeinside={@}{@}]
-#include <iostream>
-#include <cmath>
-#include "mathfuncs.h"
-
-extern "C"{
-	__declspec(dllexport) bool PrimeTest(int n){
-	bool isPrime=true;
-	for (int d=2;d<=sqrt((float)n);d++){
-		if (n%d==0) isPrime=false;
-	}
-	return isPrime;
+\section*{Image segmentation algorithms}
+\addcontentsline{toc}{section}{Image segmentation algorithms}
+\red{
+Popsat algoritmy Kuby Louckeho a Radka Maci.\\
 }
-\end{lstlisting}
 
-\subsection*{Using DLL libraries}
-\addcontentsline{toc}{subsection}{Using DLL libraries}
-\clist{DLL} libraries can be used in two ways. An application can be linked against a \clist{.dll} function and also a \clist{.dll} function can be loaded at a run-time.
-
-\subsubsection*{Linking against DLL libraries}
-\addcontentsline{toc}{subsubsection}{Linking against DLL libraries}
-When a DLL library is compiled, compiler produces also a \clist{.lib} file. In this case the \clist{.lib} file is called an Import Library. It is not a stand-alone static library, it lacks function definitions. Import Library file contains information how to load functions from a \clist{.dll} library at run-time.
-
-\subsubsection*{Run-time loading DLL libraries}
-\addcontentsline{toc}{subsubsection}{Run-time loading DLL libraries}
-\label{sec:runtimeloading}
-
-
-\begin{lstlisting}[label=WinAPI,caption={An application loading a .dll library at runtime.},escapeinside={@}{@}]
-#include <iostream>
-#include <windows.h>
-
-typedef bool PrimeTestFunction(int);
-
-int main (){
-	HINSTANCE LoadedLibrary;
-	LoadedLibrary=LoadLibrary(TEXT("MathFuncs.dll"));
-	if (LoadedLibrary!=NULL){
-		FARPROC ProcessAdress;
-		ProcessAdress=GetProcAddress(LoadedLibrary,"PrimeTest");
-		PrimeTestFunction* _PrimeTestFunction=(PrimeTestFunction*)ProcessAdress;
-		if(_PrimeTestFunction){
-			std::cout << "23 is prime number:" << _PrimeTestFunction(23) << std::endl;
-		}
-		FreeLibrary(LoadedLibrary);
-	}
-}
-\end{lstlisting}
-
-\section*{Dicom-Presenter plugin system}
-\addcontentsline{toc}{section}{Dicom-Presenter plugin system}
-
-\subsection*{Plugins system requirements}
-\addcontentsline{toc}{subsection}{Plugins system requirements}
+\section*{Plugins system requirements}
+\addcontentsline{toc}{section}{Plugins system requirements}
 
 It is needed to set rules for plugin libraries. Every library following these rules should be automatically usable in DicomPresenter. The first thing is to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students just needed a picture and few parameters as an input. The parameters can be inserted into text fields by a user. Therefore, there has to be an opportunity to generate these text fields dynamically while loading a plugin. A computing algorithm in a library is ran by a function call of some function in the library. This function receives the parameters inserted by the user.
 
 All three algorithms receive input image only as a file path on a disk. Images in Dicom-Presenter which user can see are two-dimensional projections of a three-dimensional picture - they are not stored in a file but just in a memory. Therefore, it will be needed to save them into a file to be processed by a segmentation algorithm.
 
-\subsection*{Generating plugins GUI}
-\addcontentsline{toc}{subsection}{Generating plugins GUI}
+\section*{Generating plugins GUI}
+\addcontentsline{toc}{section}{Generating plugins GUI}
 
 Dicom-Presenter GUI is written with use of Qt framework. GUI elements are created as objects of Qt classes and assigned to existing GUI elements. Dicom-Presenter plugin API has to be prepared for various number of text and numeric input fields. It is not possible to get the informanion about the number of input parameters from a .dll library. Therefore a Dicom-Presenter plugin has to include one more file with a GUI description. This file could describe GUI in various ways - it was a goal to find a language for a GUI decsription.
 
@@ -124,8 +61,8 @@ Last option is to use Qt language for UI description. Qt library uses it's own f
 
 
 
-\subsection*{Dynamically loading plugin functions}
-\addcontentsline{toc}{subsection}{Dynamically loading plugin functions}
+\section*{Dynamically loading plugin functions}
+\addcontentsline{toc}{section}{Dynamically loading plugin functions}
 
 Dicom-Presenter plugins can use different number of parameters. A C/C++ function from dynamically loaded library is ran through a pointer to the function as we saw in \ref{sec:runtimeloading}. This pointer must have a fixed number and fixed types of parameters given at compiliation. Thus, it is not possible to call any function which needs any set of parameters from a dynamically loaded library. It is possible to run only a finite number of types of functions according to a set of given parameters. There were several solutions how to make the Dicom-Presenter plugin system variable enough to load and run various functions:
 
