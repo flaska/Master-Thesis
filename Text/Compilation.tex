@@ -1,10 +1,10 @@
-\chapter*{Compilation in C++}
-\addcontentsline{toc}{chapter}{Compilation in C++}
+\chapter{Project build environment}
+\vspace{-10mm}
 
 Dicom-Presenter is a large application. It consists of 5.000 source-code lines and it uses six external libraries. Therefore, it is not easy to compile it. Compilation of such a large project should be divided into parts, then a linking process should be described somehow. Moreover, external libraries have to be compiled in a compatible configuration. This chapter's goal is to describe compilation process of larger projects.
 
-\section*{Libraries}
-\addcontentsline{toc}{section}{Libraries}
+\section{Libraries}
+
 \label{library}
 
 A C++ application usually isn't compiled all in one step. It is divided into smaller logic parts usually called libraries. These libraries are compiled individually and then they're linked into the executable at the end. The benefit is that if the source code of the application is changed it is not needed to recompile the whole application. While, only the library including the change is recompiled. 
@@ -29,15 +29,15 @@ A concept of dynamic-link libraries shows its potential when applied on librarie
 \end{itemize}
 
 
-\section*{Run-time loaded libraries}
-\addcontentsline{toc}{section}{Run-time loaded libraries}
+\section{Run-time loaded libraries}
+
 \red{
 Co to znamena run-time loaded library?\\
 Proc potrebujeme run-time loaded library? No kvuli pluginum.\\
 }
 
-\subsection*{Compilation}
-\addcontentsline{toc}{subsection}{Compilation}
+\subsection{Compilation of run-time loaded libraries}
+
 
 A run-time loaded \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler needs to know which functions have to be exported. There are two ways for declaring this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} in Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen in Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell a compiler to export the function.
 
@@ -63,8 +63,8 @@ extern "C"{
 }
 \end{lstlisting}
 
-\subsection*{Loading}
-\addcontentsline{toc}{subsection}{Loading}
+\subsection{Run-time loading process}
+
 \label{sec:runtimeloading}
 
 \begin{lstlisting}[label=WinAPI,caption={An application loading a .dll library at runtime.},escapeinside={@}{@}]
@@ -90,8 +90,8 @@ int main (){
 
 
 
-\section*{C++ Standard Library in MS Visual Studio}
-\addcontentsline{toc}{section}{C++ Standard Library in MS Visual Studio}
+\section{C++ Standard Library in MS Visual Studio}
+
 \label{standardlibrary}
 C++ Standard Library\footnote{C++ Standard library is a C++ version of C Run-time library. Unfortunately both names are often confused.} is used in almost all C++ application. It provides communication with the operation system. It offers manipulation with standard input and output (stdio.h), memory allocation (stdlib.h), math functions (math.h), time related funtions (time.h), etc. If the library is used in application its header files are included in source code and the library is linked into executable file.
 
@@ -121,8 +121,8 @@ In addition to the problem explanation the Table \ref{standardlibrarytable} is i
 \end{table}
 
 
-\section*{CMake}
-\addcontentsline{toc}{section}{CMake}
+\section{CMake}
+
 
 As mentioned before, C++ projects are usually compiled in parts and then linked together at the end. So, the build process has to be described somehow. The description includes mainly information about:
 
@@ -136,8 +136,8 @@ Microsoft Visual Studio uses its own format of build description accessible from
 
 CMake is often use in OpenSource projects. It offers easy portability of an application between Win32 and Unix based systems. Both plib and dcmtk libraries used in Dicom-Presenter use CMake for build scripts generation. According to Section \ref{standardlibrary} both libraries needs to be compiled before compiling Dicom-Presenter.
 
-\subsection*{CMake syntax}
-\addcontentsline{toc}{subsection}{CMake syntax}
+\subsection{CMake syntax}
+
 
 Following section describes CMake syntax necessary to build simple applications. 
 

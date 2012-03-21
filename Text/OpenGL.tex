@@ -1,29 +1,28 @@
-\chapter*{Image manipulation in C++}
-\addcontentsline{toc}{chapter}{Image manipulation in C++}
+\chapter{Image manipulation}
+\vspace{-10mm}
 
 Dicom-Presenter is an application for viewing image data. Entire image manipulation was solved with use of OpenGL library in early version of Dicom-Presenter. OpenGL was used for image storing, for changing image properties and for drawing images on screen. Unfortunately, OpenGL brought complications to application compatibility with various hardware. Therefore, author of this work decided to remove OpenGL from application and replace all classes using OpenGL with their non-OpenGL equivalents. 
 
 Before rewriting all image processing classes without OpenGL it was a need to study how to complete all image processing tasks without OpenGL. Moreover, OpenGL uses GPU to perform it's tasks so it was a need to calculate the loss of performance when OpenGL will be removed. 
 
-\section*{Image storing}
-\addcontentsline{toc}{section}{Image storing}
+\section{Image storing}
 
 \red{
 Potrebujeme nejak uklada snimky! \\
 Ukazat, jak chape pocitac snimek - je to jen retezec cisel.\\
 Ukazat, jak je ulozen RGB obrazek - podle barevne hloubky zvolime pocet charu na pixel a pak tam naskladame informaci o slozkach R, G, B. Bohuzel jsou ruzne zpusoby jak tam naskladat RGB a tak existuji ruzne zpusoby ukladani obrazku (5-5-5, 5-6-5, atd.)\\
+Zminit, ze DCMTK vraci data ve formatu RAW\\
 }
 
 
-\subsection*{Qt}
-\addcontentsline{toc}{subsection}{Qt}
+\subsection{Qt}
 
 \red{
 Ukazat, jake tridy nam nabizi Qt k ukladani snimku a jak je lze pak jednoduse kreslit, upravovat, atd. \\
 }
 
-\subsection*{OpenGL}
-\addcontentsline{toc}{subsection}{OpenGL}
+\subsection{OpenGL}
+
 \red{
 Ukazat, jak neohrabana je prace s OpenGL pro snimky. Snimky lze ukladat jen jako textury a pak si musime pamatovat nejake handlery na textury. \\
 Mnohem logictejsi by bylo predavat si pointer na objekt snimku nez si predavat nejaky int - handler na snimek.\\
@@ -31,10 +30,9 @@ Zduraznit, ze OpenGL je neohrabane, nesystemove. Qt je mnohem prehlednejsi, ale 
 }
 
 
-\section*{Image properties}
-\addcontentsline{toc}{section}{Image properties}
+\section{Image enhancement operations}
 
-One of important tasks to reimplement in Dicom-Presenter was an ability to change image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with various imaging properties. The ability to increase image brightness and contrast is mandatory to ensure sufficient display quality. Too dark or too gray images need to be brightened or need to increase contrast to allow observation of smaller physiological findings.
+One of important tasks to reimplement in Dicom-Presenter was an ability to adjust image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with various imaging properties. The ability to increase image brightness and contrast is mandatory to ensure sufficient display quality. Too dark or too gray images need to be brightened or need to increase contrast to ensure better observation of physiological findings. A brightness and contrast change is among DICOM users called ``windowing''.
 
 For further needs of this text let's define brightness and contrast. 
 
@@ -81,25 +79,23 @@ Image contrast is usually adjusted by a linear transformation applied to all ima
 
 A disadvantage of both ways is that some image information is lost. Let's consider an image described by a matrix with elements of integers in range from zero to 255. Let the brightness of the picture increased according to formula \eqref{brightness} with a positive constant $ c_{brightness} $. Then all the points brighter than $ 255 - c_{brightness} $ on original image will have luminosity of 255 regardless their original luminosity. Similarly if contrast would be increased according to formula \eqref{contrast} with a constant $ c_{contrast} $ then all points brighter than $ \frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1) $ will have the same color (maximum white). As well all pixels darker than $ \frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}}) $ will have the same color (maximum black).
 
-\subsection*{Qt}
-\addcontentsline{toc}{subsection}{Qt}
+\subsection{Qt}
 
 \red{
 Ukazat, jak jde zmenit jas/kontrast pomoci Qt. \\
 }
 
-\subsection*{OpenGL}
-\addcontentsline{toc}{subsection}{OpenGL}
+\subsection{OpenGL}
 
 \red{
 Ukazat, jak neohrabane lze menit jas a kontrast pomoci OpenGL (viz vyzkumak(github)). \\
 }
 
-\section*{Image rendering}
-\addcontentsline{toc}{section}{Image rendering}
+\section{Image rendering}
 
-\subsection*{Qt}
-\addcontentsline{toc}{subsection}{Qt}
+
+\subsection{Qt}
+
 
 \red{
 Renderovani snimku na ruzna mista na obrazovce pomoci Qt.\\
@@ -109,15 +105,14 @@ Zduvodnit proc se radeji priklonime k prehlednemu a bezpecnemu zpusobu pomoci Qt
 Zpisob primeho zapisu do pameti at dela jiny student - je to prace na cca pul roku, ale pujde krasne navazat na moji verzi DP.\\
 }
 
-\subsection*{OpenGL}
-\addcontentsline{toc}{subsection}{OpenGL}
+\subsection{OpenGL}
 
 \red{
 Renderovani snimku na ruzna mista pomoci OpenGL.\\
 }
 
-\section*{OpenGL and Qt performance}
-\addcontentsline{toc}{section}{OpenGL and Qt performance}
+\section{OpenGL and Qt performance}
+
 
 \red{
 Ukazat mereni performance a ukazat vzorecek na odhad rychlosti vykreslovani.\\

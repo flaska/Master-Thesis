@@ -1,13 +1,13 @@
-\chapter*{GUI Applications Programming}
-\addcontentsline{toc}{chapter}{GUI Applications Programming}
+\chapter{GUI Applications Programming}
 \vspace{-10mm}
 
 \red{
 Co je to GUI?\\
 }
 
-\section*{Windows API}
-\addcontentsline{toc}{section}{Windows API}
+\section{OS related GUI programming}
+
+\clist{Zminit Xorg}
 
 Development of GUI Windows applications is possible with Windows API. It is a name for a set of various APIs - communication interfaces for performing services. These communication interfaces offer manipulation with filesystem, devices and also creating graphic windows.
 
@@ -21,7 +21,7 @@ Most common parts of Windows API are:
 
 Windows API in C++ is used as an ordinary library. It has to be included and linked, then it is possible to call certain functions in program code.
 
-There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{main} function is replaced by \clist{WinMain} function (line \ref{lst:WinMain}). Important part of \clist{WinMain} function is a program loop (line \ref{lst:ProgramLoop}). Windows applications usually run continuously and wait for user input. This is done by infinite program loop where we get system messages including user input. Program behaviour according to user input is here defined in function WndProc (line \ref{lst:WndProc}). There is a switch controller which decides what part of program will be executed.
+There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{main} function is replaced by \clist{WinMain} function (line \ref{lst:WinMain}). Important part of \clist{WinMain} function is a program loop (line \ref{lst:ProgramLoop}). Windows applications usually run continuously and wait for user input. This is done by infinite program loop where we get system messages including user input. Program behaviour according to user input is here defined in function WndProc (line \ref{lst:WndProc}). There is a condition controller which decides what part of program will be executed.
 
 \begin{lstlisting}[label=WinAPI,caption={An example of a simple application using Windows API for GUI rendering.},escapeinside={@}{@}]
 #include <windows.h>
@@ -59,8 +59,7 @@ There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{ma
 }
 \end{lstlisting}
 
-\section*{GUI Frameworks}
-\addcontentsline{toc}{section}{GUI Frameworks}
+\section{GUI Frameworks}
 
 \red{
 Proc bychom meli pouzivat nejaky framework? Vyrazne nam to usnadni praci. Nemusime resit smycku programu. Nemusime resit predavani zprav. Mame predem hotove tridy pro vsechny bezne uzivatelske prvky.\\
@@ -73,8 +72,7 @@ Jak zajistim funkcnost programu, tj. kdyz uzivatel klikne tam a tam stane se to 
 
 %Predstavit Qt strucne
 
-\section*{Dicom-Presenter GUI model}
-\addcontentsline{toc}{section}{Dicom-Presenter GUI model}
+\section{Dicom-Presenter GUI model}
 
 \clist{
 Jak je tedy GUI resene v dicom presenteru? Ukazat settings panel, cwidget.\\

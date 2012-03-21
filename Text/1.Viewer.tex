@@ -1,24 +1,52 @@
-\chapter*{Dicom-Presenter}
-\addcontentsline{toc}{chapter}{Dicom-Presenter}
+\chapter{Dicom-Presenter}
 \vspace{-10mm}
 
-My predecessor Bc. Pavel Neskudla started development of an application for viewing images from MRI as a part of his master's thesis\cite{neskudla}. It was a task given by IKEM institute in Prague\footnote{Institute for Clinical and Experimental Medicine}. IKEM institute specialists found out that they would utilize some application which would allow them to open MRI images elsewhere than only on Siemens computers located in their institute. They would prefer some application where they could view recorded images on their own personal computers. It is possible to find such applications distributed by local developers, but only a few of them reach satisfactory quality requirements. These are definitely commercial applications, so user has to pay. There is also a lot of non-commercial, freeware applications, but functionality of these applications is often limited\cite[page~9]{flaska_bc}. For example, it was not possible to find an application which could open several images at the same time and view them on one screen. Therefore, specialists from IKEM institute decided to ask our faculty to develop such an application which would fit their needs.
+My predecessor Bc. Pavel Neskudla started development of an application for viewing images from MRI as a part of his master's thesis\cite{neskudla}. It was a task given by IKEM institute in Prague\footnote{Institute for Clinical and Experimental Medicine}. IKEM institute specialists found out that they would utilize some application which would allow them to open MRI images elsewhere than only on Siemens computers located in their institute. They would prefer some application where they could view recorded images on their own personal computers. It is possible to find such applications distributed by local developers, but only a few of them reach satisfactory quality requirements. These are definitely commercial applications, so user has to pay. There is also a lot of non-commercial, freeware applications, but functionality of these applications is often limited\cite[page~9]{flaska_bc}. For example, it was not possible to find an application which could open several images at the same time and view them on one screen. Therefore, specialists from IKEM institute decided to ask our faculty to develop such an application offering required functionality. The application was called Dicom-Presenter due to its expected functionality: to present DICOM images. DICOM is a name of a standard for medical data manipulation.
 
-\begin{figure}
-	\begin{center}
-	\includegraphics[width=130mm]{Text/IMG/04_GUI_Screenshot.png}
-	\end{center}
-	\caption{Screenshot of Dicom-Presenter user interface.}
-	\label{screenshot}
-\end{figure}
+\section{DICOM standard}
 
-\section*{Requirements}
-\addcontentsline{toc}{section}{Requirements}
-The IKEM specialists asked for a typical DICOM images viewer with few more specific features which they missed in freeware programs. A typical DICOM viewer allows you to open .dcm files and display it. .dcm file in this case is a jpeg image equipped with special header including patient's information. There you can see a 2D picture of some part of the patient's body. Some DICOM viewers allow you to open series of .dcm files, which can actually fit into a three-dimensional picture. Less commonly it can be a time animation of organ behaviour in short time period (f.e. one heart beat). DICOM viewers often have some more functions but it is very individual.
+DICOM is an abreviation of Digital Imaging and Communications in Medicine which is a name of standard describing medical data manipulation. Namely, DICOM standard describes a file format for storing medical data and besides it describes a protocol for exchanging this data. DICOM uses common standards: JPEG, TCP/IP, etc.
 
-There have been two more specific requirements on application functionality by IKEM specialists. They missed certain functions in freeware DICOM applications. The most important function was a possibility to open several images at one time and display them on one screen. The user should be allowed to arrange images on screen to any possible layout he prefers. This functionality allows physicians to see two or more different MRI images on screen so they can easily determine pathological differences among observed organs. It is useful for studying, or teaching.
+The main reason why DICOM was created is to avoid medical data confusion. DICOM files are equipped with a header including patient's information. This pernament attachment of header data to DICOM files should avoid random data substitution. There are information about a patient, about medical facility, about a diagnosis in a file header.
 
-There have been also requirements that the application should be able to record user's manipulation with images as a video. Then physician can prepare his presentation of images at home and then play the video in front of crowds.
+
+
+\section{Requirements}
+The IKEM specialists asked for a typical DICOM images viewer with few more specific features which they missed in freeware programs. A typical DICOM viewer allows you to open .dcm files and display it. .dcm file in this case is a jpeg image equipped with special header including patient's information. There you can see a 2D picture of some part of the patient's body. Some DICOM viewers offer opening a set of .dcm files, which can actually fit into a three-dimensional picture. Less commonly it can form a time animation of organ behaviour in short time period (f.e. one heart beat). DICOM viewers often have some more functions but it is very individual.
+
+There have been two more specific requirements on application functionality by IKEM specialists. These were not available in freeware DICOM applications. The most important function was a possibility to open several images at one time and display them on one screen. The user should be allowed to arrange images on screen to any possible layout he prefers. This functionality allows physicians to see two or more different MRI images on screen so they can easily determine pathological differences among observed organs. It is useful for studying, or teaching.
+
+There have been also requirements that the application should be able to record user's manipulation with images as a video. Then physician can prepare his presentation of images at home and then play the video to collegues.
+
+
+\begin{comment}
+\section{DICOM viewers}
+
+DICOM software is very consumer-specific. Therefore, there are just a few couples of DICOM image viewers available. According to Wikipedia these are the most used DICOM viewers:
+
+\begin{itemize}
+  \setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+\item \emph{Myrian}, Intrasense, \url{http://www.intrasense.fr/}
+\item \emph{NovaPACS}, Novarad, \url{http://www.novapacs.com/}
+\item \emph{K-Pacs}, Dr. med. Andreas Knopke, \url{http://www.k-pacs.net/}
+\item \emph{DICOM Works}, Philippe PUECH, Loïc BOUSSEL, \url{http://dicom.online.fr/}
+\item \emph{OsiriX}, OsiriX Foundation, \url{http://www.osirix-viewer.com/}
+\item \emph{Aeskulap}, Alexander Pipelka, \url{http://aeskulap.nongnu.org/}
+\item \emph{kradview}, David Santo Orcero, \url{http://www.orcero.org/irbis/kradview/}
+\item \emph{SureVistaVision\texttrademark DICOM Viewer}, MS Technology, \url{http://www.ms-technology.com/medical-solutions/sure-vista-vision.html}
+\item \emph{UniPACS},  \url{http://www.idoimaging.com/}
+\item \emph{syngo Imaging}, Siemens, \url{http://www.medical.siemens.com/}
+\item \emph{VR-Render}, IRCAD, \url{http://www.ircad.fr/softwares/vr-render/Software.php}
+\item \emph{MicroDicom}, Simeon Antonov Stoykov, \url{http://www.microdicom.com/}
+\end{itemize}
+
+Unfortunately, Myrian, NovaPACS, syngo Imaging and SureVistaVision\texttrademark are commercial applications. Therefore, they are not suitable for IKEM use. OsiriX is very powerful DICOM viewer but is available only for Max OS X. The variety of DICOM viewers is therefore very limited.
+
+All mentioned DICOM viewers do have very similar appearance. A program GUI is divided into a viewing area and a control area. The application can display one or more DICOM images on the viewing area.
+
+\end{comment}
 
 \begin{table}[ht]
 	\caption{DICOM viewers.}
@@ -39,10 +67,27 @@ There have been also requirements that the application should be able to record 
 		\end{tabular}
 \end{table}%
 
-\section*{Functionality}
-\addcontentsline{toc}{section}{Functionality}
+
+\section{Implementation}
+
+\red{
+Bylo zvoleno Qt, OpenGL, DCMTK...\\
+Problemy s OpenGL\\
+\\
+}
+
+\section{Functionality}
 \red{
 Co program presne umi?\\
 Jak je to realizovano v DicomPresenteru? Kde vidime snimek? Jak se prepiname mezi pracovnimi plochami? Jak pridavame snimky na obrazovku?\\
 Tato kapitola ma slouzit k informovani ctenare, ktery nevidel moji BP ani VU a nevi tedy, co si pod nazvem Dicom-Presenter predstavit. Tato kapitola mu usnadni dalsi cteni textu.\\
 }
+
+
+\begin{figure}
+	\begin{center}
+	\includegraphics[width=130mm]{Text/IMG/04_GUI_Screenshot.png}
+	\end{center}
+	\caption{Screenshot of Dicom-Presenter user interface.}
+	\label{screenshot}
+\end{figure}
