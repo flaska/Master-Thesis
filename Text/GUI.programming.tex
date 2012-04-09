@@ -7,9 +7,7 @@ Therefore, ``application framework'' libraries arise. Frameworks are libraries w
 
 
 \section{GUI programming without an application framework}
-\ref{noqt}
-
-\red{Zminit Xorg}
+\label{noqt}
 
 Development of GUI Windows applications is possible with Windows API. It is a name for a set of various APIs - communication interfaces for performing services. These communication interfaces offer manipulation with filesystem, devices and also creating graphic windows.
 
@@ -61,13 +59,46 @@ There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{ma
 }
 \end{lstlisting}
 
-\section{GUI Frameworks}
+\red{Zminit Xorg}
 
-\red{
-Proc bychom meli pouzivat nejaky framework? Vyrazne nam to usnadni praci. Nemusime resit smycku programu. Nemusime resit predavani zprav. Mame predem hotove tridy pro vsechny bezne uzivatelske prvky.\\
-Jak nam pouziti frameworku usnadni praci? Ukazat dedictvi puvodnich trid a jejich prizpusobeni nasim pozadavkum.\\
-Jak zajistim funkcnost programu, tj. kdyz uzivatel klikne tam a tam stane se to a to? Ukazat system signalu a slotu, ktery je v Qt i v GTK+. Ukazat eleganci a jednoduchost tohoto systemu.\\
+\section{GUI Frameworks}
+Application frameworks are libraries designed to ease GUI application creating. Complicated widget declaration processes are encapsulated inside the library. Then, framework classes are used instead of calling OS related functions. The two most popular application frameworks now are Qt and GTK.
+
+Both Qt and GTK are based on the same schema. All control elements are represented by library classes. The control elements can be easily added to application windows. Control functions describing application response to user actions are defined. Then the control elements and control functions are connected together.
+
+A source code syntax of Qt library and GTK library is very similar. Examples of two identical applications using GTK and Qt can be found on Listings \ref{gtk} and \ref{qt}. Both applications create a simple window with a button inside. Clicking the button writes an console output. The button and window creation can be found on lines \ref{lst:gtkbuttonstart} - \ref{lst:gtkbuttonfinish} on Listing \ref{gtk} (GTK) and lines \ref{lst:qtbuttonstart} - \ref{lst:qtbuttonfinish} on Listing \ref{qt} (Qt). The process is very similar unlike Qt uses functions in its classes and GTK uses global functions. The command on lines \ref{lst:gtkconnect} (Listing \ref{gtk}) and \ref{lst:qtconnect} (Listing \ref{qt}) is used for setting up interaction between button click and proper function call. The main difference is that GTK allows connection to global function calls (line \ref{lst:gtkcall}, Listing \ref{gtk}), unlike Qt allows to call functions of object inheriting QObject class (line \ref{lst:gtkcall}, Listing \ref{qt}).
+
+\begin{lstlisting}[label=gtk,caption={A sample application using GTK framework.},escapeinside={@}{@}]
+@\label{lst:gtkcall}@static void message(GtkWidget *widget, gpointer data){
+    cout << "Hello World!";
 }
+...
+@\label{lst:gtkbuttonstart}@GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+GtkWidget *button = gtk_button_new_with_label ("Hello World");
+GtkWidget *layout = gtk_fixed_new();
+gtk_fixed_put(GTK_FIXED(layout), button);
+@\label{lst:gtkbuttonfinish}@gtk_container_add(GTK_CONTAINER(window), layout);
+@\label{lst:gtkconnect}@g_signal_connect (button, "clicked", G_CALLBACK (message), NULL);
+\end{lstlisting}
+
+\begin{lstlisting}[label=qt,caption={A sample application using GTK framework.},escapeinside={@}{@}]
+@\label{lst:qtcall}@class callhandler : public QObject {
+Q_OBJECT
+public slots:
+	void message () {
+		cout << "Hello World!";
+	}
+}
+...
+@\label{lst:qtbuttonstart}@QWidget *window = new QWidget();
+QPushButton *button = new QPushButton();
+QLayout *layout = new QGridLayout();
+layout->add(button);
+@\label{lst:qtbuttonfinish}@window->setLayout(layout);
+@\label{lst:qtconnect}@connect(button,SIGNAL(clicked()),callhandler,SLOT(message()));
+\end{lstlisting}
+
+
 
 %\subsection*{Qt Library}
 %\addcontentsline{toc}{subsection}{Qt Library}
@@ -76,7 +107,7 @@ Jak zajistim funkcnost programu, tj. kdyz uzivatel klikne tam a tam stane se to 
 
 \section{Dicom-Presenter GUI model}
 
-\clist{
+\red{
 Jak je tedy GUI resene v dicom presenteru? Ukazat settings panel, cwidget.\\
 Mozna ukazat predavani uzivatelskych zprav z CWidget na workspaceManager, na CWorkspace, na CImage.\\
 }
