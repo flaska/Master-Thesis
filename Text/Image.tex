@@ -6,7 +6,10 @@ Dicom-Presenter is an application for viewing image data. Entire image manipulat
 Before rewriting all image processing classes without OpenGL it was a need to study how to complete all image processing tasks without OpenGL. Moreover, OpenGL uses GPU to perform it's tasks so it was a need to calculate the loss of performance when OpenGL will be removed. 
 
 \section{Image storing}
-As a part of rendering engine reimplementation it was mandatory to understand how are image data stored in computer memory. A color image consisting of $m \cdot n$ points (pixels) can be described by $m \cdot n$ number triads. The triads would be coordinates in RGB or HSV color space \footnote{All visible colors can be decomposed into three independent components due to the fact that human eye contains three different color receptors. }. Data in a computer are stored in elementary units - bytes, which can hold 256 different values. Each byte consists of eight unitary units - bits ($2^8 = 256 $). If considered that one byte can include color information of only one pixel, then only eight-bit multiples can be used for a pixel color storage: 8 bits, 16 bits, 24 bits, etc. In case of 24 bit color depth, three bytes are used for a pixel color storage - each byte for each color. If 8 bits depth or 16 bits depth is used, in both cases the bit numbers are not divisible by three, so there are several ways of how to distribute bits among colors.
+\label{rawdata}
+There are two different libraries used for image manipulation in Dicom-Presenter. DCMTK library is used for loading images from hard disk, while Qt library (formely OpenGL) is used for displaying images on computer screen. DCMTK library must be used since it supports loading files in DICOM format, besides some application framework must be used for image displaying. DCMTK library offers loading compressed image files and saving them uncompressed into RAM memory. To be able to display these raw data properly by Qt library, it is mandatory to understand the way image data are represented in computer. 
+
+A color image consisting of $m \cdot n$ points (pixels) can be described by $m \cdot n$ number triads. The triads would be coordinates in RGB or HSV color space \footnote{Colors which can be displayed can be fully described by three values. This fact is based on human eye anatomy and leads to construction of coordinate systems describing each displayable color. Coordinates of RGB color space are red, blue, green color while hue, saturation, value are coordinates in HSV color space.}. Data in a computer are stored in elementary units - bytes, which can hold 256 different values. Each byte consists of eight unitary units - bits ($2^8 = 256 $). If considered that one byte can include color information of only one pixel, then only eight-bit multiples can be used for a pixel color storage: 8 bits, 16 bits, 24 bits, etc. In case of 24 bit color depth, three bytes are used for a pixel color storage - each byte for each color. If 8 bits depth or 16 bits depth is used, in both cases the bit numbers are not divisible by three, so there are several ways of how to distribute bits among colors.
  
 Qt library uses three diferent formats of 16 bit color information storage. The formats differ by number of bits distributed to each color and are described by triads of numbers: 5-6-5, 5-5-5, 4-4-4. The first format uses 5 bits for red color, 6 bits for green color and 5 bits for blue color. The numbers of bits for each color are uneven but no redundant bits are present. Both 5-5-5 and 4-4-4 formats include redundant bits for each image pixel.
 
@@ -16,7 +19,7 @@ In conclusion, if a picture is reconstructed from uncompressed raw data saved in
 
 \subsection{Image construction from raw data in Qt library}
 
-
+Loading image files in Dicom-Presenter is provided by DCMTK\footnote{} library. DCMTK library loads compressed image files from hard disk and saves them into RAM memory as uncompressed data (described in Section \ref{rawdata}). 
 
 \begin{figure}
 	\begin{center}
