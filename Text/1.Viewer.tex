@@ -1,15 +1,12 @@
 \chapter{Dicom-Presenter}
 \vspace{-10mm}
-
-My predecessor Bc. Pavel Neskudla started development of an application for viewing images from MRI as a part of his master's thesis\cite{neskudla}. It was a task given by IKEM institute in Prague\footnote{Institute for Clinical and Experimental Medicine}. IKEM institute specialists found out that they would utilize some application which would allow them to open MRI images elsewhere than only on Siemens computers located in their institute. They would prefer some application where they could view recorded images on their own personal computers. It is possible to find such applications distributed by local developers, but only a few of them reach satisfactory quality requirements. These are definitely commercial applications, so user has to pay. There is also a lot of non-commercial, freeware applications, but functionality of these applications is often limited\cite[page~9]{flaska_bc}. For example, it was not possible to find an application which could open several images at the same time and view them on one screen. Therefore, specialists from IKEM institute decided to ask our faculty to develop such an application offering required functionality. The application was called Dicom-Presenter due to its expected functionality: to present DICOM images. DICOM is a name of a standard for medical data manipulation.
+My predecessor Bc. Pavel Neskudla started development of an application for viewing images captured on Magnetic Resonance Imaging (MRI) unit in his Master's thesis\cite{neskudla}. It was a task given by IKEM institute in Prague\footnote{Institute for Clinical and Experimental Medicine}. IKEM institute specialists would utilize some application deployable on personal computers which would offer displaying MRI images. It is possible to find such applications but unfortunately those are too expensive commercial solutions or otherwise freeware applications which do not reach quality requirements\footnote{See \cite[page~9]{flaska_bc} for an overview of accesible DICOM image viewers}. Therefore, IKEM asked FNSPE faculty to develop such an application matching their requirements. Moreover, in this case, the sponsor was allowed to raise unique functionality demands not accessible in other programs (See section \ref{requirements}).
 
 \section{DICOM standard}
 
-DICOM is an abbreviation of Digital Imaging and Communications in Medicine which is a name of standard describing medical data manipulation. Namely, DICOM standard describes a file format for storing medical data and besides it describes a protocol for exchanging this data. DICOM uses common standards: JPEG, TCP/IP, etc.
+DICOM is an abbreviation of Digital Imaging and Communications in Medicine, it is a name of a standard describing medical imaging data manipulation. \footnote{DICOM standard was created by  U.S. National Electrical Manufacturers Association\cite{nema}.} Namely, DICOM standard describes a file format for storing medical data and besides it describes a protocol for exchanging this data. DICOM standard uses common IT standards such as JPEG, TCP/IP, etc.
 
 The main reason why DICOM was created is to avoid medical data confusion. DICOM files are equipped with a header including patient's information. This permanent attachment of header data to DICOM files should avoid random data substitution. There are information about a patient, about medical facility, about a diagnosis in a file header.
-
-
 
 \subsection{DICOM viewers}
 \label{viewers}
@@ -35,7 +32,7 @@ DICOM software is very consumer-specific. Therefore, there are just a few couple
 
 Unfortunately, Myrian, NovaPACS, syngo Imaging and SureVistaVision\texttrademark are commercial applications. Therefore, they are not suitable for IKEM use. OsiriX is very powerful DICOM viewer but it is available only for Max OS X. The variety of DICOM viewers is therefore very limited.
 
-All mentioned DICOM viewers do have very similar appearance. A program GUI is divided into a viewing area and a control area. The application can display a DICOM image in the viewing area or it can display a multi-planar reconstruction\footnote{A multi-planar reconstruction is a way for displaying three-dimensional images. Three slices in three perpendicular planes are displayed. For exact explanation please see Section \ref{multiplanar}.} of the image. The control area offers image enhancing operations with the image displayed in the viewing area.
+All mentioned DICOM viewers do have very similar appearance. A program GUI is divided into a viewing area and a control area. The application can display a DICOM image in the viewing area or it can display a multi-planar reconstruction of the image. The control area offers image enhancing operations with the image displayed in the viewing area.
 
 \begin{table}[ht]
 	\caption{DICOM viewers.}
@@ -60,6 +57,7 @@ All mentioned DICOM viewers do have very similar appearance. A program GUI is di
 
 
 \section{Requirements}
+\label{requirements}
 The IKEM specialists asked for a typical DICOM images viewer with few more specific features which they missed in freeware programs. A typical DICOM viewer allows you to open .dcm files and display it. .dcm file in this case is a jpeg image equipped with special header including patient's information. There you can see a 2D picture of some part of the patient's body. DICOM viewers usually offer opening a set of .dcm files, which can actually fit into a three-dimensional picture. Less commonly it can form a time animation of organ behavior in a short time period (e.g. one heart beat). Some DICOM users offer a multi-planar reconstruction of a picture. Other offered functions may vary.
 
 There have been two specific requirements on application functionality by IKEM specialists. These were not available in freeware DICOM applications. The most important function was the possibility to open several images at once and display them on one screen. The user should be allowed to arrange images on screen to any possible layout he prefers. This functionality allows physicians to see two or more different MRI images on screen so they can easily determine pathological differences among observed organs. It is useful for studying, or teaching.

@@ -6,29 +6,25 @@ Dicom-Presenter is an application for viewing image data. Entire image manipulat
 Before rewriting all image processing classes without OpenGL it was a need to study how to complete all image processing tasks without OpenGL. Moreover, OpenGL uses GPU to perform it's tasks so it was a need to calculate the loss of performance when OpenGL will be removed. 
 
 \section{Image storing}
+As a part of rendering engine reimplementation it was mandatory to understand how are image data stored in computer memory. A color image consisting of $m \cdot n$ points (pixels) can be described by $m \cdot n$ number triads. The triads would be coordinates in RGB or HSV color space \footnote{All visible colors can be decomposed into three independent components due to the fact that human eye contains three different color receptors. }. Data in a computer are stored in elementary units - bytes, which can hold 256 different values. Each byte consists of eight unitary units - bits ($2^8 = 256 $). If considered that one byte can include color information of only one pixel, then only eight-bit multiples can be used for a pixel color storage: 8 bits, 16 bits, 24 bits, etc. In case of 24 bit color depth, three bytes are used for a pixel color storage - each byte for each color. If 8 bits depth or 16 bits depth is used, in both cases the bit numbers are not divisible by three, so there are several ways of how to distribute bits among colors.
+ 
+Qt library uses three diferent formats of 16 bit color information storage. The formats differ by number of bits distributed to each color and are described by triads of numbers: 5-6-5, 5-5-5, 4-4-4. The first format uses 5 bits for red color, 6 bits for green color and 5 bits for blue color. The numbers of bits for each color are uneven but no redundant bits are present. Both 5-5-5 and 4-4-4 formats include redundant bits for each image pixel.
 
-\red{
-Potrebujeme nejak uklada snimky! \\
-Ukazat, jak chape pocitac snimek - je to jen retezec cisel.\\
-Ukazat, jak je ulozen RGB obrazek - podle barevne hloubky zvolime pocet charu na pixel a pak tam naskladame informaci o slozkach R, G, B. Bohuzel jsou ruzne zpusoby jak tam naskladat RGB a tak existuji ruzne zpusoby ukladani obrazku (5-5-5, 5-6-5, atd.)\\
-Zminit, ze DCMTK vraci data ve formatu RAW\\
-}
+Qt library allows displaying images which are actually saved in computer memory as an array of bytes in some of supported formats (such as described above). Besides color depth formats, image storage can differ by number of bytes used for storing each image line. If an image has $m \cdot n$ pixels and two bytes are used per pixel (f.e. 16 bit 5-5-5), there is no rule that $m \cdot n \cdot 2$ bytes will be used. A computer memory in x86 architecture reads its data in elements called words usually consisting of 4 bytes for x86 architecture and 8 bytes for 64-bit architecture. Therefore, image data are in computer memory often aligned that each image line starts at a beginning of some 4-byte or 8-byte word. For instance, if we consider an image of $100 \cdot 100$ pixels saved with 8 bit pixel depth on 64-bit architecture, each line consisting of $100$ pixels would be saved on $128$ or bytes.
+
+In conclusion, if a picture is reconstructed from uncompressed raw data saved in computer memory, essential indications are which color storage format is used for each pixel and which bit align is used for each pixel-line. Those two information are enough for correct image reconstruction.
+
+\subsection{Image construction from raw data in Qt library}
 
 
-\subsection{Qt}
 
-\red{
-Ukazat, jake tridy nam nabizi Qt k ukladani snimku a jak je lze pak jednoduse kreslit, upravovat, atd. \\
-}
-
-\subsection{OpenGL}
-
-\red{
-Ukazat, jak neohrabana je prace s OpenGL pro snimky. Snimky lze ukladat jen jako textury a pak si musime pamatovat nejake handlery na textury. \\
-Mnohem logictejsi by bylo predavat si pointer na objekt snimku nez si predavat nejaky int - handler na snimek.\\
-Zduraznit, ze OpenGL je neohrabane, nesystemove. Qt je mnohem prehlednejsi, ale ma horsi performance.\\
-}
-
+\begin{figure}
+	\begin{center}
+	\includegraphics[width=130mm]{Text/IMG/ImageStoring_16bit.png}
+	\end{center}
+	\caption{A distribution of 16 bits of 2 bytes among three colors of a pixel.}
+	\label{screenshot}
+\end{figure}
 
 \section{Image enhancement operations}
 
@@ -79,22 +75,13 @@ Image contrast is usually adjusted by a linear transformation applied to all ima
 
 A disadvantage of both ways is that some image information is lost. Let's consider an image described by a matrix with elements of integers in range from zero to 255. Let the brightness of the picture increased according to formula \eqref{brightness} with a positive constant $ c_{brightness} $. Then all the points brighter than $ 255 - c_{brightness} $ on original image will have luminosity of 255 regardless their original luminosity. Similarly if contrast would be increased according to formula \eqref{contrast} with a constant $ c_{contrast} $ then all points brighter than $ \frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1) $ will have the same color (maximum white). As well all pixels darker than $ \frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}}) $ will have the same color (maximum black).
 
-\subsection{Qt}
+\clist{krivka na nelinearni kontrast z vyzkumaku}
 
-\red{
-Ukazat, jak jde zmenit jas/kontrast pomoci Qt. \\
-}
+\subsection{Pixel manipulations in Qt}
 
-\subsection{OpenGL}
 
-\red{
-Ukazat, jak neohrabane lze menit jas a kontrast pomoci OpenGL (viz vyzkumak(github)). \\
-}
 
 \section{Image rendering}
-
-
-\subsection{Qt}
 
 
 \red{
@@ -105,14 +92,7 @@ Zduvodnit proc se radeji priklonime k prehlednemu a bezpecnemu zpusobu pomoci Qt
 Zpisob primeho zapisu do pameti at dela jiny student - je to prace na cca pul roku, ale pujde krasne navazat na moji verzi DP.\\
 }
 
-\subsection{OpenGL}
-
-\red{
-Renderovani snimku na ruzna mista pomoci OpenGL.\\
-}
-
 \section{OpenGL and Qt performance}
-
 
 \red{
 Ukazat mereni performance a ukazat vzorecek na odhad rychlosti vykreslovani.\\
