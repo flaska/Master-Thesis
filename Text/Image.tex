@@ -3,7 +3,7 @@
 
 Dicom-Presenter is an application for viewing image data. Entire image manipulation was solved with use of OpenGL library in early version of Dicom-Presenter. OpenGL was used for image storing, for changing image properties and for drawing images on screen. Unfortunately, OpenGL brought complications to application compatibility with various hardware. Therefore, author of this work decided to remove OpenGL from application and replace all classes using OpenGL with their non-OpenGL equivalents. 
 
-Before rewriting all image processing classes without OpenGL it was a need to study how to complete all image processing tasks without OpenGL. Moreover, OpenGL uses GPU to perform it's tasks so it was a need to calculate the loss of performance when OpenGL will be removed. 
+Before rewriting all image processing classes without OpenGL it was a need to study how to complete all image processing tasks without OpenGL. Moreover, OpenGL uses GPU to perform its tasks so it was a need to calculate the loss of performance when OpenGL will be removed. 
 
 \section{Image storing}
 \label{rawdata}
@@ -26,7 +26,7 @@ DCMTK library offers a function which saves a copy of loaded image data into a n
 const unsigned long frame = 0,
 const int planar = 0 )}
 
-The first parameter denotes a required data alignment of each pixel, the other two parameters describes the orientation of the image slice inside the threedimensional texture. The function returns a pointer to the part of memory where image data will be stored.
+The first parameter denotes a required data alignment of each pixel, the other two parameters describe the orientation of the image slice inside the threedimensional texture. The function returns a pointer to the part of memory where image data will be stored.
 
 Besides, Qt library offers a construction of its object depending on image data already stored in computer memory. The object receives a pointer to image data through its constructor. If the image data meet prospective requirements, the object can be called to draw the image at any time, as long as the data are still on the place in computer memory.
 
@@ -52,7 +52,7 @@ Qt library itself cannot determine the exact values of above described parameter
 
 One of important tasks to reimplement in Dicom-Presenter was an ability to adjust image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with various imaging properties. The ability to increase image brightness and contrast is mandatory to ensure sufficient display quality. Too dark or too gray images need to be brightened or need to increase contrast to ensure better observation of physiological findings. A brightness and contrast change is among DICOM users called ``windowing''.
 
-For further needs of this text let's define brightness and contrast. 
+For further needs of this text brightness and contrast needs to be defined. 
 
 A grayscale image can be considered as a matrix of numbers: 
 
@@ -81,7 +81,7 @@ Contrast(Im) = \sqrt{\frac{1}{res_{x} \cdot res_{y}}\sum_{\substack{ 0 \leq x \l
 
 An argument for using these two definitions for brightness and contrast is that they are analogies for mean value and variance of set of values.
 
-If there is a need of increasing or decreasing image brightness in computer applications simply a constant id added to all image points:
+If there is a need of increasing or decreasing image brightness in computer applications simply a constant is added to all image points:
 
 \begin{equation}
 \label{brightness}
@@ -105,7 +105,7 @@ Qt library doesn't offer its own functions for elementary pixel manipulations su
 
 A change of brightness or contrast of an image of $m \cdot n$ pixels will be done in $m \cdot n$ steps. In each step a color of the pixel must be obtained, new color value will be calculated and the value will be saved into the picture. Qt library offers two ways to perform the task: pixel manupulation functions or direct memory access.
 
-If preimplemnted Qt pixel manipulation functions are used, the source code will be following:
+If preimplemented Qt pixel manipulation functions are used, the source code will be following:
 
 \begin{lstlisting}[label=qtcontrast,caption={Image enhancement operations implementation using Qt library functions for pixel manipulation.},escapeinside={@}{@}]
 QImage image(...);
@@ -118,7 +118,7 @@ for (int y=0; y<height; y++) {
 }
 \end{lstlisting}
 
-Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color information of a pixel. The code on line \ref{lst:operation} performs a color manipulation. Function \clist{void QImage::setPixel(int x,int y,QRgb rgb)} is used to save the color information back to the picture. Due to multi-thread programming support the \clist{QImage::setPixel} function offers low performance. Within each function call Qt library must attach and deatach a process to shared memory segment where the image data are stored. These steps are performance expensive.
+Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color information of a pixel. The code on line \ref{lst:operation} performs a color manipulation. Function \clist{void QImage::setPixel(int x,int y,QRgb rgb)} is used to save the color information back to the picture. Due to multi-thread programming support the \clist{QImage::setPixel} function offers low performance. Within each function call Qt library must attach and deattach a process to shared memory segment where the image data are stored. These steps are performance expensive.
 
 Nevertheless, Qt library offers a high performance option to change image pixel data. Image data are modified directly inside the computer memory without a function call from QImage class. A function from QImage class is called just to retreive a pointer to memory segment containing image data. The code will be following:
 
@@ -132,7 +132,7 @@ for (int y=0; y<height; y++) {
 }
 \end{lstlisting}
 
-Function \clist{QImage::scanLine(int y)} returns a pointer to a segment of memory where is saved \clist{y}-th line of the image. The \clist{QImage::scanLine(int y)} functions returns a pointer to \clist{unsigned char} array (byte array). The conversion to \clist{QRgb} array together with using Qt functions for changing pixel data (line \ref{lst:qrgb}) will remove nescessary byte conversions related do pixel data alignment. If working with the \clist{unsigned char} array, data alignment rules must be respected. The for-cycle browsing through each image line (line \ref{lst:for}) would be ranged to \clist{2*width}, which is actually the real size of an image line in computer memory (expressed in bytes at 16-bit color depth).
+Function \clist{QImage::scanLine(int y)} returns a pointer to a segment of memory where is saved \clist{y}-th line of the image. The \clist{QImage::scanLine(int y)} functions returns a pointer to \clist{unsigned char} array (byte array). The conversion to \clist{QRgb} array together with using Qt functions for changing pixel data (line \ref{lst:qrgb}) will remove necessary byte conversions related to pixel data alignment. If working with the \clist{unsigned char} array, data alignment rules must be respected. The for-cycle browsing through each image line (line \ref{lst:for}) would be ranged to \clist{2*width}, which is actually the real size of an image line in computer memory (expressed in bytes at 16-bit color depth).
 
 
 \section{Image rendering}

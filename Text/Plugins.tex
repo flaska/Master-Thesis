@@ -59,9 +59,38 @@ Dicom-Presenter's image segmentation algorithms use individual parameters. There
 
 At first the third option was used in implementation. Function setting algorithm parameters were called while setting parameters in GUI. But there were no real benefits of library response while setting GUI parameters. More than that the rules for plugins were too bounding. Therefore, the final version of plugins API were implemented using option 4.
 
-\section{User Interaction in Image Segmentation plugins}
+\section{User interaction in Image Segmentation plugins}
 
-\red{
-Popsat jak uzivatel musi nakreslit seminku krivky.\\
-Popsat implementaci, jaka byla pouzita.\\
+As mentioned before, FNSPE image segmentation algorithms require computational parameters and an input image with designated area to be segmented. The segmentable area is defined by an initial curve. All the initial curve has to be placed inside the segmentable area. The curve is then used as a set of initial values for algorithm. Mostly, the curve is iteratively expanded until it traces the area border. Then, the expanded curve fully defines the segmented area.
+
+The initial curve had to be defined by the user somehow. The most user friendly way would be to allow the user to paint the initial curve right inside the segmented image using a pointing device (computer mouse, touchscreen, etc.) Qt library offers extensive possibilities to perform free-hand painting into an image.
+
+\subsection{Implementation of user interaction}
+
+Any free-hand task in a computer application is mostly implemented according to the following schema: mouse movements are tracked by the application and redirected to a proper class, the actual mouse pointer position is obtained, an action based on the actual movement is performed, mouse movements are tracked again. The process is illustrated on Listing \ref{mousetrack}.
+
+\begin{lstlisting}[label=mousetrack,caption={xxxx},escapeinside={@}{@}]
+iDrawLabel = new drawLabel();
+iDrawLabel->setMouseTracking(true);
+...
+void drawLabel::mousePressEvent(QMouseEvent* event){
+	if (event->button()==Qt::LeftButton) pressedButton = leftButton;
+	if (event->button()==Qt::RightButton) pressedButton = rightButton;
 }
+void drawLabel::mouseMoveEvent(QMouseEvent* event){
+	if (pressedButton==noButton) return;
+	int x = event->x();
+	int y = event->y();
+	if (pressedButton==leftButton){
+		QPainter painter((QPaintDevice*)pixmap());
+		painter.setPen(QPen(Qt::white, 5, Qt::SolidLine, Qt::RoundCap,Qt::RoundJoin));
+		painter.drawEllipse (x,y,5,5);
+	}
+	update();
+}
+void drawLabel::mouseReleaseEvent(QMouseEvent* event){
+	pressedButton = noButton;
+}
+\end{lstlisting}
+
+There are three functions related to mouse actions in the example \ref{mousetrack}: \clist{mousePressEvent}, \clist{mouseMoveEvent}, \clist{mouseReleaseEvent}. All the three functions are originally defined in Qt library and can be overloaded the demonstrated way. Qt framework ensures event-based calling of these overloaded functions. \clist{mousePressEvent} and \clist{mouseReleaseEvent} functions are called to avoid performing in \clist{mouseMoveEvent} action if no mouse-button is pressed. In fact, the \clist{QMouseEvent} object includes information about pressed buttons, therefore \clist{mousePressEvent} and \clist{mouseReleaseEvent} function calls could be eliminated. But it is a unique feature of Qt library, therefore, this implementation is more frequent.
