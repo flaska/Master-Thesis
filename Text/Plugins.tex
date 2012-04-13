@@ -15,14 +15,7 @@ Popsat algoritmy Kuby Louckeho a Radka Maci.\\
 
 \section{Plugins system requirements}
 
-It is needed to set rules for plugin libraries. Every library following these rules should be automatically usable in DicomPresenter. The first thing is to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students just needed a picture and few parameters as an input. The parameters can be inserted into text fields by a user. Therefore, there has to be an opportunity to generate these text fields dynamically while loading a plugin. A computing algorithm in a library is ran by a function call of some function in the library. This function receives the parameters inserted by the user.
-
-All three algorithms receive input image only as a file path on a disk. Images in Dicom-Presenter which user can see are two-dimensional projections of a three-dimensional picture - they are not stored in a file but just in a memory. Therefore, it will be needed to save them into a file to be processed by a segmentation algorithm.
-
-\red{
-Pavel: Pridat informace o tom, ze pozadavky na plugin system byla dale jednoduchost implementace pluginu.\\
-Pavel: Pridat zminku o tom, ze algoritmy maji parametry a je potreba umoznit nastavovani techto parametru.\\
-}
+It is needed to set rules for plugin libraries. Therafter, a library following these rules should be applicable in DicomPresenter. The first thing is to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students required an image with designated segmentable area together with computational parameters as an input. The most reasonable way to insert computation parameters is to generate a GUI interface including required input elements. This chapter discusses plugins GUI construction done at the application runtime and its connection to the loaded plugin library. A plugin interface was considered to be as simple as possible - a key idea was to require a minimum of source code modifications in existing image segmentation libraries.
 
 \section{Generating plugins GUI}
 

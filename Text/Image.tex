@@ -122,7 +122,7 @@ Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color infor
 
 Nevertheless, Qt library offers a high performance option to change image pixel data. Image data are modified directly inside the computer memory without a function call from QImage class. A function from QImage class is called just to retreive a pointer to memory segment containing image data. The code will be following:
 
-\begin{lstlisting}[label=qtcontrast,caption={Image enhancement operations implementation using Qt library functions for pixel manipulation.},escapeinside={@}{@}]
+\begin{lstlisting}[label=qtcontrast,caption={Image enhancement operations performed by direct access into computer memory.},escapeinside={@}{@}]
 QImage image(...);
 for (int y=0; y<height; y++) {
 	@\label{lst:pixel}@QRgb* imageLine=(QRgb*)image.scanLine(y);
@@ -137,15 +137,40 @@ Function \clist{QImage::scanLine(int y)} returns a pointer to a segment of memor
 
 \section{Image rendering}
 
+Qt library offers several ways how to create and render graphic scene composing of existing images stored on hard disk. The library includes three different classes which can hold bitmap data: QImage, QPixmap, QPicture. All the classes can act as a scene to be painted into as well as can be a pattern to be painted. Differences among these classes are:
 
+\begin{itemize}
+\item QImage class is optimized for reading and writing images from/into a hard disk. Besides, it is optimised for direct pixel access and manipulation.
+\item QPixmap class is optimized for on-screen rendering.
+\item QPicture class can record a history of received painting requests and replay them.
+\end{itemize}
 
-\red{
-Renderovani snimku na ruzna mista na obrazovce pomoci Qt.\\
-Ukazat bezpecny zpusob pomoci Qt.\\
-Ukazat nebezpecny zpusob pomoci primych zasahu do pameti.\\
-Zduvodnit proc se radeji priklonime k prehlednemu a bezpecnemu zpusobu pomoci Qt.\\
-Zpisob primeho zapisu do pameti at dela jiny student - je to prace na cca pul roku, ale pujde krasne navazat na moji verzi DP.\\
-}
+Therefore, among other possible ways, the most reasonable solution for rendering existing images from hardisk is:
+
+\begin{enumerate}
+  \item Save and hold image data in computer memory with QImage objects.
+  \item Perform image enhancement operations inside QImage objects.
+  \item Paint the content of QImage objects into a QPixmap object to assemble user's workspace.
+  \item Paint the QPixmap object to the computer screen.
+\end{enumerate}
+
+To paint any object of the mentioned classes inside another object of the classes, Qt library offers a QPainter class. A process of drawing an existing image into a QPixmap scene can be found on Listing \ref{painting}.
+
+\begin{lstlisting}[label=painting,caption={A process of assebling user's desktop from existing images and rendering it to computer screen.},escapeinside={@}{@}]
+@\label{lst:qimage}@QImage* image = new QImage(data,width, height,align);
+@\label{lst:qpixmap}@QPixmap* pixmap = new QPixmap(Width, Height);
+@\label{lst:qpainter}@QPainter* painter = new QPainter();
+@\label{lst:begin}@painter->begin((QPaintDevice*)pixmap);
+QRect position(QPoint(x,y),QPoint(w,h));
+@\label{lst:draw}@painter->drawImage(position,image);
+painter->end();
+QLabel *label = new QLabel();
+@\label{lst:render1}@label->setPixmap(*pixmap);
+@\label{lst:render2}@label->update();
+\end{lstlisting}
+
+There is a \clist{QImage} object construction on line \ref{lst:qimage}. QImage object is created to provide manipulation with image data already stored in computer memory at location referenced by pointer \clist{data}. Image data will be printed to some position into a \clist{QPixmap} object which is created on line \ref{lst:qpixmap}. This step is needed to perform assembling of user's workspace from various visual elements. A \clist{QPainter} object created on line \ref{lst:qpainter} allows the printing of a \clist{QImage} object into a \clist{QPixmap} object. A target scene whereto \clist{QPainter} object will render must be declared by \clist{::begin()} command (line \ref{lst:begin}). The existing image is printed on declared position on line \ref{lst:draw}. Finally, the workspace is rendered to user's screen on lines \ref{lst:render1} and \ref{lst:render1}.
+
 
 \section{OpenGL and Qt performance}
 
