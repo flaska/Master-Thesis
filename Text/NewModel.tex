@@ -18,12 +18,31 @@ To understand the hierarchical arrangement of application classes, the following
 \item Image storing. A view on the object model related to the classes maintaining abstract functionalities can start with the actions attached to loading an image from hard disk.
 \end{itemize}
 
-\subsection{Image Opening in Dicom-Presenter}
+\subsection{Dicom-Presenter Object Model Description}
+As was said in \ref{dicom-presenter}, Dicom-Presenter application window consists of:  Workspace, Image Explorer, Workspace Explorer and Info Panel. The Workspace act as a main graphic output, it is used for viewing DICOM images. To ensure usability of Dicom-Presenter during presentations, several workspace sessions can be opened at the same time. Therefore, Workspace Explorer acts as a switch among opened workspaces\footnote{The process is similar as workspaces switching in GNOME/KDE.}. Since an image can be opened at a number of workspaces at once, Image Explorer is used to manage opened images. Info Panel holds information about the opened image or the opened workspace.
+
+\subsection{Graphic Output Rendering in Dicom-Presenter}
+The mentioned control elements of Dicom-Presenter: Image Explorer and Workspace Explorer are rendered manually. They are not based on existing Qt library class. Thus, if a graphic output of Dicom-Presenter is rendered all classes representing some graphic element must be called. 
+
+An impulse to render the graphic window can be called at any time from any part of the application. A static function is used to obtain the pointer to output window, then a function called \clist{paint} is called.
+
+The \clist{paint} function of main window object (\clist{CWidget}) then calls paint functions of all elements present in the window: an active Workspace, Workspace Explorer and Image Explorer. All the elements contain smaller subelements. The Workspace calls paint functions of all images present appearing on the Workspace, Workspace Explorer calls paint functions of all images containing workspace previews and finally the Image Explorer calls paint functions of all images operated by it. A schema of the process can be seen on Figure \ref{paint}.
+
+\begin{figure}
+	\begin{center}
+	\includegraphics[width=130mm]{Text/IMG/paint.png}
+	\end{center}
+	\caption{A hierarchy of classes presenting paintable elements.}
+	\label{paint}
+\end{figure}
 
 \subsection{Control Event Forwarding in Dicom-Presenter}
 
-\subsection{Graphic Output Rendering Process in Dicom-Presenter}
-\red{strucne, jak se predavaj zpravy}
+\subsection{Image Opening in Dicom-Presenter}
+
+
+
+
 
 \section{Rendering Engine Implementation}
 \red{podrobne rozepsat, jake tridy byly pouzity a co delaji}
