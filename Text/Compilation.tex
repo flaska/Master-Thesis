@@ -15,11 +15,11 @@ There are two ways of linking a library into a final executable: static linking 
 \item Dynamic linking of a library means that only the library's name and its function names are inserted into the executable. An executable code of the linked library is distributed together with the executable file in a standalone .dll file. When the application is ran the operating system has to load library's executable code into the application's virtual memory. While compiling a dynamic-link library the compiler produces also a .lib file. The executable is linked against this .lib file but the lib file contains only instructions to load machine code from .dll files.
 \end{itemize}
 
-In addition, there is one more way how to use dynamic-link libraries:
+%In addition, there is one more way how to use dynamic-link libraries:
 
-\begin{itemize}
-\item Dynamic-link libraries can be also loaded manually during the application run. Windows API offers a set of functions for run-time loading functions from .dll libraries. This is useful for rarely used functions. They don't need to occupy memory space all the time an application is ran.
-\end{itemize}
+%\begin{itemize}
+%\item Dynamic-link libraries can be also loaded manually during the application run. Windows API offers a set of functions for run-time loading functions from .dll libraries. This is useful for rarely used functions. They don't need to occupy memory space all the time an application is ran.
+%\end{itemize}
 
 A concept of dynamic-link libraries shows its potential when applied on libraries which are used by multiple applications. Dynamic-link libraries are also called shared libraries. These are the advantages of using shared libraries:
 
@@ -31,12 +31,11 @@ A concept of dynamic-link libraries shows its potential when applied on librarie
 
 \section{Run-time loaded libraries}
 
-\red{
-Co to znamena run-time loaded library?\\
-Proc potrebujeme run-time loaded library? No kvuli pluginum.\\
-}
+Besides the compilation linking against a dynamic-link library, C/C++ standard offers a run-time loading of a shared library. A module containing the required function is loaded into the computer memory by calling WinAPI functions. Run-time loading is useful for rarely used modules. Unlike compilation time linking, the run-time loaded modules do not need to be stored in computer memory all the application run-time. The modules can be loaded only if used and then removed from the computer memory.
 
-\subsection{Compilation of run-time loaded libraries}
+A disadvantage of run-time library loading is the amount of necessary declarations and function calls to be done, before the function is loaded.
+
+\subsection{Compilation of Run-time Loaded Libraries}
 
 
 A run-time loaded \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler needs to know which functions have to be exported. There are two ways for declaring this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} in Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen in Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell a compiler to export the function.
@@ -63,27 +62,37 @@ extern "C"{
 }
 \end{lstlisting}
 
-\subsection{Run-time loading process}
+The function \clist{PrimeTest} (Listing \ref{dllspec}) will be accessible from outside of the library.
+
+\subsection{Run-time Library Loading}
 
 \label{sec:runtimeloading}
 
-\begin{lstlisting}[label=WinAPI,caption={An application loading a .dll library at runtime.},escapeinside={@}{@}]
+Functions from run-time loaded libraries are accessed through function pointers. Therefore, a function pointer of a given type must be declared at the compilation time. The type of the function pointer denotes which input parameters are passed to the function and which variable type will be returned by the function. C/C++ language does not offer type definitions at the runtime, thus the type of the function pointer must be defined at the compilation time. The Listing \ref{runtime} includes a function type declaration at line \ref{lst:typedef}.
+
+Before the desired function from the external library can be accessed, the library module must be loaded into the RAM memory. The library is loaded by calling a \clist{LoadLibrary} function from WinAPI, besides, Qt library offers \clist{QLibrary} class which encapsulates platform-dependent function calls.
+
+After loading the library into the computer memory, a specific memory address of the accessed function must be obtained. Owing to the compilation time function export, the WinAPI or Qt library can get the exact address of the function. A \clist{GetProcAddress} function from WinAPI or \clist{QLibrary::resolve} function from Qt library can be used (line \ref{lst:getproc} on Listing \ref{runtime}).
+
+Then, after assigning the obtained address to the function pointer, the accessed function can be called at any time until unloading the library from the computer memory (lines \ref{lst:pointer1}, \ref{lst:pointer2} and \ref{lst:pointer3} on Listing \ref{runtime}).
+
+\begin{lstlisting}[label=runtime,caption={An application loading a .dll library at runtime.},escapeinside={@}{@}]
 #include <iostream>
 #include <windows.h>
 
-typedef bool PrimeTestFunction(int);
+@\label{lst:typedef}@typedef bool PrimeTestFunction(int);
 
 int main (){
 	HINSTANCE LoadedLibrary;
 	LoadedLibrary=LoadLibrary(TEXT("MathFuncs.dll"));
 	if (LoadedLibrary!=NULL){
 		FARPROC ProcessAdress;
-		ProcessAdress=GetProcAddress(LoadedLibrary,"PrimeTest");
-		PrimeTestFunction* _PrimeTestFunction=(PrimeTestFunction*)ProcessAdress;
+		@\label{lst:getproc}@ProcessAdress=GetProcAddress(LoadedLibrary,"PrimeTest");
+		@\label{lst:pointer1}@PrimeTestFunction* _PrimeTestFunction=(PrimeTestFunction*)ProcessAdress;
 		if(_PrimeTestFunction){
-			std::cout << "23 is prime number:" << _PrimeTestFunction(23) << std::endl;
+		@\label{lst:pointer2}@	std::cout << "23 is prime number:" << _PrimeTestFunction(23) << std::endl;
 		}
-		FreeLibrary(LoadedLibrary);
+		@\label{lst:pointer3}@FreeLibrary(LoadedLibrary);
 	}
 }
 \end{lstlisting}
