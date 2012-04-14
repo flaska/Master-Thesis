@@ -33,6 +33,7 @@
 \usepackage{amsmath}
 \usepackage[all]{hypcap}
 \usepackage{caption}
+\usepackage{pdfpages} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,7 +174,7 @@ escapechar=!,
 \newcommand{\nazevcz}{Softwarový nástroj pro manipulaci s daty z magnetické rezonance a jejich vizalizaci}
 \newcommand{\nazeven}{Development of a Software Instrument for MRI Data Manipulation and Visualization }     
 \newcommand{\autor}{Bc.~Jakub Flaška}
-\newcommand{\rok}{2011}
+\newcommand{\rok}{2012}
 \newcommand{\vedouci}{Ing.~Pavel Strachota} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -200,17 +201,23 @@ escapechar=!,
 			\begin{tabular}{rl}
 				Author 		& {\bf	\autor}			\\					% Autor
 				Supervisor 	& {\bf	\vedouci }		\\					% Školitel
-				Academic year		& {\bf	\rok }			\\					% Rok
+				Year		& {\bf	\rok }			\\					% Rok
 			\end{tabular}
 		}
 \end{center}
 
 
+%%%%%%%%%%%%%%%%%%%%%% OBSAH %%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\tableofcontents
+
+
 %\begin{comment}
 %%%%%%%%%%%%%%%%%%%%%% PROSTOR PRO ZADANI  %%%%%%%%%%%%%%%%%%%%%%
 \newpage
-\thispagestyle{empty} Sem vložit list s podepsaným zadáním od děkana, jakožto jediný oboustranný list.
+\thispagestyle{empty} 
 
+\includepdf[pages=-]{Text/IMG/zadani.pdf} 
 
 %%%%%%%%%%%%%%%%%%%%%% PROHLASENI %%%%%%%%%%%%%%%%%%%%%%
 \newpage
@@ -219,17 +226,31 @@ escapechar=!,
 ~
 \vfill % prázdné místo
 
-{\bf Prohlášení}
+{\bf Author's Statement}
 
 \vspace{0.5cm} % vertikální mezera
-Prohlašuji, že jsem svou bakalářskou práci vypracoval samostatně a použil jsem pouze literaturu uvedenou v přiloženém seznamu.
 
-Nemám závažný důvod proti užití tohoto školního díla ve smyslu \S60 Zákona č.121/2000 Sb. o právu autorském, o právech souvisejících s právem autorským a o změně některých zákonů (autorský zákon).
+Hereby, I certify that this diploma thesis is my own work. I have not assumed any of the texts, all the text are written by my person. 
 
+I am not against using this diploma thesis by Czech Technical University in any way described in ``Zakon autorsky'' about school projects.
 
-\vspace{5mm}V Praze dne ....................\hfill
+Noone except the author and Czech Technical University has a right to manipulate with the text - noone can copy the text or part of the text and use it in another work.
+
+I am not against redistributing the whole text - if the text will be distributet together with the initial page and its autorship will be clear.
+
+\vspace{10mm}
+
+Tímto prohlašuji, že tato diplomová práce je mým autorským dílem. Texty v práci nejsou převzaté, ale jsou psané autorem.
+
+Nemám závažný důvod proti použití tohoto díla Českým Vysokým Učením Technickým tak, jak to vyplívá z autorského zákona v textu o školním díle. 
+
+Kdokoliv mimo autora a České Vysoké Učení Technické pak nemá právo s textem manipulovat - zejména pak celý text, nebo část textu vydávat za autorské dílo někoho jiného.
+
+Umožnuji pak šíření kompletního textu této diplomové práce, pokud bude text šířen jako celek včetně úvodní strany a nebude pochybnost o jeho autorství. 
+
+\vspace{10mm}Praha, June 5, 2012\hfill
 	\begin{tabular}{c}
-	........................................\\ 
+	\includegraphics[width=50mm]{Text/IMG/podpis.jpg}\\ 
 	\autor
 	\end{tabular}
 
@@ -243,13 +264,16 @@ Nemám závažný důvod proti užití tohoto školního díla ve smyslu \S60 Z�
 ~
 \vfill % prázdné místo
 
-{\bf Acknowledgment}
+{\bf Acknowledgment / Poděkování}
 
 \vspace{5mm} % vertikální mezera
-I would really like to thank my supervisor Ing. Pavel Strachota for his outstanding help while creating this diploma thesis and my previous work.
+
+I would really like to thank my supervisor Ing. Pavel Strachota for his outstanding help while creating this diploma thesis. His suggestions greatly improved the text.
+
+Rád bych poděkoval svému školiteli Ing. Pavlu Strachotovi za vedení této diplomové práce. Jeho připomínky byly značně podnětné a výrazně přispěly ke zkvalitnění textu.
 
 \begin{flushright}
-\autor
+Author
 \end{flushright}
 
 
@@ -259,10 +283,6 @@ I would really like to thank my supervisor Ing. Pavel Strachota for his outstand
 \newpage
 \input{Text/00.Abstrakt.tex}
 \end{comment}
-
-%%%%%%%%%%%%%%%%%%%%%% OBSAH %%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\tableofcontents
 
 
 %%%%%%%%%%%%%%%%%%%%%%  TEXT PRÁCE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
