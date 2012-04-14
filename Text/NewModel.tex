@@ -1,12 +1,29 @@
-\chapter{Dicom-Presenter visual engine}
+\chapter{Dicom-Presenter Rendering Engine}
 \vspace{-10mm}
+Dicom-Presenter as firstly designed in work \cite{neskudla} was an application depending on cca eight external libraries. The libraries dependency complicated application compilation and deployment. All the libraries must be executable on a target machine.
 
-\red{
-Zde popsat aktualni praci na DP.\\
-Zarim jeste nemam rozmyslene poradi sekci.\\
-Ale chci popsat zejmena toto:\\
-Popsat objektovy model, tedy predstavit tridy: Widget, workspaceManager, Workspace, WorkspaceExplorer, ImageExplorer, Image. Proc mame tyto tridy, jak je to chytre navrzene, ze to kopiruje to, co vidi uzivatel. \\
-Vzajemnou spolupraci trid v objektovem modelu, pak lze nejlepe ukazat dvema pohledy:\\
-Jak funguje predavani dat pri otevreni snimku.\\
-Jak funguje predavani zprav o uzivatelskych akcich mezi tridami.\\
-}
+Therefore, a valuable task was to remove some of the library dependencies. Most of the deployment complications were related to OpenGL library. Besides OpenGL itself, GLEW, Cg toolkit and plib libraries were used to extend OpenGL functionality. All the libraries need to be hardware and software supported on the target machine\footnote{The OpenGL library requires GPU drivers supporting the library to be installed on the target machine. GLEW library require the GPU to support spatial textures (among others). Cg toolkit library requires the GPU to support pixel shader. Moreover, the Cg toolkit library requires a hardware-dependent configuration during the compilation time or at run time.}. Hence, removing OpenGL library with all three dependencies would contribute to application deployability.
+
+The OpenGL library was connected to nine of all twenty-six Dicom-Presenter modules. Global OpenGL function were called within the modules considering previous OpenGL function calls done in another modules. Therefore, removing the OpenGL library from the application is a significant intervetion to the existing source code. To understand the new non-OpenGL implementation, it is mandatory to be familiar with application object model.
+
+\section{Dicom-Presenter Object Model}
+
+Dicom-Presenter consists of twenty six modules, together making 5000 lines. Each module includes one class (rarely two classes). The classes can be divided into two groups: classes which represent some visible element (image, workspace, ...) and classes which maintain only abstract functionality.
+
+To understand the hierarchical arrangement of application classes, the following passages describes three views on the object model:
+
+\begin{itemize}
+\item Rendering the visual content. All the classes related to some visible element must be sequently called to paint their content to buffer container.
+\item Control events forwarding. Each captured pointing device event must be forwarded to the object to which it belongs.
+\item Image storing. A view on the object model related to the classes maintaining abstract functionalities can start with the actions attached to loading an image from hard disk.
+\end{itemize}
+
+\subsection{Image Opening in Dicom-Presenter}
+
+\subsection{Control Event Forwarding in Dicom-Presenter}
+
+\subsection{Graphic Output Rendering Process in Dicom-Presenter}
+\red{strucne, jak se predavaj zpravy}
+
+\section{Rendering Engine Implementation}
+\red{podrobne rozepsat, jake tridy byly pouzity a co delaji}
