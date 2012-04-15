@@ -19,7 +19,15 @@ To understand the hierarchical arrangement of application classes, the following
 \end{itemize}
 
 \subsection{Dicom-Presenter Object Model Description}
-As was said in \ref{dicom-presenter}, Dicom-Presenter application window consists of:  Workspace, Image Explorer, Workspace Explorer and Info Panel. The Workspace act as a main graphic output, it is used for viewing DICOM images. To ensure usability of Dicom-Presenter during presentations, several workspace sessions can be opened at the same time. Therefore, Workspace Explorer acts as a switch among opened workspaces\footnote{The process is similar as workspaces switching in GNOME/KDE.}. Since an image can be opened at a number of workspaces at once, Image Explorer is used to manage opened images. Info Panel holds information about the opened image or the opened workspace.
+As was said in \ref{dicom-presenter}, Dicom-Presenter application window consists of following elements:  Workspace, Image Explorer, Workspace Explorer and Info Panel. The Workspace act as a main graphic output, it is used for viewing DICOM images. To ensure usability of Dicom-Presenter during presentations, several workspace sessions can be opened at the same time. Therefore, Workspace Explorer acts as a switch among opened workspaces\footnote{The process is similar as workspaces switching in GNOME/KDE.}. Since an image can be opened at a number of workspaces at once, Image Explorer is used to manage opened images. Info Panel holds information about the opened image or the opened workspace.
+
+\begin{figure}
+	\caption{Dicom-Presenter classes representing a visible element.}
+	\begin{center}
+	\includegraphics[width=\textwidth]{Text/IMG/dicom-presenter-gui.png}
+	\end{center}
+	\label{paint}
+\end{figure}
 
 \subsection{Graphic Output Rendering in Dicom-Presenter}
 The mentioned control elements of Dicom-Presenter: Image Explorer and Workspace Explorer are rendered manually. They are not based on existing Qt library class. Thus, if a graphic output of Dicom-Presenter is rendered all classes representing some graphic element must be called. 
@@ -28,15 +36,62 @@ An impulse to render the graphic window can be called at any time from any part 
 
 The \clist{paint} function of main window object (\clist{CWidget}) then calls paint functions of all elements present in the window: an active Workspace, Workspace Explorer and Image Explorer. All the elements contain smaller subelements. The Workspace calls paint functions of all images present appearing on the Workspace, Workspace Explorer calls paint functions of all images containing workspace previews and finally the Image Explorer calls paint functions of all images operated by it. A schema of the process can be seen on Figure \ref{paint}.
 
+\begin{lstlisting}[label=cwidgetpaint,caption={Sequentionally rendering each visible element.},escapeinside={@}{@}]
+void CWidget::paint() {
+	...
+	CWorkspaceManager::GetInstance()->GetActiveWorkspace()->paint(...);
+	CImageExplorer::GetInstance()->paint(...);
+	CWorkspaceExplorer::GetInstance()->paint(...);
+	...
+}
+void CWorkspace::paint(...) {
+	...
+	while (images.hasNext()) {
+	  ...
+		cimage->paint(...);
+		...
+	}
+	...
+}
+void CImageExplorer::paint(...) {
+	...
+	while (images.hasNext()) {
+		...
+		cimage->paint(...);
+		...
+	}
+	...
+}
+void CWorkspaceExplorer::paint(...) {
+	...
+	while (workspaces.hasNext()) {
+		...
+		snap.paint(painter);
+		...
+	}
+	...
+}
+\end{lstlisting}
+
 \begin{figure}
-	\begin{center}
-	\includegraphics[width=130mm]{Text/IMG/paint.png}
-	\end{center}
 	\caption{A hierarchy of classes presenting paintable elements.}
+	\begin{center}
+	\includegraphics[width=\textwidth]{Text/IMG/paint.png}
+	\end{center}
 	\label{paint}
 \end{figure}
 
 \subsection{Control Event Forwarding in Dicom-Presenter}
+
+Similarly as the paint directions are distributed to the application classes, pointing device events are distrubuted through the object model. As was said in previous section, all the visible elements of Dicom-Presenter visual output are rendered manually. Therefore, if the user performs some pointing device action on some visible element (wheel-scroll, mouse-click, etc.), the event must be manually forwarded to the related object.
+
+Pointing device events in Dicom-Presenter can be divided into two groups: events starting an action and events related to a previously started action. Mouse click and mouse double click start an action, mouse move and wheel scroll are related to previous event. If a click or double-click event is captured, then the process of finding the related object must be started. If a mouse move or wheel scroll are received, the event is instantly forwarded to the last used object.
+
+The process of finding the object related to click or double-click event is similar to the painting process. The main widget receives a click event together with the position of the mouse pointer in coordinates related to the widget. Each of all three parent elements on the widget (Workspace, Workspace Explorer and Image Explorer) have saved their position in the main widget. Therefore, the main widget asks all three elements if the mouse pointer position corresponds with their position. The element giving positive response receives the event.
+
+If the active Workspace receives the event, then it must be decided which of the opened images is related to the action. Thus, all displayed images are iteratively asked whether their location cover the pointer position. Then, the event is forwarded to the prospective image. The image object performs required task such as move, zoom or brightness change.
+
+Similarly, if the mouse pointer was not located on the active Workspace but on the Workspace Explorer or the Image Explorer, then, the event is redirected to the appropriate object. Afterwards, the object iterates through its owned objects and finds the one related to the event received (workspace preview or image preview). The desired action can be performed.
 
 \subsection{Image Opening in Dicom-Presenter}
 
