@@ -97,9 +97,6 @@ The schema is different from usual GUI programming techniques where some GUI fra
 
 \subsection{Image Opening in Dicom-Presenter}
 
-
-
-
+Another view to application object model can be described by following actions done, when opening an image. When a user gives a direction to open a DICOM study, at first the Image Explorer is called. Image Explorer creates a new object of Image type. The new Image object calls a 3DTextureManager object to create a new object representing a three-dimensional texture (dicom3DTexture). Then an object of DCMTK library is created to load the data from the hard disk.
 
 \section{Rendering Engine Implementation}
-\red{podrobne rozepsat, jake tridy byly pouzity a co delaji}
