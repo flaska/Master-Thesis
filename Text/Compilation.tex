@@ -7,11 +7,11 @@ Dicom-Presenter is a large application. It consists of 5.000 source-code lines a
 
 \label{library}
 
-A C++ application usually isn't compiled all in one step. It is divided into smaller logic parts usually called libraries. These libraries are compiled individually and then they are linked into the executable at the end. The benefit is that if the source code of the application is changed it is not needed to recompile the whole application. While, only the library including the change is recompiled. 
+A C++ application usually is not compiled all in one step. It is divided into smaller logic parts usually called libraries. These libraries are compiled individually and then they are linked into the executable at the end. The benefit is that if the source code of the application is changed it is not needed to recompile the whole application. While, only the library including the change is recompiled. 
 
-There are two ways of linking a library into a final executable: static linking and dymanic linking.
+There are two ways of linking a library into a final executable: static linking and dynamic linking.
 \begin{itemize}
-\item Static linking of a library means that all function of the library are copied into the executable. Firstly, a library's source code is compiled into a .lib file and then it is inserted as a whole into the executable file.
+\item Static linking of a library means that all functions of the library are copied into the executable. Firstly, a library's source code is compiled into a .lib file and then it is inserted as a whole into the executable file.
 \item Dynamic linking of a library means that only the library's name and its function names are inserted into the executable. An executable code of the linked library is distributed together with the executable file in a standalone .dll file. When the application is ran the operating system has to load library's executable code into the application's virtual memory. While compiling a dynamic-link library the compiler produces also a .lib file. The executable is linked against this .lib file but the lib file contains only instructions to load machine code from .dll files.
 \end{itemize}
 
@@ -25,7 +25,7 @@ A concept of dynamic-link libraries shows its potential when applied on librarie
 
 \begin{itemize}
 \item If a dynamic-link library is used by multiple applications it is enough to be loaded once in computer memory. Multiple applications can access library functions at the same time.
-\item If a library needs to be updated, there's no need to recompile the applications using library as far as library's function declarations aren't changed.
+\item If a library needs to be updated, there's no need to recompile the applications using library as far as library's function declarations are not changed.
 \end{itemize}
 
 
@@ -102,13 +102,13 @@ int main (){
 \section{C++ Standard Library in MS Visual Studio}
 
 \label{standardlibrary}
-C++ Standard Library\footnote{C++ Standard library is a C++ version of C Run-time library. Unfortunately both names are often confused.} is used in almost all C++ application. It provides communication with the operation system. It offers manipulation with standard input and output (stdio.h), memory allocation (stdlib.h), math functions (math.h), time related funtions (time.h), etc. If the library is used in application its header files are included in source code and the library is linked into executable file.
+C++ Standard Library\footnote{C++ Standard library is a C++ version of C Run-time library. Unfortunately both names are often confused.} is used in almost all C++ application. It provides communication with the operation system. It offers manipulation with standard input and output (stdio.h), memory allocation (stdlib.h), math functions (math.h), time related functions (time.h), etc. If the library is used in application its header files are included in source code and the library is linked into executable file.
 
 There are four different implementations of C++ Standard library in Microsoft Visual Studio compiler. The rule is that only one type of implementation can be linked into executable file. The problem is if multiple external libraries are used in one project. Every external library is compiled with use of some kind of Standard C++ library implementation. If we try to link an application against external libraries using different implementations of C++ Standard library we receive a linker error 2005 - already defined. This error arises because multiple versions of C++ Standard library are linked at the same time but they define the same functions.
 
-Therefore, it is mandatory to distinguish implementations of C++ Standard library. All external libraries as well as all inner libraries has to be linked against the same version of C++ Standard library! Standard C++ library implementations differ according to use of dynamic or static linking and according to debug or release building. So, all used libraries has to use static or dynamic linking and all of them has to be builded in debug or release mode. Then, the final application can be linked. Therefore, if we use external libraries we often have to rebuild them to gain proper version of the library using required version of C++ Runtime library.
+Therefore, it is mandatory to distinguish implementations of C++ Standard library. All external libraries as well as all inner libraries have to be linked against the same version of C++ Standard library! Standard C++ library implementations differ according to use of dynamic or static linking and according to debug or release building. So, all used libraries have to use static or dynamic linking and all of them have to be built in debug or release mode. Then, the final application can be linked. Therefore, if we use external libraries we often have to rebuild them to gain proper version of the library using required version of C++ Runtime library.
 
-In addition to the problem explanation the Table \ref{standardlibrarytable} is included. It should help to resolve the purpose of problem when receiving linker eror 2005. 
+In addition to the problem explanation the Table \ref{standardlibrarytable} is included. It should help to resolve the purpose of problem when receiving linker error 2005. 
 
 \begin{table}
   \caption{A list of four build configurations using different implementation of C++ Standard Library.}
@@ -141,9 +141,9 @@ As mentioned before, C++ projects are usually compiled in parts and then linked 
 \item Description of custom build steps.
 \end{itemize}
 
-Microsoft Visual Studio uses its own format of build description accessible from its GUI. There is GNU Automake system for build decription on Unix systems. Since Dicom-Presenter was supposed to be a multi-platform application there was a need to find some system of build description applicable on both Windows and Unix systems. A reasonable solution is a use of CMake, because offers a platform-independent build description. CMake script describes a build tree as well as project dependencies. Then a CMake tool offers generating Visual Studio project for Windows OS or GNU automake files for Unix OS.
+Microsoft Visual Studio uses its own format of build description accessible from its GUI. There is GNU Automake system for build description on Unix systems. Since Dicom-Presenter was supposed to be a multi-platform application there was a need to find some system of build description applicable on both Windows and Unix systems. A reasonable solution is a use of CMake, because offers a platform-independent build description. CMake script describes a build tree as well as project dependencies. Then a CMake tool offers generating Visual Studio project for Windows OS or GNU automake files for Unix OS.
 
-CMake is often use in OpenSource projects. It offers easy portability of an application between Win32 and Unix based systems. Both plib and dcmtk libraries used in Dicom-Presenter use CMake for build scripts generation. According to Section \ref{standardlibrary} both libraries needs to be compiled before compiling Dicom-Presenter.
+CMake is often use in OpenSource projects. It offers easy portability of an application between Win32 and Unix based systems. Both plib and dcmtk libraries used in Dicom-Presenter use CMake for build scripts generation. According to Section \ref{standardlibrary} both libraries need to be compiled before compiling Dicom-Presenter.
 
 \subsection{CMake syntax}
 
@@ -193,7 +193,7 @@ breakatwhitespace=false,        % sets if automatic breaks should only happen at
 escapechar=!,
 }
 
-\begin{lstlisting}[caption={Skript systému Cmake pro překlad programu Dicom Presenter}, language=make, morekeywords={cmake_minimum_required, project, set, include_directories, link_directories, add_custom_command, OUTPUT, COMMAND, add_library, target_link_libraries, ADD_EXECUTABLE},keywordstyle=\small\color{LightGreen}]
+\begin{lstlisting}[caption={CMake script for application compilation.}, language=make, morekeywords={cmake_minimum_required, project, set, include_directories, link_directories, add_custom_command, OUTPUT, COMMAND, add_library, target_link_libraries, ADD_EXECUTABLE},keywordstyle=\small\color{LightGreen}]
 cmake_minimum_required(VERSION 2.8)
 project (dicom-presenter)
 

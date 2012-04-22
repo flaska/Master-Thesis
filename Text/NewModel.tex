@@ -2,24 +2,24 @@
 \vspace{-10mm}
 Dicom-Presenter as firstly designed in work \cite{neskudla} was an application depending on cca eight external libraries. The libraries dependency complicated application compilation and deployment. All the libraries must be executable on a target machine.
 
-Therefore, a valuable task was to remove some of the library dependencies. Most of the deployment complications were related to OpenGL library. Besides OpenGL itself, GLEW, Cg toolkit and plib libraries were used to extend OpenGL functionality. All the libraries need to be hardware and software supported on the target machine\footnote{The OpenGL library requires GPU drivers supporting the library to be installed on the target machine. GLEW library require the GPU to support spatial textures (among others). Cg toolkit library requires the GPU to support pixel shader. Moreover, the Cg toolkit library requires a hardware-dependent configuration during the compilation time or at run time.}. Hence, removing OpenGL library with all three dependencies would contribute to application deployability.
+Therefore, a valuable task was to remove some of the library dependencies. Most of the deployment complications were related to OpenGL library. Next to OpenGL itself, GLEW, Cg toolkit and plib libraries were used to extend OpenGL functionality. All the libraries need to be hardware and software supported on the target machine\footnote{The OpenGL library requires GPU drivers supporting the library to be installed on the target machine. GLEW library require the GPU to support spatial textures (among others). Cg toolkit library requires the GPU to support pixel shader. Moreover, the Cg toolkit library requires a hardware-dependent configuration during the compilation time or at run time.}. Hence, removing OpenGL library with all three dependencies would contribute to application deployability.
 
-The OpenGL library was connected to nine of all twenty-six Dicom-Presenter modules. Global OpenGL function were called within the modules considering previous OpenGL function calls done in another modules. Therefore, removing the OpenGL library from the application is a significant intervetion to the existing source code. To understand the new non-OpenGL implementation, it is mandatory to be familiar with application object model.
+The OpenGL library was connected to nine of all twenty-six Dicom-Presenter modules. Global OpenGL function were called within the modules considering previous OpenGL function calls done in another modules. Therefore, removing the OpenGL library from the application is a significant intervention to the existing source code. To understand the new non-OpenGL implementation, it is mandatory to be familiar with application object model.
 
 \section{Dicom-Presenter Object Model}
 
 Dicom-Presenter consists of twenty six modules, together making 5000 lines. Each module includes one class (rarely two classes). The classes can be divided into two groups: classes which represent some visible element (image, workspace, ...) and classes which maintain only abstract functionality.
 
-To understand the hierarchical arrangement of application classes, the following passages describes three views on the object model:
+To understand the hierarchical arrangement of application classes, the following passages describe three views on the object model:
 
 \begin{itemize}
-\item Rendering the visual content. All the classes related to some visible element must be sequently called to paint their content to buffer container.
+\item Rendering the visual content. All the classes related to some visible element must be sequentially called to paint their content to buffer container.
 \item Control events forwarding. Each captured pointing device event must be forwarded to the object to which it belongs.
 \item Image storing. A view on the object model related to the classes maintaining abstract functionalities can start with the actions attached to loading an image from hard disk.
 \end{itemize}
 
 \subsection{Dicom-Presenter Object Model Description}
-As was said in \ref{dicom-presenter}, Dicom-Presenter application window consists of following elements:  Workspace, Image Explorer, Workspace Explorer and Info Panel. The Workspace act as a main graphic output, it is used for viewing DICOM images. To ensure usability of Dicom-Presenter during presentations, several workspace sessions can be opened at the same time. Therefore, Workspace Explorer acts as a switch among opened workspaces\footnote{The process is similar as workspaces switching in GNOME/KDE.}. Since an image can be opened at a number of workspaces at once, Image Explorer is used to manage opened images. Info Panel holds information about the opened image or the opened workspace.
+As was said in \ref{dicom-presenter}, Dicom-Presenter application window consists of following elements:  Workspace, Image Explorer, Workspace Explorer and Info Panel. The Workspace acts as a main graphic output, it is used for viewing DICOM images. To ensure usability of Dicom-Presenter during presentations, several workspace sessions can be opened at the same time. Therefore, Workspace Explorer acts as a switch among opened workspaces\footnote{The process is similar as workspaces switching in GNOME/KDE.}. Due to the fact that an image can be opened at a number of workspaces at once, Image Explorer is used to manage opened images. Info Panel holds information about the opened image or the opened workspace.
 
 \begin{figure}
 	\caption{Dicom-Presenter classes representing a visible element.}
@@ -83,7 +83,7 @@ void CWorkspaceExplorer::paint(...) {
 
 \subsection{Control Event Forwarding in Dicom-Presenter}
 
-Similarly as the paint directions are distributed to the application classes, pointing device events are distrubuted through the object model. As was said in previous section, all the visible elements of Dicom-Presenter visual output are rendered manually. Therefore, if the user performs some pointing device action on some visible element (wheel-scroll, mouse-click, etc.), the event must be manually forwarded to the related object.
+Similarly as the paint directions are distributed to the application classes, pointing device events are distributed through the object model. As was said in previous section, all the visible elements of Dicom-Presenter visual output are rendered manually. Therefore, if the user performs some pointing device action on some visible element (wheel-scroll, mouse-click, etc.), the event must be manually forwarded to the related object.
 
 Pointing device events in Dicom-Presenter can be divided into two groups: events starting an action and events related to a previously started action. Mouse click and mouse double click start an action, mouse move and wheel scroll are related to previous event. If a click or double-click event is captured, then the process of finding the related object must be started. If a mouse move or wheel scroll are received, the event is instantly forwarded to the last used object.
 
@@ -93,7 +93,7 @@ If the active Workspace receives the event, then it must be decided which of the
 
 Similarly, if the mouse pointer was not located on the active Workspace but on the Workspace Explorer or the Image Explorer, then, the event is redirected to the appropriate object. Afterwards, the object iterates through its owned objects and finds the one related to the event received (workspace preview or image preview). The desired action can be performed.
 
-The schema is different from usual GUI programming techniques where some GUI framework would be used. The framework solve event redirecting itself, as seen in Section \ref{guiframeworks}.
+The schema is different from usual GUI programming techniques where some GUI framework would be used. The framework solves event redirecting itself, as seen in Section \ref{guiframeworks}.
 
 \subsection{Image Opening in Dicom-Presenter}
 

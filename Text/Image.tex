@@ -7,13 +7,13 @@ Before rewriting all image processing classes without OpenGL it was a need to st
 
 \section{Image storing}
 \label{rawdata}
-There are two different libraries used for image manipulation in Dicom-Presenter. DCMTK library is used for loading images from hard disk, while Qt library (formely OpenGL) is used for displaying images on computer screen. DCMTK library must be used since it supports loading files in DICOM format, besides some application framework must be used for image displaying. DCMTK library offers loading compressed image files and saving them uncompressed into RAM memory. To be able to display these raw data properly by Qt library, it is mandatory to understand the way image data are represented in computer. 
+There are two different libraries used for image manipulation in Dicom-Presenter. DCMTK library is used for loading images from hard disk, while Qt library (formerly OpenGL) is used for displaying images on computer screen. DCMTK library must be used since it supports loading files in DICOM format, moreover some application framework must be used for image displaying. DCMTK library offers loading compressed image files and saving them uncompressed into RAM memory. To be able to display these raw data properly by Qt library, it is mandatory to understand the way image data are represented in computer. 
 
 A color image consisting of $m \cdot n$ points (pixels) can be described by $m \cdot n$ number triads. The triads would be coordinates in RGB or HSV color space \footnote{Colors which can be displayed can be fully described by three values. This fact is based on human eye anatomy and leads to construction of coordinate systems describing each displayable color. Coordinates of RGB color space are red, blue, green color while hue, saturation, value are coordinates in HSV color space.}. Data in a computer are stored in elementary units - bytes, which can hold 256 different values. Each byte consists of eight unitary units - bits ($2^8 = 256 $). If considered that one byte can include color information of only one pixel, then only eight-bit multiples can be used for a pixel color storage: 8 bits, 16 bits, 24 bits, etc. In case of 24 bit color depth, three bytes are used for a pixel color storage - each byte for each color. If 8 bits depth or 16 bits depth is used, in both cases the bit numbers are not divisible by three, so there are several ways of how to distribute bits among colors.
  
-Qt library uses three diferent formats of 16 bit color information storage. The formats differ by number of bits distributed to each color and are described by triads of numbers: 5-6-5, 5-5-5, 4-4-4. The first format uses 5 bits for red color, 6 bits for green color and 5 bits for blue color. The numbers of bits for each color are uneven but no redundant bits are present. Both 5-5-5 and 4-4-4 formats include redundant bits for each image pixel.
+Qt library uses three different formats of 16 bit color information storage. The formats differ by number of bits distributed to each color and are described by triads of numbers: 5-6-5, 5-5-5, 4-4-4. The first format uses 5 bits for red color, 6 bits for green color and 5 bits for blue color. The numbers of bits for each color are uneven but no redundant bits are present. Both 5-5-5 and 4-4-4 formats include redundant bits for each image pixel.
 
-Qt library allows displaying images which are actually saved in computer memory as an array of bytes in some of supported formats (such as described above). Besides color depth formats, image storage can differ by number of bytes used for storing each image line. If an image has $m \cdot n$ pixels and two bytes are used per pixel (f.e. 16 bit 5-5-5), there is no rule that $m \cdot n \cdot 2$ bytes will be used. A computer memory in x86 architecture reads its data in elements called words usually consisting of 4 bytes for x86 architecture and 8 bytes for 64-bit architecture. Therefore, image data are in computer memory often aligned that each image line starts at a beginning of some 4-byte or 8-byte word. For instance, if we consider an image of $100 \cdot 100$ pixels saved with 8 bit pixel depth on 64-bit architecture, each line consisting of $100$ pixels would be saved on $128$ or bytes.
+Qt library allows displaying images which are actually saved in computer memory as an array of bytes in some of supported formats (such as described above). Next to color depth formats, image storage can differ by number of bytes used for storing each image line. If an image has $m \cdot n$ pixels and two bytes are used per pixel (f.e. 16 bit 5-5-5), there is no rule that $m \cdot n \cdot 2$ bytes will be used. A computer memory in x86 architecture reads its data in elements called words usually consisting of 4 bytes for x86 architecture and 8 bytes for 64-bit architecture. Therefore, image data are in computer memory often aligned that each image line starts at a beginning of some 4-byte or 8-byte word. For instance, if we consider an image of $100 \cdot 100$ pixels saved with 8 bit pixel depth on 64-bit architecture, each line consisting of $100$ pixels would be saved on $128$ or bytes.
 
 In conclusion, if a picture is reconstructed from uncompressed raw data saved in computer memory, essential indications are which color storage format is used for each pixel and which bit align is used for each pixel-line. Those two information are enough for correct image reconstruction.
 
@@ -26,7 +26,7 @@ DCMTK library offers a function which saves a copy of loaded image data into a n
 const unsigned long frame = 0,
 const int planar = 0 )}
 
-The first parameter denotes a required data alignment of each pixel, the other two parameters describe the orientation of the image slice inside the threedimensional texture. The function returns a pointer to the part of memory where image data will be stored.
+The first parameter denotes a required data alignment of each pixel, the other two parameters describe the orientation of the image slice inside the three-dimensional texture. The function returns a pointer to the part of memory where image data will be stored.
 
 Besides, Qt library offers a construction of its object depending on image data already stored in computer memory. The object receives a pointer to image data through its constructor. If the image data meet prospective requirements, the object can be called to draw the image at any time, as long as the data are still on the place in computer memory.
 
@@ -34,9 +34,9 @@ The constructor declaration is:
 
 \clist{QImage::QImage(uchar* data, int width, int height, int bytesPerLine, Format format)}
 
-The first parameter is a pointer to image data already saved in computer memory. The data are declared as \clist{unsigned char} which is a C++ equivallent of a \clist{byte} type. The last parameter \clist{format} describes a pixel alignment. It describes a number of bytes used for each pixel and a particular way of color information storage. The \clist{bytesPerLine} parameter describes a image line alignment of pixel data.
+The first parameter is a pointer to image data already saved in computer memory. The data are declared as \clist{unsigned char} which is a C++ equivalent of a \clist{byte} type. The last parameter \clist{format} describes a pixel alignment. It describes a number of bytes used for each pixel and a particular way of color information storage. The \clist{bytesPerLine} parameter describes a image line alignment of pixel data.
 
-Qt library itself cannot determine the exact values of above described parameters. Therefore, the parameter values must be known before. A misleading value of parameter describing pixel color storage will lead to false color interpretation of the image. Besides, incorrect parameter describing image line alignment can avert image loading or can cause a program failure due to unauthorized memory access.  
+Qt library itself cannot determine the exact values of above described parameters. Therefore, the parameter values must be known before. A misleading value of parameter describing pixel color storage will lead to false color interpretation of the image. Furthermore, incorrect parameter describing image line alignment can avert image loading or can cause a program failure due to unauthorized memory access.  
 
 
 \begin{figure}
@@ -52,7 +52,7 @@ Qt library itself cannot determine the exact values of above described parameter
 
 One of important tasks to reimplement in Dicom-Presenter was an ability to adjust image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with various imaging properties. The ability to increase image brightness and contrast is mandatory to ensure sufficient display quality. Too dark or too gray images need to be brightened or need to increase contrast to ensure better observation of physiological findings. A brightness and contrast change is among DICOM users called ``windowing''.
 
-For further needs of this text brightness and contrast needs to be defined. 
+For further needs of this text brightness and contrast need to be defined. 
 
 A grayscale image can be considered as a matrix of numbers: 
 
@@ -103,7 +103,7 @@ A disadvantage of both ways is that some image information is lost. Let's consid
 
 Qt library doesn't offer its own functions for elementary pixel manipulations such as change of brightness and contrast. These operations (described in Section \ref{brightnesscontrast}) must be done in application source code for each image pixel.
 
-A change of brightness or contrast of an image of $m \cdot n$ pixels will be done in $m \cdot n$ steps. In each step a color of the pixel must be obtained, new color value will be calculated and the value will be saved into the picture. Qt library offers two ways to perform the task: pixel manupulation functions or direct memory access.
+A change of brightness or contrast of an image of $m \cdot n$ pixels will be done in $m \cdot n$ steps. In each step a color of the pixel must be obtained, new color value will be calculated and the value will be saved into the picture. Qt library offers two ways to perform the task: pixel manipulation functions or direct memory access.
 
 If preimplemented Qt pixel manipulation functions are used, the source code will be following:
 
@@ -120,7 +120,7 @@ for (int y=0; y<height; y++) {
 
 Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color information of a pixel. The code on line \ref{lst:operation} performs a color manipulation. Function \clist{void QImage::setPixel(int x,int y,QRgb rgb)} is used to save the color information back to the picture. Due to multi-thread programming support the \clist{QImage::setPixel} function offers low performance. Within each function call Qt library must attach and deattach a process to shared memory segment where the image data are stored. These steps are performance expensive.
 
-Nevertheless, Qt library offers a high performance option to change image pixel data. Image data are modified directly inside the computer memory without a function call from QImage class. A function from QImage class is called just to retreive a pointer to memory segment containing image data. The code will be following:
+Nevertheless, Qt library offers a high performance option to change image pixel data. Image data are modified directly inside the computer memory without a function call from QImage class. A function from QImage class is called just to retrieve a pointer to memory segment containing image data. The code will be following:
 
 \begin{lstlisting}[label=qtcontrast,caption={Image enhancement operations performed by direct access into computer memory.},escapeinside={@}{@}]
 QImage image(...);
@@ -132,7 +132,7 @@ for (int y=0; y<height; y++) {
 }
 \end{lstlisting}
 
-Function \clist{QImage::scanLine(int y)} returns a pointer to a segment of memory where is saved \clist{y}-th line of the image. The \clist{QImage::scanLine(int y)} functions returns a pointer to \clist{unsigned char} array (byte array). The conversion to \clist{QRgb} array together with using Qt functions for changing pixel data (line \ref{lst:qrgb}) will remove necessary byte conversions related to pixel data alignment. If working with the \clist{unsigned char} array, data alignment rules must be respected. The for-cycle browsing through each image line (line \ref{lst:for}) would be ranged to \clist{2*width}, which is actually the real size of an image line in computer memory (expressed in bytes at 16-bit color depth).
+Function \clist{QImage::scanLine(int y)} returns a pointer to a segment of memory where is saved \clist{y}-th line of the image. The \clist{QImage::scanLine(int y)} function returns a pointer to \clist{unsigned char} array (byte array). The conversion to \clist{QRgb} array together with using Qt functions for changing pixel data (line \ref{lst:qrgb}) will remove necessary byte conversions related to pixel data alignment. If working with the \clist{unsigned char} array, data alignment rules must be respected. The for-cycle browsing through each image line (line \ref{lst:for}) would be ranged to \clist{2*width}, which is actually the real size of an image line in computer memory (expressed in bytes at 16-bit color depth).
 
 
 \section{Image rendering}
@@ -140,12 +140,12 @@ Function \clist{QImage::scanLine(int y)} returns a pointer to a segment of memor
 Qt library offers several ways how to create and render graphic scene composing of existing images stored on hard disk. The library includes three different classes which can hold bitmap data: QImage, QPixmap, QPicture. All the classes can act as a scene to be painted into as well as can be a pattern to be painted. Differences among these classes are:
 
 \begin{itemize}
-\item QImage class is optimized for reading and writing images from/into a hard disk. Besides, it is optimised for direct pixel access and manipulation.
+\item QImage class is optimized for reading and writing images from/into a hard disk and for direct pixel access and manipulation.
 \item QPixmap class is optimized for on-screen rendering.
 \item QPicture class can record a history of received painting requests and replay them.
 \end{itemize}
 
-Therefore, among other possible ways, the most reasonable solution for rendering existing images from hardisk is:
+Therefore, among other possible ways, the most reasonable solution for rendering existing images from hard
 
 \begin{enumerate}
   \item Save and hold image data in computer memory with QImage objects.
@@ -156,7 +156,7 @@ Therefore, among other possible ways, the most reasonable solution for rendering
 
 To paint any object of the mentioned classes inside another object of the classes, Qt library offers a QPainter class. A process of drawing an existing image into a QPixmap scene can be found on Listing \ref{painting}.
 
-\begin{lstlisting}[label=painting,caption={A process of assebling user's desktop from existing images and rendering it to computer screen.},escapeinside={@}{@}]
+\begin{lstlisting}[label=painting,caption={A process of assembling user's desktop from existing images and rendering it to computer screen.},escapeinside={@}{@}]
 @\label{lst:qimage}@QImage* image = new QImage(data,width, height,align);
 @\label{lst:qpixmap}@QPixmap* pixmap = new QPixmap(Width, Height);
 @\label{lst:qpainter}@QPainter* painter = new QPainter();

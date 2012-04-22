@@ -1,7 +1,7 @@
 \chapter{Graphic User Interface Programming}
 \vspace{-10mm}
 
-A Graphic User Interface (GUI) is a name for a graphic output of an application used for controlling the application flow. An application's control elements layout together with the application's workflow have to be described in the source code. Each operation system offers its own library for control elements creation. Creating an application with use of this OS related library is quite complicated. Applications are controled inside theirs ``main loop''. Main loop is technicaly a while-loop running constantly and listening for OS messages. Then, inside the loop is decided which function has to be called. Programming of the main loop is too complicated. Besides, when OS related library is used all control elements has to be declared in several steps giving several parameters.
+A Graphic User Interface (GUI) is a name for a graphic output of an application used for controlling the application flow. An application's control elements layout together with the application's workflow has to be described in the source code. Each operation system offers its own library for control elements creation. Creating an application with use of this OS related library is quite complicated. Applications are controlled inside theirs ``main loop''. Main loop is technically a while-loop running constantly and listening for OS messages. Then, inside the loop is decided which function has to be called. Programming of the main loop is too complicated. Besides, when OS related library is used, all control elements have to be declared in several steps giving several parameters.
 
 Therefore, ``application framework'' libraries arise. Frameworks are libraries which allow to describe user interface easily in fewer steps. Usually, there is no need for describing the application loop and control elements are created on significantly less source code lines.
 
@@ -21,7 +21,7 @@ Most common parts of Windows API are:
 
 Windows API in C++ is used as an ordinary library. It has to be included and linked, then it is possible to call certain functions in program code.
 
-There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{main} function is replaced by \clist{WinMain} function (line \ref{lst:WinMain}). Important part of \clist{WinMain} function is a program loop (line \ref{lst:ProgramLoop}). Windows applications usually run continuously and wait for user input. This is done by infinite program loop where we get system messages including user input. Program behaviour according to user input is here defined in function WndProc (line \ref{lst:WndProc}). There is a condition controller which decides what part of program will be executed.
+There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{main} function is replaced by \clist{WinMain} function (line \ref{lst:WinMain}). Important part of \clist{WinMain} function is a program loop (line \ref{lst:ProgramLoop}). Windows applications usually run continuously and wait for user input. This is done by infinite program loop where we get system messages including user input. Program behavior according to user input is here defined in function WndProc (line \ref{lst:WndProc}). There is a condition controller which decides what part of program will be executed.
 
 \begin{lstlisting}[label=WinAPI,caption={An example of a simple application using Windows API for GUI rendering.},escapeinside={@}{@}]
 #include <windows.h>
