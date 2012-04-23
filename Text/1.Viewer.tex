@@ -48,7 +48,7 @@ All mentioned DICOM viewers do have very similar appearance. A program GUI is di
 		&
 			\includegraphics[width=0.5\textwidth,height=0.375\textwidth]{Text/IMG/01_UniPACS.jpg}
 		\\
-			OsiriX~\citesec{osirix} & UniPACS~\citesec{unipacs}
+			OsiriX~\citesec{osirix} & UniPACS~\cite{idoimaging}
 		\\
 		\end{tabular}
 \end{table}%
@@ -58,14 +58,14 @@ All mentioned DICOM viewers do have very similar appearance. A program GUI is di
 
 \section{Application Requirements}
 \label{requirements}
-The IKEM specialists asked for a typical DICOM images viewer with few more specific features which they missed in freeware programs. A typical DICOM viewer allows opening .dcm files and displaing them. .dcm file in this case is a jpeg image equipped with special header including patient's information. MRI images are three-dimensional, thus user has to be able to select, which slice to be displayed. Some DICOM viewers offer a multi-planar image reconstruction. Other offered functions may vary.
+The IKEM specialists asked for a typical DICOM images viewer with few more specific features which they missed in freeware programs. A typical DICOM viewer allows opening .dcm files and displaing them. In this case a .dcm file is a jpeg image equipped with a special header, where patient's information is included. MRI images are three-dimensional, thus user has to be able to select, which slice to be displayed. Some DICOM viewers offer a multi-planar image reconstruction. Other offered functions may vary.
 
-There have been two specific requirements on application functionality by IKEM specialists. These were not available in freeware DICOM applications. The most important function was the possibility to open several images at once and display them on one screen. The user should be allowed to arrange images on screen to any possible layout he/she prefers. This functionality allows physicians to see two or more different MRI images on screen so they can easily determine pathological differences among observed organs. It is useful for studying, or teaching.
+There have been two specific requirements towards application functionality requested from IKEM specialists. These were not available in freeware DICOM applications. The most important function was the possibility to open several images at once and display them on one screen. The user should be allowed to arrange images on screen to any possible layout he/she prefers. This functionality allows physicians to see two or more different MRI images on screen, so they can easily determine pathological changes of organ observed. It is useful for studying, or for teaching.
 
-There have been also requirements that the application should be able to record user's manipulation with images as a video. Then physician can prepare his presentation of images at home and then play the video to colleagues.
+There have been also requirements to record user's manipulation with images as a video. Then physician can prepare his presentation of images at home and then play the video to colleagues.
 
 \section{Implementation}
-After summarizing all the application requirements given by IKEM it was needed to choose proper technologies for application implementation. The aim was to develop a GUI application capable to open and display images, there are several ways to go, so it was the place for a discussion. 
+After summarizing all the application requirements given by IKEM it was necessary choose appropriate technology for application implementation. The aim was to develop a GUI application capable to open and display images, there are several ways to go, so it was the place for a discussion. 
 
 The main question is which programming language to choose for the implementation. C\#, Java, C++ are the most popular programming languages for extensive GUI applications. C++ offers low level features and thus it offers very good performance. Java and C\# are both interpreted languages. Both were designed to be simple and robust. Although C\# and Java provide performance similar to C++ in overall tasks, still C++ reaches better performance in tasks related to imaging\cite{yyyy}. Therefore, C++ was chosen as a programming language of Dicom-Presenter.
 
