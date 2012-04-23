@@ -30,12 +30,13 @@ As was said in \ref{dicom-presenter}, Dicom-Presenter application window consist
 \end{figure}
 
 \subsection{Graphic Output Rendering in Dicom-Presenter}
+\label{renderingprocess}
 The mentioned control elements of Dicom-Presenter: Image Explorer and Workspace Explorer are rendered manually. They are not based on existing Qt library class. Thus, if a graphic output of Dicom-Presenter is rendered all classes representing some graphic element must be called. 
 
 An impulse to render the graphic window can be called at any time from any part of the application. A static function is used to obtain the pointer to output window, then a function called \clist{paint} is called.
 
 The \clist{paint} function of main window object (\clist{CWidget}) then calls paint functions of all elements present in the window: an active Workspace, Workspace Explorer and Image Explorer. All the elements contain smaller subelements. The Workspace calls paint functions of all images present appearing on the Workspace, Workspace Explorer calls paint functions of all images containing workspace previews and finally the Image Explorer calls paint functions of all images operated by it. A schema of the process can be seen on Figure \ref{paint}.
-
+\begin{comment}
 \begin{lstlisting}[label=cwidgetpaint,caption={Sequentionally rendering each visible element.},escapeinside={@}{@}]
 void CWidget::paint() {
 	...
@@ -72,6 +73,7 @@ void CWorkspaceExplorer::paint(...) {
 	...
 }
 \end{lstlisting}
+\end{comment}
 
 \begin{figure}
 	\caption{A hierarchy of classes presenting paintable elements.}
@@ -97,6 +99,49 @@ The schema is different from usual GUI programming techniques where some GUI fra
 
 \subsection{Image Opening in Dicom-Presenter}
 
-Another view to application object model can be described by following actions done, when opening an image. When a user gives a direction to open a DICOM study, at first the Image Explorer is called. Image Explorer creates a new object of Image type. The new Image object calls a 3DTextureManager object to create a new object representing a three-dimensional texture (dicom3DTexture). Then an object of DCMTK library is created to load the data from the hard disk.
+Another view to application object model can be described by following actions done, when opening an image. When a user gives a direction to open a DICOM study, at first the Image Explorer is called. Image Explorer creates a new object of Image type. The new Image object calls a 3DTextureManager object to create a new object representing a three-dimensional texture (dicom3DTexture). Then an object of DCMTK library is created to load the data from the hard disk. The object allows decompressing the data and saving them into computer memory in a format mentioned in Section \ref{rawdata}.
 
 \section{Rendering Engine Implementation}
+
+In the first version of Dicom-Presenter, all the rendering was solved with use of OpenGL library. OpenGL global functions could be called anywhere in the application and the OpenGL output was directed to the computer screen instantly. To access images in GPU memory, OpenGL uses integer numbers as handlers. A DICOM study was saved into GPU memory in CDicom3DTexture class and obtained from GPU memory inside a Image class using proper handler (See page 19 in \cite{flaska_bc}).
+
+Qt library uses object-oriented approach to perform image rendering (see Section \ref{renderingprocess}). The rendering process starts in main window - active Workspace, Image Explorer and Workspace Explorer objects are called to draw their content - a \clist{QPainter} object is passed to them. The \clist{QPainter} object is used for redirecting the graphic output to a target pixel map. All the three objects then call all owned subobjects and redirect the \clist{QPainter} object to them.
+
+As was described in Section \ref{rendering}, \clist{QPixmap} class is optimized for rendering, \clist{QImage} class is optimized for pixel manipulation. Therefore, images are stored in \clist{QImage} objects and the output is drawed into a \clist{QPixmap} object.
+
+\begin{lstlisting}[language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
+void CWidget::paint(){
+  QPixmap *outputpixmap = new QPixmap(this->width(),this->height());
+  QPainter *@\red{qpainter}@ = new QPainter();
+  @\red{qpainter}@->begin(outputpixmap);
+  if (CWorkspaceManager::GetInstance()->GetActiveWorkspace()) {
+    QRect position(...);
+    CWorkspaceManager::GetInstance()->@\orange{GetActiveWorkspace()->paint}@(@\red{qpainter}@,position);
+  }
+  CImageExplorer::GetInstance()->paint(@\red{qpainter}@);
+  CWorkspaceExplorer::GetInstance()->paint(@\red{qpainter}@);
+  setPixmap(*outputpixmap);
+  repaint(); 
+ ...
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
+void @\orange{CWorkspace::paint}@(QPainter* @\red{qpainter}@, QRect position){
+  QPixmap* @\lightblue{workspacepixmap}@ = new QPixmap(iSize.x(),iSize.y());
+  QListIterator<CImage*> images(iImages);
+  while(images.hasNext()){
+    CImage *cimage = images.next();
+    QPainter *qpainter2 = new QPainter();
+    qpainter2->begin((QPaintDevice*)@\lightblue{workspacepixmap}@);
+    cimage->paint(qpainter2);
+    if(iActiveImage==cimage){
+      cimage->DrawSelection(qpainter2);
+    }
+    ...
+  }
+  @\red{qpainter}@->drawPixmap(position,*@\lightblue{workspacepixmap}@);
+  DrawBorderRect(@\red{qpainter}@);
+  ...
+}
+\end{lstlisting}

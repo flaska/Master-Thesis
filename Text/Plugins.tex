@@ -46,6 +46,42 @@ A combobox can be declared in a similar way like in (X)HTML:
 
 Where \clist{type} determines a variable type passed to a library. \clist{name} in \clist{combobox} tag is a text description of property. The \clist{name} property in \clist{option} tag is a text description of a \clist{value} which is passed to a library.
 
+\lstset{numbers=none,frame=none}
+
+\begin{table}[h]
+	\caption{An example of a Dicom-Presenter plugin's GUI and its description.}
+	%\centering
+	\begin{tabular}{|m{\textwidth}|}
+	\hline
+\begin{lstlisting}[language=xml,morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
+<xml>
+  <numinput type="int" min="0" max="10" name="Lambda" function="lmbd"/>
+  <numinput type="int" min="0" max="20" name="Sigma" function="sgm"/>
+  <combobox type="char" name="Algorithm" function="algorithm">
+    <option value="a" name="Modified algorithm"/>
+    <option value="p" name="Original algorithm"/>
+  </combobox>
+  <button function="main" name="Run"/>
+</xml>
+\end{lstlisting}
+		\\
+		  \hline		
+		  \noalign{\smallskip}
+			\includegraphics[width=\textwidth]{Text/IMG/Plugins.png}
+		\\
+		\hline
+		\end{tabular}
+\end{table}%
+
+\lstset{numbers=left,frame=single,}
+
+
+
+
+\subsection{Implementation of user interaction}
+
+
+
 \section{Dynamically loading plugin functions}
 
 Dicom-Presenter's image segmentation algorithms use individual parameters. Therefore, each main computational function in each plugin needs individual number and types of parameters. A C/C++ function located in dynamically loaded library is ran through a function pointer as seen on Listing \ref{sec:runtimeloading}. This pointer must have a fixed number and fixed types of parameters given at compilation. Thus, it is not possible to call various functions with various sets of parameters from a dynamically loaded library. It is possible to run only a finite number of types of functions according to a set of given parameters. There were several solutions how to make the Dicom-Presenter plugin system variable enough to load and run previously unknown functions:
@@ -54,10 +90,25 @@ Dicom-Presenter's image segmentation algorithms use individual parameters. There
 \item It is possible to pre-define sufficient number of function pointer types at a compilation time. Then, each Dicom-Presenter plugin must have input function of predefined type.
 \item Another solution is based on a fact that a function pointer can have more parameters than targeted function. For example, a function pointer having five integer parameters can point to a function receiving only three integer parameters - the last two given parameters will be ignored. Therefore it would be possible to define function pointers with excessing number of float, integer and char parameters. A function pointer would be assigned to a function to fit the first couple of parameters and ignoring the rest.
 \item Another applicable way is to allow only one-parameter requiring functions to be present in a plugin. If the algorithm would need more parameters, then appropriate functions settings these parameters would be ran. Parameters can be saved as global variables to be reachable by main computational function. This solution has a great advantage: It is possible to call the parameter setting functions simultaneously to user  manipulating with relevant GUI elements. Then, an instant feedback from the library could be present (checking for incompatible values). This solution was implemented but it seemed too restrictive for library design. 
-\item Last option is inspired by passing command line arguments to a standard C/C++ application. C/C++ Main Function receives a pointer to an array of all arguments. As in this case a plugin library function can receive three pointers to three array types: pointer to int, pointer to double and pointer to char. The arrays can be of any length.
+\item Next option is inspired by passing command line arguments to a standard C/C++ application. C/C++ Main Function receives a pointer to an array of all arguments. As in this case a plugin library function can receive three pointers to three array types: pointer to int, pointer to double and pointer to char. The arrays can be of any length.
+\item Last option is to pass all parameters in a string. This option requires the plugin library to parse strings of some given format. Whereas most of given parameters will be integer or rational numbers, the preceding option seems more reasonable. Conversions between a number and a string are not needed on both sides.
 \end{enumerate}
 
 At first the third option was used in implementation. Function setting algorithm parameters were called while setting parameters in GUI. But there were no real benefits of library response while setting GUI parameters. More than that the rules for plugins were too bounding. Therefore, the final version of plugins API were implemented using option 4.
+
+\begin{lstlisting}[language=C++,morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
+typedef bool mainFunction(int*,char*,double*);
+int *argi;
+char *argc;
+double *argd;
+...
+argi[0]=10;
+argi[1]=20;
+....
+ProcessAdress = GetProcAddress("main");
+mainFunction* func=(mainFunction*)ProcessAdress;
+func(argi,argc,argd);
+\end{lstlisting}
 
 \section{User interaction in Image Segmentation plugins}
 
@@ -67,7 +118,7 @@ The initial curve had to be defined by the user somehow. The most user-friendly 
 
 \subsection{Implementation of user interaction}
 
-Any free-hand task in a computer application is mostly implemented according to the following schema: mouse movements are tracked by the application and redirected to a proper class, the actual mouse pointer position is obtained, an action based on the actual movement is performed, mouse movements are tracked again. The process is illustrated on Listing \ref{mousetrack}.
+Any mouse-control task in a computer application is mostly implemented according to the following schema: mouse movements are tracked by the application and redirected to a proper class, the actual mouse pointer position is obtained, an action based on the actual movement is performed, mouse movements are tracked again. The process is illustrated on Listing \ref{mousetrack}.
 
 \begin{lstlisting}[label=mousetrack,caption={xxxx},escapeinside={@}{@}]
 iDrawLabel = new drawLabel();

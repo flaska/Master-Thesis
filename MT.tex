@@ -26,6 +26,7 @@
 % Ostatní
 \usepackage{listings}		% vkladani zdrojoveho kodu
 \usepackage[usenames]{color}	% použití barevného textu
+\usepackage{xcolor}
 \usepackage{url}		% zpracování www adresy
 \usepackage{verbatim}		% moznost viceradkovych kommentaru prikazem \begin{comment}
 \usepackage{array}		%
@@ -103,6 +104,10 @@ citebordercolor={1 1 1}		% rámeček kolem odkazu citace bude bílý
 \definecolor{LightBlue}{RGB}{39,62,237}
 \definecolor{Purple}{RGB}{162,4,207}
 
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\orange}[1]{\textcolor{orange}{#1}}
+\newcommand{\lightgreen}[1]{\textcolor{LightGreen}{#1}}
+\newcommand{\lightblue}[1]{\textcolor{LightBlue}{#1}}
 
 \lstset{ %
 language=C++,                % choose the language of the code
@@ -147,7 +152,6 @@ escapechar=!,
 
 % Formátování C++ příkazů uprostřed textu
 \newcommand{\clist}[1]{\texttt{\hyphenchar\font45\relax #1}} % font s fixní vzdáleností
-\newcommand{\red}[1]{\textcolor{red}{#1}}
 
 % Makro pro české uvozovky, použití \uv{...}
 \def\bq{\mbox{\kern.1ex\protect\raisebox{-1.3ex}[0pt][0pt]{''}\kern-.1ex}}
