@@ -67,9 +67,9 @@ There have been also requirements that the application should be able to record 
 \section{Implementation}
 After summarizing all the application requirements given by IKEM it was needed to choose proper technologies for application implementation. The aim was to develop a GUI application capable to open and display images, there are several ways to go, so it was the place for a discussion. 
 
-The main question is which programming language to choose for the implementation. C\#, Java, C++ are the most popular programming languages for extensive GUI applications. C++ offers low level features and thus it offers very good performance. Java and C\# are both interpreted languages. Both were designed to be simple and robust. Although C\# and Java provide performance similar to C++ in overall tasks, still C++ reaches better performance in tasks related to imaging. Therefore, C++ was chosen as a programming language of Dicom-Presenter.
+The main question is which programming language to choose for the implementation. C\#, Java, C++ are the most popular programming languages for extensive GUI applications. C++ offers low level features and thus it offers very good performance. Java and C\# are both interpreted languages. Both were designed to be simple and robust. Although C\# and Java provide performance similar to C++ in overall tasks, still C++ reaches better performance in tasks related to imaging\cite{yyyy}. Therefore, C++ was chosen as a programming language of Dicom-Presenter.
 
-A Graphic User Interface of a C++ application is generally written with use of some library. It is possible to write a C++ GUI interface without external library using only OS related function calls but unfortunately this solution brings too complicated source code\footnote{A comparison of GUI interface written with and without external library can be found in Section \ref{noqt}}. There are more than ten application frameworks possible to be used for writing C++ GUI application. Qt and GTK are the most popular libraries used in many commercial applications and offering extensive possibilities for C++ application programming\cite{xxx}. Besides GUI creation Qt and GTK offers assistance with image manipulation, network access, xml parsing, etc. Both libraries are cross-platform. Finally, Qt was used to better documentation offered by its author.
+A Graphic User Interface of a C++ application is generally written with use of some library. It is possible to write a C++ GUI interface without external library using only OS related function calls but unfortunately this solution brings too complicated source code\footnote{A comparison of GUI interface written with and without external library can be found in Section \ref{noqt}}. There are more than ten application frameworks possible to be used for writing C++ GUI application. Qt and GTK are popular libraries used in many commercial applications and offering extensive possibilities for C++ application programming\cite{xxxxx}. Besides GUI creation Qt and GTK offers assistance with image manipulation, network access, xml parsing, etc. Both libraries are cross-platform. Finally, Qt was used to better documentation offered by its author.
 
 There was a research idea when creating Dicom-Presenter: check possibility of using GPU in this kind of application. Dicom-Presenter will have to handle with large graphic data. If GPU and its memory will handle this data, a great performance enhancement could be reached. Therefore, OpenGL library was used for all image manipulation in Dicom-Presenter. It solves image storing, image manipulations and image rendering. Unfortunately, OpenGL brings 
 occasional incompatibility on some hardware which was unacceptable so the main goal of this project is to remove OpenGL from Dicom-Presenter. If OpenGL library would be replaced then also dependencies on Cg toolkit library and plib library would be removed it would highly simplify project compilation and enhance compatibility.
@@ -89,14 +89,20 @@ User is allowed to freely customize the image arrangement on the Workspace. This
 As was said before, Dicom-Presenter is aimed to allow presenting images to other physicians. To avoid a need of picture manipulation during a presentation, a possibility of having more workspaces opened was implemented. Each workspace can be prepared before presenting and stored in application memory.
  
 \begin{table}[ht]
-	\caption{DICOM viewers.}
+	\caption{A scheme of Dicom-Presenter's GUI.\label{dicompresentergui}}
 	\centering
-	\begin{tabular}{c}
-			\includegraphics[width=0.8\textwidth]{Text/IMG/GUI_Screenshot.png}
+	\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot.png}
+		&
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot1_English_Label1.png}
 		\\
-			\includegraphics[width=0.8\textwidth]{Text/IMG/GUI_Screenshot1_English_Label1.png}
+			A visual output of the application. & Three main objects present in the output window.
 		\\
-			\includegraphics[width=0.8\textwidth]{Text/IMG/GUI_Screenshot1_English_Label2.png}
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot1_English_Label2.png}
+		&
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_ScreenshotGUI.png}
+		\\
+			Elements owned by the main three objects.  & GUI control elements.			
 		\\
 		\end{tabular}
 \end{table}%
