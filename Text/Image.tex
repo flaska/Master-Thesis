@@ -26,7 +26,7 @@ DCMTK library offers a function which saves a copy of loaded image data into a n
 const unsigned long frame = 0,
 const int planar = 0 )}
 
-The first parameter denotes a required data alignment of each pixel, the other two parameters describe the orientation of the image slice inside the three-dimensional texture. The function returns a pointer to the part of memory where image data will be stored.
+The first parameter denotes a required data alignment of each pixel; the other two parameters describe the orientation of the image slice inside the three-dimensional texture. The function returns a pointer to the part of memory where image data will be stored.
 
 Besides, Qt library offers a construction of its object depending on image data already stored in computer memory. The object receives a pointer to image data through its constructor. If the image data meet prospective requirements, the object can be called to draw the image at any time, as long as the data are still on the place in computer memory.
 
@@ -34,7 +34,7 @@ The constructor declaration is:
 
 \clist{QImage::QImage(uchar* data, int width, int height, int bytesPerLine, Format format)}
 
-The first parameter is a pointer to image data already saved in computer memory. The data are declared as \clist{unsigned char} which is a C++ equivalent of a \clist{byte} type. The last parameter \clist{format} describes a pixel alignment. It describes a number of bytes used for each pixel and a particular way of color information storage. The \clist{bytesPerLine} parameter describes a image line alignment of pixel data.
+The first parameter is a pointer to image data already saved in computer memory. The data are declared as \clist{unsigned char} which is a C++ equivalent of a \clist{byte} type. The last parameter \clist{format} describes a pixel alignment. It describes a number of bytes used for each pixel and a particular way of color information storage. The \clist{bytesPerLine} parameter describes an image line alignment of pixel data.
 
 Qt library itself cannot determine the exact values of above described parameters. Therefore, the parameter values must be known before. A misleading value of parameter describing pixel color storage will lead to false color interpretation of the image. Furthermore, incorrect parameter describing image line alignment can avert image loading or can cause a program failure due to unauthorized memory access.  
 
@@ -44,17 +44,17 @@ Qt library itself cannot determine the exact values of above described parameter
 	\includegraphics[width=130mm]{Text/IMG/ImageStoring_16bit.png}
 	\end{center}
 	\caption{A distribution of 16 bits of 2 bytes among three colors of a pixel.}
-	\label{screenshot}
+	\label{imagestoring}
 \end{figure}
 
 \section{Image enhancement operations}
 \label{brightnesscontrast}
 
-One of important tasks to reimplement in Dicom-Presenter was an ability to adjust image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with various imaging properties. The ability to increase image brightness and contrast is mandatory to ensure sufficient display quality. Too dark or too gray images need to be brightened or need to increase contrast to ensure better observation of physiological findings. A brightness and contrast change is among DICOM users called ``windowing''.
+One of important tasks to re-implement in Dicom-Presenter was an ability to adjust image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with various imaging properties. The ability to increase image brightness and contrast is mandatory to ensure sufficient display quality. Too dark or too gray images need to be brightened or need to increase contrast to ensure better observation of physiological findings. A brightness and contrast change is among DICOM users called ``windowing''.
 
 For further needs of this text brightness and contrast need to be defined. 
 
-A grayscale image can be considered as a matrix of numbers: 
+A gray-scale image can be considered as a matrix of numbers: 
 
 \[
  Im_{res_{x},res_{y}} =
@@ -105,7 +105,7 @@ Qt library doesn't offer its own functions for elementary pixel manipulations su
 
 A change of brightness or contrast of an image of $m \cdot n$ pixels will be done in $m \cdot n$ steps. In each step a color of the pixel must be obtained, new color value will be calculated and the value will be saved into the picture. Qt library offers two ways to perform the task: pixel manipulation functions or direct memory access.
 
-If preimplemented Qt pixel manipulation functions are used, the source code will be following:
+If pre-implemented Qt pixel manipulation functions are used, the source code will be following:
 
 \begin{lstlisting}[label=qtcontrast,caption={Image enhancement operations implementation using Qt library functions for pixel manipulation.},escapeinside={@}{@}]
 QImage image(...);
@@ -118,14 +118,14 @@ for (int y=0; y<height; y++) {
 }
 \end{lstlisting}
 
-Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color information of a pixel. The code on line \ref{lst:operation} performs a color manipulation. Function \clist{void QImage::setPixel(int x,int y,QRgb rgb)} is used to save the color information back to the picture. Due to multi-thread programming support the \clist{QImage::setPixel} function offers low performance. Within each function call Qt library must attach and deattach a process to shared memory segment where the image data are stored. These steps are performance expensive.
+Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color information of a pixel. The code on line \ref{lst:operation} performs a color manipulation. Function \clist{void QImage::setPixel(int x,int y,QRgb rgb)} is used to save the color information back to the picture. Due to multi-thread programming support the \clist{QImage::setPixel} function offers low performance. Within each function call Qt library must attach and detach a process to shared memory segment where the image data are stored. These steps are performance expensive.
 
 Nevertheless, Qt library offers a high performance option to change image pixel data. Image data are modified directly inside the computer memory without a function call from QImage class. A function from QImage class is called just to retrieve a pointer to memory segment containing image data. The code will be following:
 
-\begin{lstlisting}[label=qtcontrast,caption={Image enhancement operations performed by direct access into computer memory.},escapeinside={@}{@}]
+\begin{lstlisting}[label=fastcontrast,caption={Image enhancement operations performed by direct access into computer memory.},escapeinside={@}{@}]
 QImage image(...);
 for (int y=0; y<height; y++) {
-	@\label{lst:pixel}@QRgb* imageLine=(QRgb*)image.scanLine(y);
+	@\label{lst:pixel-fast}@QRgb* imageLine=(QRgb*)image.scanLine(y);
 	@\label{lst:for}@for (int x=0; x<width; x++) {
 		@\label{lst:qrgb}@imageLine[x] = qRgb(func1(qRed(imageLine[x])),func2(qGreen(imageLine[x])),func3(qBlue(imageLine[x])));
 	}
@@ -169,7 +169,7 @@ QLabel *label = new QLabel();
 @\label{lst:render2}@label->update();
 \end{lstlisting}
 
-There is a \clist{QImage} object construction on line \ref{lst:qimage}. QImage object is created to provide manipulation with image data already stored in computer memory at location referenced by pointer \clist{data}. Image data will be printed to some position into a \clist{QPixmap} object which is created on line \ref{lst:qpixmap}. This step is needed to perform assembling of user's workspace from various visual elements. A \clist{QPainter} object created on line \ref{lst:qpainter} allows the printing of a \clist{QImage} object into a \clist{QPixmap} object. A target scene whereto \clist{QPainter} object will render must be declared by \clist{::begin()} command (line \ref{lst:begin}). The existing image is printed on declared position on line \ref{lst:draw}. Finally, the workspace is rendered to user's screen on lines \ref{lst:render1} and \ref{lst:render1}.
+There is a \clist{QImage} object construction on line \ref{lst:qimage}. QImage object is created to provide manipulation with image data already stored in computer memory at location referenced by pointer \clist{data}. Image data will be printed to some position into a \clist{QPixmap} object which is created on line \ref{lst:qpixmap}. This step is needed to perform assembling of user's workspace from various visual elements. A \clist{QPainter} object created on line \ref{lst:qpainter} allows the printing of a \clist{QImage} object into a \clist{QPixmap} object. A target scene where to \clist{QPainter} object will render must be declared by \clist{::begin()} command (line \ref{lst:begin}). The existing image is printed on declared position on line \ref{lst:draw}. Finally, the workspace is rendered to user's screen on lines \ref{lst:render1} and \ref{lst:render1}.
 
 
 %\section{OpenGL and Qt performance}
