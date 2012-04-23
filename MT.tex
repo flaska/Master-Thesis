@@ -1,28 +1,28 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BAKALÁŘSKÁ PRÁCE			%
+% BAKALÁRSKÁ PRÁCE			%
 % JAKUB FLAŠKA				%
-% Šablona převzata ze stránek KSE	%
-% (C) FJFI ČVUT v Praze			%
+% Šablona prevzata ze stránek KSE	%
+% (C) FJFI CVUT v Praze			%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Typ dokumentu
 \documentclass[a4paper,12pt]{report}	% report - jednostranný tisk
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Pouzite balíčky
+%% Pouzite balícky
 
-% Kódování a zpracování ČJ
+% Kódování a zpracování CJ
 %\usepackage[czech]{babel}	% cestina
 \usepackage[T1]{fontenc}	% balicek fontu
 \usepackage[utf8]{inputenc}	% cestina
-% Vytvoření indexu a seznamu použité literatury
-\usepackage{index}		% vytvoření obsahu
-\usepackage[pdftex]{hyperref}	% vygeneruje rejstřík při použití pdflatex
-\usepackage{cite}		% vytvoření literatury
-\usepackage{multibib}		% více zdrojů literatury
+% Vytvorení indexu a seznamu použité literatury
+\usepackage{index}		% vytvorení obsahu
+\usepackage[pdftex]{hyperref}	% vygeneruje rejstrík pri použití pdflatex
+\usepackage{cite}		% vytvorení literatury
+\usepackage{multibib}		% více zdroju literatury
 % Práce s obrázky
 \usepackage{graphicx}		% obrázky
-\usepackage{subfig}		% více obrázků v políčku
+\usepackage{subfig}		% více obrázku v polícku
 % Ostatní
 \usepackage{listings}		% vkladani zdrojoveho kodu
 \usepackage[usenames]{color}	% použití barevného textu
@@ -30,7 +30,7 @@
 \usepackage{url}		% zpracování www adresy
 \usepackage{verbatim}		% moznost viceradkovych kommentaru prikazem \begin{comment}
 \usepackage{array}		%
-\usepackage{caption}		% Popisky obrázků jiným písmem, než zbytek textu.
+\usepackage{caption}		% Popisky obrázku jiným písmem, než zbytek textu.
 \usepackage{amsmath}
 \usepackage[all]{hypcap}
 \usepackage{caption}
@@ -47,7 +47,7 @@
 \pagenumbering{arabic}
 \pagestyle{plain}
 
-%\parindent=0pt			% odsazení prvního řádku
+%\parindent=0pt			% odsazení prvního rádku
 \parskip=7pt			% mezera mezi odstavci
 \frenchspacing			% typografická pravidla
 
@@ -56,20 +56,20 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Nastavení balíčků
+% Nastavení balícku
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Formátováni zdrojů - cite, Multibib
+%% Formátováni zdroju - cite, Multibib
 %Bibtex
-\bibliographystyle{plain}		% styl primarnich zdroju
+\bibliographystyle{chicago}		% styl primarnich zdroju
 
 \newcites{sec}{Secondary sources}	% sekundarni zdroje
 \bibliographystylesec{plain}		% styl sekundarnich zdroju
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Vytvoření indexu pro rejstřík a citace - index
+% Vytvorení indexu pro rejstrík a citace - index
 %index
 \newindex{default}{idx}{ind}{}
 
@@ -79,7 +79,7 @@
 \DeclareFontShape{OT1}{cmtt}{bx}{n}{cmttb10}{}	% Definování fontu pro bold type-writer.
 
 % Caption
-\captionsetup{%font=small,		% Formát popisků.
+\captionsetup{%font=small,		% Formát popisku.
 	format=plain,
 	labelfont=bf,
 	%textfont=it
@@ -87,13 +87,13 @@
 
 
 
-% Nastavení odkazů - hyperref
+% Nastavení odkazu - hyperref
 \hypersetup{ 
-linkbordercolor={1 1 1},	% rámeček kolem odkazu bude bílý
-citebordercolor={1 1 1}		% rámeček kolem odkazu citace bude bílý 
+linkbordercolor={1 1 1},	% rámecek kolem odkazu bude bílý
+citebordercolor={1 1 1}		% rámecek kolem odkazu citace bude bílý 
 } 
 
-% Nastavení balíčku pro vkládání zdrojového kódu - lstlistings
+% Nastavení balícku pro vkládání zdrojového kódu - lstlistings
 \definecolor{LightGray}{RGB}{245,245,245}
 %\definecolor{LightRed}{RGB}{255,100,100}
 %\definecolor{LightGreen}{RGB}{70,150,60}
@@ -150,10 +150,10 @@ escapechar=!,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Formátování C++ příkazů uprostřed textu
+% Formátování C++ príkazu uprostred textu
 \newcommand{\clist}[1]{\texttt{\hyphenchar\font45\relax #1}} % font s fixní vzdáleností
 
-% Makro pro české uvozovky, použití \uv{...}
+% Makro pro ceské uvozovky, použití \uv{...}
 \def\bq{\mbox{\kern.1ex\protect\raisebox{-1.3ex}[0pt][0pt]{''}\kern-.1ex}}
 \def\eq{\mbox{\kern-.1ex``\kern.1ex}}
 \def\ifundefined#1{\expandafter\ifx\csname#1\endcsname\relax }%
@@ -197,7 +197,7 @@ escapechar=!,
 			\includegraphics[width=50mm]{Text/IMG/00_Logo_CVUT_bw.jpg}	% Logo
 		\end{center}
 	\vfill
-		{\fontsize{35}{36.5} \bf MASTER'S THESIS}		% BAKALÁŘSKÁ PRÁCE
+		{\fontsize{35}{36.5} \bf MASTER'S THESIS}		% BAKALÁRSKÁ PRÁCE
 	\vfill			
 		{\fontsize{20}{20.5} \bf \nazeven}	% Název práce
 	\vfill	
@@ -244,13 +244,13 @@ I am not against redistributing the whole text - if the text will be distributet
 
 \vspace{10mm}
 
-Tímto prohlašuji, že tato diplomová práce je mým autorským dílem. Texty v práci nejsou převzaté, ale jsou psané autorem.
+Tímto prohlašuji, že tato diplomová práce je mým autorským dílem. Texty v práci nejsou prevzaté, ale jsou psané autorem.
 
-Nemám závažný důvod proti použití tohoto díla Českým Vysokým Učením Technickým tak, jak to vyplívá z autorského zákona v textu o školním díle. 
+Nemám závažný duvod proti použití tohoto díla Ceským Vysokým Ucením Technickým tak, jak to vyplívá z autorského zákona v textu o školním díle. 
 
-Kdokoliv mimo autora a České Vysoké Učení Technické pak nemá právo s textem manipulovat - zejména pak celý text, nebo část textu vydávat za autorské dílo někoho jiného.
+Kdokoliv mimo autora a Ceské Vysoké Ucení Technické pak nemá právo s textem manipulovat - zejména pak celý text, nebo cást textu vydávat za autorské dílo nekoho jiného.
 
-Umožnuji pak šíření kompletního textu této diplomové práce, pokud bude text šířen jako celek včetně úvodní strany a nebude pochybnost o jeho autorství. 
+Umožnuji pak šírení kompletního textu této diplomové práce, pokud bude text šíren jako celek vcetne úvodní strany a nebude pochybnost o jeho autorství. 
 
 \vspace{10mm}Praha, June 5, 2012\hfill
 	\begin{tabular}{c}
@@ -268,13 +268,13 @@ Umožnuji pak šíření kompletního textu této diplomové práce, pokud bude 
 ~
 \vfill % prázdné místo
 
-{\bf Acknowledgment / Poděkování}
+{\bf Acknowledgment / Podekování}
 
 \vspace{5mm} % vertikální mezera
 
 I would really like to thank my supervisor Ing. Pavel Strachota for his outstanding help while creating this diploma thesis. His suggestions greatly improved the text.
 
-Rád bych poděkoval svému školiteli Ing. Pavlu Strachotovi za vedení této diplomové práce. Jeho připomínky byly značně podnětné a výrazně přispěly ke zkvalitnění textu.
+Rád bych podekoval svému školiteli Ing. Pavlu Strachotovi za vedení této diplomové práce. Jeho pripomínky byly znacne podnetné a výrazne prispely ke zkvalitnení textu.
 
 \begin{flushright}
 Author
