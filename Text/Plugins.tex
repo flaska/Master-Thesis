@@ -46,11 +46,12 @@ A combobox can be declared in a similar way like in (X)HTML:
 
 Where \clist{type} determines a variable type passed to a library. \clist{name} in \clist{combobox} tag is a text description of property. The \clist{name} property in \clist{option} tag is a text description of a \clist{value} which is passed to a library.
 
+An example GUI description file can be seen in Table \ref{tab:exampledescription}. The process of parsing a description file is illustrated on Listing \ref{parsingdescription} - the code refers to parsing information about a numeric input. Notable is the use of \clist{dymanic\_cast} operator, which allows unification of two different pointers, if the classes inherit the same parent.
+
 \lstset{numbers=none,frame=none}
 
-\begin{table}[h]
-	\caption{An example of a Dicom-Presenter plugin's GUI and its description.}
-	%\centering
+\begin{table}[ht]
+	\caption{An example of a Dicom-Presenter plugin's GUI and its description.\label{tab:exampledescription}}
 	\begin{tabular}{|m{\textwidth}|}
 	\hline
 \begin{lstlisting}[language=xml,morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
@@ -74,6 +75,32 @@ Where \clist{type} determines a variable type passed to a library. \clist{name} 
 \end{table}%
 
 \lstset{numbers=left,frame=single,}
+
+\begin{lstlisting}[caption={Parsing data from a description file - integer input.}, language=C++,label=parsingdescription,morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
+if (type=="int"||type=="double"){
+	if (tag=="numinput") {
+		QSpinBox *spinbox = new QSpinBox();
+		...
+		ControlerTable[i]=dynamic_cast<QWidget*>(spinbox); 
+		Layout->addWidget(spinbox,1,y);
+	}	
+	if (tag=="combobox"){
+		QComboBox *combobox = new QComboBox();
+		if (e.hasChildNodes()){
+			QDomNodeList childs=e.childNodes();
+			for (int k=0; k<childs.count(); k++){
+				QDomNode n = childs.at(k);
+				QDomElement el = n.toElement();
+				combobox->addItem(element.attribute("name"),element.attribute("value"));
+			}					
+		}
+		ControlerTable[i]=dynamic_cast<QWidget*>(combobox); 
+		Layout->addWidget(combobox,1,y);
+		...
+	}
+	...	
+}
+\end{lstlisting}
 
 
 
@@ -115,7 +142,6 @@ func(argi,argc,argd);
 \end{lstlisting}
 
 \section{User interaction in Image Segmentation plugins}
-
 As mentioned before, FNSPE image segmentation algorithms require computational parameters and an input image with designated area to be segmented. The segmentable area is defined by an initial curve. The entire initial curve has to be placed inside the segmentable area. The curve is then used as a set of initial values for algorithm. Mostly, the curve is iteratively expanded until it traces the area border. Then, the expanded curve fully defines the segmented area.
 
 The initial curve had to be defined by the user somehow. The most user-friendly way would be to allow the user to paint the initial curve right inside the segmented image using a pointing device (computer mouse, touchscreen, etc.) Qt library offers extensive possibilities to perform free-hand painting into an image.
