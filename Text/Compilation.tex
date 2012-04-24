@@ -1,4 +1,4 @@
-\chapter{Project build environment}
+\chapter{Project Build Environment}
 \vspace{-10mm}
 
 Dicom-Presenter is a large application. It consists of 5.000 source-code lines and it uses six external libraries. Compilation of such a large project should be divided into parts and the linking process should be described somehow. Moreover, external libraries have to be compiled in a compatible configuration. This chapter's goal is to describe compilation process of larger projects.
@@ -21,7 +21,7 @@ There are two ways of linking a library into a final executable: static linking 
 %\item Dynamic-link libraries can be also loaded manually during the application run. Windows API offers a set of functions for run-time loading functions from .dll libraries. This is useful for rarely used functions. They don't need to occupy memory space all the time an application is ran.
 %\end{itemize}
 
-A concept of dynamic-link libraries shows its potential when applied on libraries which are used by multiple applications. Dynamic-link libraries are also called shared libraries. These are the advantages of using shared libraries:
+A concept of dynamic-link libraries shows its potential when applied on libraries used by multiple applications. Dynamic-link libraries are also called shared libraries. These are the advantages of using shared libraries:
 
 \begin{itemize}
 \item If a dynamic-link library is used by multiple applications it is enough to be loaded once in computer memory. Multiple applications can access library functions at the same time.
@@ -29,7 +29,7 @@ A concept of dynamic-link libraries shows its potential when applied on librarie
 \end{itemize}
 
 
-\section{Run-time loaded libraries}
+\section{Run-time Loaded Libraries}
 
 Besides the compilation linking against a dynamic-link library, C/C++ standard offers a run-time loading of a shared library. A module containing the required function is loaded into the computer memory by calling WinAPI functions. Run-time loading is useful for rarely used modules. Unlike compilation time linking, the run-time loaded modules do not need to be stored in computer memory all the application run-time. The modules can be loaded only if used and then removed from the computer memory.
 
@@ -141,11 +141,11 @@ As mentioned before, C++ projects are usually compiled in parts and then linked 
 \item Description of custom build steps.
 \end{itemize}
 
-Microsoft Visual Studio uses its own format of build description accessible from its GUI. There is GNU Automake system for build description on Unix systems. Since Dicom-Presenter was supposed to be a multi-platform application there was a need to find some system of build description applicable on both Windows and Unix systems. A reasonable solution is a use of CMake, because offers a platform-independent build description. CMake script describes a build tree as well as project dependencies. Then a CMake tool offers generating Visual Studio project for Windows OS or GNU automake files for Unix OS.
+Microsoft Visual Studio uses its own format of build description accessible from its GUI. There is GNU Automake system for build description on Unix systems. Since Dicom-Presenter was supposed to be a multi-platform application there was a need to find some system of build description applicable on both Windows and Unix systems. A reasonable solution is a use of CMake, because offers a platform-independent build description. CMake script describes a build tree as well as project dependencies. Then a CMake tool offers generating Visual Studio project for Windows OS or GNU Automake files for Unix OS.
 
 CMake is often use in OpenSource projects. It offers easy portability of an application between Win32 and Unix based systems. Both plib and dcmtk libraries used in Dicom-Presenter use CMake for build scripts generation. According to Section \ref{standardlibrary} both libraries need to be compiled before compiling Dicom-Presenter.
 
-\subsection{CMake syntax}
+\subsection{CMake Syntax}
 
 
 Following section describes CMake syntax necessary to build simple applications. 

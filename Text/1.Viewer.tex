@@ -2,13 +2,13 @@
 \vspace{-10mm}
 My predecessor Bc. Pavel Neskudla started development of an application for viewing images captured on Magnetic Resonance Imaging (MRI) unit in his Master's thesis\cite{neskudla}. It was a task given by IKEM institute in Prague. IKEM institute specialists would utilize some application deployable on personal computers which would allow displaying MRI images. It is possible to find such applications, but unfortunately those are too expensive commercial solutions or otherwise freeware applications and they do not reach quality requirements\footnote{See \cite[page~9]{flaska_bc} for an overview of accessible DICOM image viewers}. Therefore, IKEM asked for development of such an application, which would match their needs. Moreover, in this case, the sponsor was allowed to raise unique functionality demands not accessible in other programs (See section \ref{requirements}).
 
-\section{DICOM standard}
+\section{DICOM Standard}
 
 DICOM is an abbreviation of Digital Imaging and Communications in Medicine, it is a standard for handling, storing and transmitting medical information. \footnote{DICOM standard was created by  U.S. National Electrical Manufacturers Association\citesec{nema}.} Namely, DICOM standard describes a file format for storing medical data and besides it describes a protocol for exchanging this data. DICOM standard uses common IT standards such as JPEG, TCP/IP, etc.
 
 The main reason why DICOM was created is to avoid medical data confusion. DICOM files are equipped with a header including patient's information. This permanent attachment of header data to DICOM files should avoid random data substitution. There is information about a patient, about a medical facility and about a diagnosis in a file header.
 
-\subsection{DICOM viewers}
+\subsection{DICOM Viewers}
 \label{viewers}
 DICOM software is very consumer-specific. Therefore, there are just a few couples of DICOM image viewers available. According to \citesec{idoimaging} these are the most used DICOM viewers:
 

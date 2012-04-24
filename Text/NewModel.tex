@@ -2,12 +2,12 @@
 \vspace{-10mm}
 Dicom-Presenter as firstly designed in work \cite{neskudla} was an application depending on cca eight external libraries. The libraries dependency complicated application compilation and deployment. All the libraries must be executable on a target machine.
 
-Therefore, a valuable task was to remove some of the library dependencies. Most of the deployment complications were related to OpenGL library. Next to OpenGL itself, GLEW, Cg toolkit and plib libraries were used to extend OpenGL functionality. All the libraries need to be hardware and software supported on the target machine. The OpenGL library requires GPU drivers supporting the library to be installed on the target machine. GLEW library require the GPU to support spatial textures (among others). Cg toolkit library requires the GPU to support pixel shader. Moreover, the Cg toolkit library requires a hardware-dependent configuration during the compilation time or at run time. Hence, removing OpenGL library with all three dependencies would contribute to application deployability.
+Therefore, a valuable task was to remove some of the library dependencies. Most of the deployment complications were related to OpenGL\citesec{openglhome} library. Next to OpenGL itself, GLEW, Cg toolkit\citesec{cgtoolkit} and plib\citesec{plibhome} libraries were used to extend OpenGL functionality\footnote{GLEW library is used to allow manipulation with three-dimensional textures. Cg toolkit library was used for contrast and brightness change. Since OpenGL library itself does not offer text rendering, plib library was used to render texts.}. All the libraries need to be hardware and software supported on the target machine. The OpenGL library requires GPU drivers supporting the library to be installed on the target machine. GLEW library require the GPU to support spatial textures (among others). Cg toolkit library requires the GPU to support pixel-shader. Moreover, the Cg toolkit library requires a hardware-dependent configuration during the compilation time or at run time. Hence, removing OpenGL library with all three dependencies would contribute to application deploy-ability.
 
 The OpenGL library was connected to nine of all twenty-six Dicom-Presenter modules. Global OpenGL function were called within the modules considering previous OpenGL function calls done in another modules. Therefore, removing the OpenGL library from the application is a significant intervention to the existing source code. To understand the new non-OpenGL implementation, it is mandatory to be familiar with application object model.
 
 \section{Dicom-Presenter Object Model}
-
+\label{dpobjectmodel}
 Dicom-Presenter consists of twenty six modules, each module includes one class (rarely two classes). The classes can be divided into two groups: classes which represent some visible element (image, workspace, etc.) and classes which maintain only functionality (memory management, file input/output, etc.).
 
 To understand the hierarchical arrangement of application classes, the following passages describe three views on the object model:
@@ -35,7 +35,7 @@ The mentioned control elements of Dicom-Presenter: Image Explorer and Workspace 
 
 An impulse to render the graphic window can be called at any time from any part of the application. A static function is used to obtain the pointer to the output window, then a function called \clist{paint} is called.
 
-The \clist{paint} function of main window object (\clist{CWidget}) then calls paint functions of all elements present in the window: an active Workspace, Workspace Explorer and Image Explorer. All the elements contain smaller subelements. The Workspace calls paint functions of all images present appearing on the Workspace, Workspace Explorer calls paint functions of all images containing workspace previews and finally the Image Explorer calls paint functions of all images operated by it. A hierarchy of painted classes can be seen on Figure \ref{hierarchy}.
+The \clist{paint} function of main window object (\clist{CWidget}) then calls paint functions of all elements present in the window: an active Workspace, Workspace Explorer and Image Explorer. All the elements contain smaller sub-elements. The Workspace calls paint functions of all images present appearing on the Workspace, Workspace Explorer calls paint functions of all images containing workspace previews and finally the Image Explorer calls paint functions of all images operated by it. A hierarchy of painted classes can be seen on Figure \ref{hierarchy}.
 \begin{comment}
 \begin{lstlisting}[label=cwidgetpaint,caption={Sequentionally rendering each visible element.},escapeinside={@}{@}]
 void CWidget::paint() {
@@ -105,9 +105,9 @@ Another view to application object model can be described by following actions d
 
 In the first version of Dicom-Presenter, all the rendering was solved with use of OpenGL library. OpenGL global functions could be called anywhere in the application and the OpenGL output was directed to the computer screen instantly. To access images in GPU memory, OpenGL uses integer numbers as handlers. A DICOM study was saved into GPU memory in CDicom3DTexture class and obtained from GPU memory inside a Image class using proper handler (See page 19 in \cite{flaska_bc}).
 
-Qt library uses object-oriented approach to perform image rendering (see Section \ref{renderingprocess}). The rendering process starts in main window - active Workspace, Image Explorer and Workspace Explorer objects are called to draw their content - a \clist{QPainter} object is passed to them. The \clist{QPainter} object is used for redirecting the graphic output to a target pixel map. All the three objects then call all owned subobjects and redirect the \clist{QPainter} object to them.
+Qt library uses object-oriented approach to perform image rendering (see Section \ref{renderingprocess}). The rendering process starts in main window - active Workspace, Image Explorer and Workspace Explorer objects are called to draw their content - a \clist{QPainter} object is passed to them. The \clist{QPainter} object is used for redirecting the graphic output to a target pixel map. All the three objects then call all owned sub-objects and redirect the \clist{QPainter} object to them.
 
-As was described in Section \ref{rendering}, \clist{QPixmap} class is optimized for rendering, \clist{QImage} class is optimized for pixel manipulation. Therefore, images are stored in \clist{QImage} objects and the output is drawed into a \clist{QPixmap} object.
+As was described in Section \ref{rendering}, \clist{QPixmap} class is optimized for rendering, \clist{QImage} class is optimized for pixel manipulation. Therefore, images are stored in \clist{QImage} objects and the output are drawn into a \clist{QPixmap} object.
 
 \begin{lstlisting}[language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
 void CWidget::paint(){
