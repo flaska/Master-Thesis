@@ -241,7 +241,7 @@ FUNCTION {bbl.edby}
 { "editace" }
 
 FUNCTION {bbl.edition}
-{ "vydání" }
+{ "edition" }
 
 FUNCTION {bbl.volume}
 { "roèník" }
@@ -277,13 +277,13 @@ FUNCTION {bbl.phdthesis}
 { "Dizertaèní práce" }
 
 FUNCTION {bbl.first}
-{ "První" }
+{ "First" }
 
 FUNCTION {bbl.second}
-{ "Druhé" }
+{ "Second" }
 
 FUNCTION {bbl.third}
-{ "Tøetí" }
+{ "Third" }
 
 FUNCTION {bbl.fourth}
 { "Ètvrté" }

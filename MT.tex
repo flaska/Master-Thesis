@@ -51,8 +51,8 @@
 \parskip=7pt			% mezera mezi odstavci
 \frenchspacing			% typografická pravidla
 
-\renewcommand{\rmdefault}{phv}	% Arial
-\renewcommand{\sfdefault}{phv}	% Arial
+%\renewcommand{\rmdefault}{phv}	% Arial
+%\renewcommand{\sfdefault}{phv}	% Arial
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -186,30 +186,8 @@ escapechar=!,
 %%%%%%%%%%%%%%%%%%%%%% UVODNI STRANA  %%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-%\begin{comment}
 
-\thispagestyle{empty}
-
-\begin{center}
-	{\fontsize{15}{15.5} \bf \cvut\\[2mm] \fjfi \\[2mm] \km}	% Název školy, fakulta
-	\vfill
-		\begin{center}
-			\includegraphics[width=50mm]{Text/IMG/00_Logo_CVUT_bw.jpg}	% Logo
-		\end{center}
-	\vfill
-		{\fontsize{35}{36.5} \bf MASTER'S THESIS}		% BAKALÁRSKÁ PRÁCE
-	\vfill			
-		{\fontsize{20}{20.5} \bf \nazeven}	% Název práce
-	\vfill	
-		{\large %\em %\bf								
-			\begin{tabular}{rl}
-				Author 		& {\bf	\autor}			\\					% Autor
-				Supervisor 	& {\bf	\vedouci }		\\					% Školitel
-				Year		& {\bf	\rok }			\\					% Rok
-			\end{tabular}
-		}
-\end{center}
-
+\includepdf[pages=-]{Uvod/uvod.pdf} 
 
 %%%%%%%%%%%%%%%%%%%%%% OBSAH %%%%%%%%%%%%%%%%%%%%%%
 \newpage
@@ -310,4 +288,3 @@ Author
 
 
 \end{document}
-
