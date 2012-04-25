@@ -3,13 +3,13 @@
 
 A Graphic User Interface (GUI) has to be described in the source code - control elements layout and their interaction. Each operation system offers its own library for control elements creation. Creating an application with use of this OS related library is quite complicated. Applications are controlled inside theirs ``main loop''. Main loop is technically a while-loop running constantly and listening for OS messages. Then, inside the loop is decided which function has to be called. Programming of the main loop is too complicated. Besides, when OS related library is used, all control elements have to be declared in several steps giving several parameters.
 
-Therefore, ``application framework'' libraries arise. Frameworks are libraries which allow description a user interface easily and in fewer steps. Usually, there is no need for describing the application loop and control elements are created on significantly less source code lines.
+Therefore, ``application framework'' libraries arise. Frameworks are libraries which allow a description of the user interface easily and in fewer steps. Usually, there is no need for describing the application loop and control elements are created on significantly fewer lines of source code.
 
 
 \section{GUI Programming without an Application Framework}
 \label{noqt}
 
-Development of GUI application for Windows is possible with Windows API. It is a name for a set of various APIs - communication interfaces for performing services. These communication interfaces offer manipulation with file-system, devices and also creating graphic windows.
+Development of GUI application for Windows is possible with Windows API. This is the name given to a set of various APIs - communication interfaces for performing services. These communication interfaces offer manipulation with file-system, devices and also creating graphic windows.
 
 Most common parts of Windows API are:
 \begin{itemize}
@@ -21,7 +21,7 @@ Most common parts of Windows API are:
 
 Windows API in C++ is used as an ordinary library. It has to be included and linked, afterwards it is possible to call certain functions in the program code.
 
-There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{main} function is replaced by \clist{WinMain} function (line \ref{lst:WinMain}). Important part of \clist{WinMain} function is a program loop (line \ref{lst:ProgramLoop}). If a user does not manipulate with the application, the application iterates through its main loop and waits for user input. As soon as some user action is received, the application has to recognise the message and perform appropriate action. Program behavior according to user input is here defined in function WndProc (line \ref{lst:WndProc}). There is a condition controller which decides what part of program will be executed.
+There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{main} function is replaced by \clist{WinMain} function (line \ref{lst:WinMain}). An important part of \clist{WinMain} function is a program loop (line \ref{lst:ProgramLoop}). If a user does not manipulate with the application, the application iterates through its main loop and waits for user input. As soon as some user action is received, the application has to recognise the message and perform appropriate action. Program behavior according to user input is here defined in function WndProc (line \ref{lst:WndProc}). There is a condition controller, which decides, which part of the program will be executed.
 
 \begin{lstlisting}[label=WinAPI,caption={An example of a simple application using Windows API for GUI rendering.},escapeinside={@}{@}]
 #include <windows.h>
@@ -61,7 +61,7 @@ There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{ma
 
 \section{GUI Frameworks}
 \label{guiframeworks}
-Application frameworks are libraries designed to ease GUI application creating. Complicated widget declaration processes are encapsulated inside the library. Then, framework classes are used instead of calling OS related functions. The two most popular application frameworks now are Qt and GTK.
+Application frameworks are libraries designed to ease GUI application creation. Complicated widget declaration processes are encapsulated inside the library. Then, framework classes are used instead of calling OS related functions. The two most popular application frameworks currently are Qt and GTK.
 
 Both Qt and GTK are based on the same schema. All control elements are represented by library classes. The control elements can be easily added to application windows. Control functions describing application response to user actions are defined. Then the control elements and control functions are connected together.
 
