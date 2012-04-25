@@ -536,16 +536,10 @@ FUNCTION {format.editors}
   if$
 }
 FUNCTION {format.book.pages}
-{ 
-  %duplicate$ empty$ 'skip$
-  %  { " " * bbl.pages * }
-  %if$
-  pages "pages" bibinfo.check
+{ pages "pages" bibinfo.check
   duplicate$ empty$ 'skip$
-    {
-      "p. " swap$ *
-    }
-  if$  
+    { " " * bbl.pages * }
+  if$
 }
 FUNCTION {format.isbn}
 { isbn "isbn" bibinfo.check
