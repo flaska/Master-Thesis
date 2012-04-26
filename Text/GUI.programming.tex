@@ -1,14 +1,91 @@
 \chapter{Graphic User Interface Programming}
 \vspace{-10mm}
 
-A Graphic User Interface (GUI) has to be described in the source code - control elements layout and their interaction. Each operation system offers its own library for control elements creation. Creating an application with use of this OS related library is quite complicated. Applications are controlled inside theirs ``main loop''. Main loop is technically a while-loop running constantly and listening for OS messages. Then, inside the loop is decided which function has to be called. Programming of the main loop is too complicated. Besides, when OS related library is used, all control elements have to be declared in several steps giving several parameters.
+A Graphic User Interface (GUI) of an application has to be described in its source code - control elements' layout and their interaction. Each operation system offers its own library for GUI programming. To ease the programming process, additional libraries can be used - libraries, which are focused mainly on creating application's GUI are called Widget Toolkits.
 
-Therefore, ``application framework'' libraries arise. Frameworks are libraries which allow a description of the user interface easily and in fewer steps. Usually, there is no need for describing the application loop and control elements are created on significantly fewer lines of source code.
+The native libraries for GUI programming are for example Windows API in Windows and xlib in Linux/Unix systems. The process of programming application's GUI with use of only native OS library is following text explained on Windows API. Object-oriented GUI programming is explained with use of Qt\citesec{qthome} and GTK\citesec{qthome} libraries.
 
-
-\section{GUI Programming without an Application Framework}
+\section{GUI programming in Windows API library}
 \label{noqt}
+Creating an application's GUI with use of only OS related library is quite complicated. The native libraries are simple - both Windows API and xlib are not object-oriented. The application behavior has to be solved by procedural declarations in the source code.
 
+The GUI programming in WinAPI uses following basic elements\cite[Chapter~2]{eventloopprogramming}:
+
+\begin{itemize}
+\item Object
+\item Object's Procedure
+\item Message
+\item Message Queue
+\item Message Loop
+\end{itemize}
+
+The basic idea is following:
+
+\begin{itemize}
+\item The core of the application is the Message Loop. It loads messages from the Message Queue and redirects them to proper Objects.
+\item Each Object owns a Procedure. The Procedure receives a message and adds the response to Message Queue.
+\end{itemize}
+
+This concept is called event-driven programming. There is an example of event-driven application on Listing \ref{WinAPI}. The application loop is located on line \ref{lst:ProgramLoop}. The \clist{GetMessage} functions reads a message from the Message Queue. The \clist{DispatchMessage} forwards the message to propriate object.
+
+The only visible object of the example application is a window created on line \ref{lst:window}. The procedure of the window, which solves its received messages is defined on line \ref{lst:WndProc}.
+
+The \clist{main} function of the application is replaced by the \clist{WinMain} function. So the application course is following: the window is created and the loop starts running; if the user clicks on the window, a message is added to the queue; the message is readed from the queue and then forwarded to the application itself or back to the window.\cite[Chapter~2]{eventloopprogramming}
+
+\begin{lstlisting}[label=WinAPI,caption={An example of a simple application using Windows API for GUI rendering.\protect\cite{WinAPIexample}},escapeinside={@}{@}]
+@\label{lst:WndProc}@LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
+    switch(msg){
+        case WM_CLOSE:
+            DestroyWindow(hwnd);
+        break;
+        case WM_DESTROY:
+            PostQuitMessage(0);
+        break;
+        default:
+            return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
+    return 0;
+}
+@\label{lst:WinMain}@int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine, int nCmdShow){
+    WNDCLASSEX wc;
+    HWND hwnd;
+    MSG Msg;
+    //Step 1: Registering the Window Class
+    wc.cbSize        = sizeof(WNDCLASSEX);
+    wc.style         = 0;
+    wc.lpfnWndProc   = WndProc;
+    wc.cbClsExtra    = 0;
+    wc.cbWndExtra    = 0;
+    wc.hInstance     = hInstance;
+    wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+    wc.lpszMenuName  = NULL;
+    wc.lpszClassName = g_szClassName;
+    wc.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
+    // Step 2: Creating the Window
+ @\label{lst:window}@   hwnd = CreateWindowEx(
+        WS_EX_CLIENTEDGE,
+        g_szClassName,
+        "The title of my window",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, 240, 120,
+        NULL, NULL, hInstance, NULL);
+    // Step 3: The Message Loop
+@\label{lst:ProgramLoop}@    while(GetMessage(&Msg, NULL, 0, 0) > 0){
+        TranslateMessage(&Msg);
+        DispatchMessage(&Msg);
+    }
+    return Msg.wParam;
+}
+\end{lstlisting}
+
+Programming GUI applications in plain WinAPI requires necessary steps to be done, such as: defining the main loop, assigning a procedure to the object, etc. All these steps are ensured by Widget Toolkits, if used. 
+
+\begin{comment}
+
+\section{GUI programming in Windows API}
 Development of GUI application for Windows is possible with Windows API. This is the name given to a set of various APIs - communication interfaces for performing services. These communication interfaces offer manipulation with file-system, devices and also creating graphic windows.
 
 Most common parts of Windows API are:
@@ -18,56 +95,17 @@ Most common parts of Windows API are:
 \item \clist{shell32.dll} which offers access to Windows command line
 \item \clist{WinSock} to use network
 \end{itemize}
+\end{comment}
 
-Windows API in C++ is used as an ordinary library. It has to be included and linked, afterwards it is possible to call certain functions in the program code.
-
-There is an example of simple GUI application on Listing \ref{WinAPI}. \clist{main} function is replaced by \clist{WinMain} function (line \ref{lst:WinMain}). An important part of \clist{WinMain} function is a program loop (line \ref{lst:ProgramLoop}). If a user does not manipulate with the application, the application iterates through its main loop and waits for user input. As soon as some user action is received, the application has to recognise the message and perform appropriate action. Program behavior according to user input is here defined in function WndProc (line \ref{lst:WndProc}). There is a condition controller, which decides, which part of the program will be executed.
-
-\begin{lstlisting}[label=WinAPI,caption={An example of a simple application using Windows API for GUI rendering.},escapeinside={@}{@}]
-#include <windows.h>
-@\label{lst:WndProc}@LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
-    switch(msg){
-        case WM_CLOSE:
-            DestroyWindow(hwnd);
-        break;
-        default:
-            return DefWindowProc(hwnd, msg, wParam, lParam);
-    }
-    return 0;
-}
-
-@\label{lst:WinMain}@int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-		WNDCLASSEX wc;
-    HWND hwnd;
-    MSG Msg;
-    wc.lpfnWndProc = WndProc;    
-...
-    if(not RegisterClassEx(&wc)){
-        MessageBox(NULL, TEXT("Window Registration Failed!"), TEXT("Error!"), MB_ICONEXCLAMATION | MB_OK);
-        return 0;
-    }
-    hwnd = CreateWindowEx(
-...
-		);
-    ShowWindow(hwnd, nCmdShow);
-
-@\label{lst:ProgramLoop}@    while(GetMessage(&Msg, NULL, 0, 0) > 0){
-        TranslateMessage(&Msg);
-        DispatchMessage(&Msg);
-    }
-    return Msg.wParam;
-}
-\end{lstlisting}
-
-\section{GUI Frameworks}
+\section{Widgets Toolkits}
 \label{guiframeworks}
-Application frameworks are libraries designed to ease GUI application creation. Complicated widget declaration processes are encapsulated inside the library. Then, framework classes are used instead of calling OS related functions. The two most popular application frameworks currently are Qt and GTK\cite{xxxxx}.
+Widgets Toolkits are libraries designed to ease GUI application creation. Complicated widget declaration processes are encapsulated inside the library. Then, library classes are used instead of calling OS related functions. Examples of currently popular Widgets Toolkits can be Qt\citesec{qthome} and GTK\citesec{gtkhome} libraries\cite[pages~413-416]{qtvsgtk}.
 
 Both Qt and GTK are based on the same schema. All control elements are represented by library classes. The control elements can be easily added to application windows. Control functions describing application response to user actions are defined. Then the control elements and control functions are connected together.
 
 Source code syntax of Qt library and GTK library is very similar. Examples of two identical applications using GTK and Qt can be found on Listings \ref{gtk} and \ref{qt}. Both applications create a simple window with a button inside. Clicking the button writes a console output. The button and window creation can be found on lines \ref{lst:gtkbuttonstart} - \ref{lst:gtkbuttonfinish} on Listing \ref{gtk} (GTK) and lines \ref{lst:qtbuttonstart} - \ref{lst:qtbuttonfinish} on Listing \ref{qt} (Qt). The process is very similar unlike Qt uses functions in its classes and GTK uses global functions. The command on lines \ref{lst:gtkconnect} (Listing \ref{gtk}) and \ref{lst:qtconnect} (Listing \ref{qt}) is used for setting up interaction between button click and proper function call. The main difference is that GTK allows connection to global function calls (line \ref{lst:gtkcall}, Listing \ref{gtk}), unlike Qt allows calling functions of object inheriting QObject class (line \ref{lst:gtkcall}, Listing \ref{qt}).
 
-\begin{lstlisting}[label=gtk,caption={A sample application using GTK framework.},escapeinside={@}{@}]
+\begin{lstlisting}[label=gtk,caption={A sample application using GTK library.\protect\cite{gtktutorial}},escapeinside={@}{@}]
 @\label{lst:gtkcall}@static void message(GtkWidget *widget, gpointer data){
     cout << "Hello World!";
 }
@@ -80,7 +118,7 @@ gtk_fixed_put(GTK_FIXED(layout), button);
 @\label{lst:gtkconnect}@g_signal_connect (button, "clicked", G_CALLBACK (message), NULL);
 \end{lstlisting}
 
-\begin{lstlisting}[label=qt,caption={A sample application using GTK framework.},escapeinside={@}{@}]
+\begin{lstlisting}[label=qt,caption={A sample application using Qt library.},escapeinside={@}{@}]
 @\label{lst:qtcall}@class callhandler : public QObject {
 Q_OBJECT
 public slots:

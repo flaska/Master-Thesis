@@ -286,10 +286,10 @@ FUNCTION {bbl.third}
 { "Third" }
 
 FUNCTION {bbl.fourth}
-{ "Ètvrté" }
+{ "Fourth" }
 
 FUNCTION {bbl.fifth}
-{ "Páté" }
+{ "Fifth" }
 
 FUNCTION {bbl.st}
 { "" }
