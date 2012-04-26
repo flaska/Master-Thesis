@@ -174,6 +174,3 @@ void drawLabel::mouseReleaseEvent(QMouseEvent* event){
 \end{lstlisting}
 
 There are three functions related to mouse actions in the example \ref{mousetrack}: \clist{mousePressEvent}, \clist{mouseMoveEvent}, \clist{mouseReleaseEvent}. All the three functions are originally defined in Qt library and can be overloaded the demonstrated way. Qt framework ensures event-based calling of these overloaded functions. \clist{mousePressEvent} and \clist{mouseReleaseEvent} functions are called to avoid performing in \clist{mouseMoveEvent} action if no mouse-button is pressed. In fact, the \clist{QMouseEvent} object includes information about pressed buttons, therefore \clist{mousePressEvent} and \clist{mouseReleaseEvent} function calls could be eliminated. But it is a unique feature of Qt library; therefore, this implementation is more frequent.
-
-\red{Pridat kod o generovani uzivatelskeho rozhrani}
-\red{Pridat kod o predavani parametru funkcim}

@@ -97,7 +97,18 @@ Image contrast is usually adjusted by a linear transformation applied to all ima
 
 A disadvantage of both ways is that some image information is lost. Let's consider an image described by a matrix with elements of integers in range from zero to 255. Let the brightness of the picture increased according to formula \eqref{brightness} with a positive constant $ c_{brightness} $. Then all the points brighter than $ 255 - c_{brightness} $ on original image will have luminosity of 255 regardless their original luminosity. Similarly if contrast would be increased according to formula \eqref{contrast} with a constant $ c_{contrast} $ then all points brighter than $ \frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1) $ will have the same color (maximum white). As well all pixels darker than $ \frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}}) $ will have the same color (maximum black).
 
-\red{krivka na nelinearni kontrast z vyzkumaku}
+\subsection{Non-linear contrast change}
+To avoid the loss of information during a contrast change, it is possible to use a more sofisticated function. 
+The function ($y=f(x,c)$) where $c$ is a parameter should meet the following conditions:
+\begin{itemize}
+\item $\|f(x,c) - (k \cdot x + c)\|$ should be minimal for every c
+\item $y$ values for $x<\frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}})$ should be linearly distrubuted on negative neighborhood of $1$
+\item $y$ values for $x>\frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1)$ should be linearly distrubuted on positive neighborhood of $0$
+\end{itemize}
+
+A function meeting the criteria was found in work \cite[page~18]{flaska_vu}. The idea was based on behavior of function $tanh(x)$ on $[-\infty,+\infty]$. The function was transformed to interval $[-\frac{1}{2},+\frac{1}{2}]$; shifted to point $x=\frac{1}{2}, y=\frac{1}{2}$ and further transformed to:
+
+ \[ f(x,c)= \bigg[ 1-\tanh(c) \bigg] \cdot \left(1-\frac{1}{2}\right) + \frac{1}{2} \cdot \tanh\left[ 2 \cdot c \cdot \left(x - \frac{1}{2}\right) \right] + \frac{1}{2} \]
 
 \subsection{Pixel Manipulations in Qt}
 
