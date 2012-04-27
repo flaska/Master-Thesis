@@ -37,5 +37,28 @@ GDCM\cite{gdcm_home} is a tool, which allows DICOM files header conversion. The 
 \item Compile GDCM as .dll library, load the library at a run-time and use its functions.
 \end{itemize}
 
-The first option was the fastest - using library functions right inside the application had the lowest effect on performance. The problem in this case is, that GDCM library must be present while compilation (.lib) or while run-time (.dll), even if unused. It is a limiting condition, which could affect application portability. The second and the third option are very simillar. GDCM library is treated as an external tool - it's absence will not prevent using the application (outside GDCM related tasks). The GDCM library was finally added as an external binary, since the manipulation is easier then.
+The first option was the fastest - using library functions right inside the application had the lowest effect on performance. The problem in this case is, that GDCM library must be present while compilation (.lib) or while run-time (.dll), even if unused. It is a limiting condition, which could affect application portability. The second and the third option are very simillar. GDCM library is treated as an external tool - it's absence will not prevent using the application (outside GDCM related tasks). The GDCM library was finally added as an external binary, since the manipulation is easier then. A \clist{system()} function from Windows  API allows running any commands from OS command line, so the GDCM binary could be called.
 
+\begin{lstlisting}[caption={A conversion of DICOM files header using GDCM as external tool.}]
+bool CDicomFrames::LoadDicomImage(char *fileName, bool isFirst, int framesCount) {
+	iDicomImage = new DicomImage (fileName);
+	EI_Status imageStatus = iDicomImage->getStatus();
+
+	if (imageStatus==EIS_MissingAttribute){			
+		QString strCommand("gdcmconv --raw --force ");
+		strCommand.append(fileName);
+		strCommand.append(" temp.dcm");
+		int i = system(strCommand.toAscii().data());
+		if(i==0){
+			iDicomImage=NULL;
+			iDicomImage = new DicomImage ("temp.dcm");
+			remove("temp.dcm");
+		}else{
+			QMessageBox msgBox;
+			msgBox.setText("DICOM file is missing some header attribute.");
+			msgBox.exec();
+		}		
+	}
+ ...
+}
+\end{lstlisting}
