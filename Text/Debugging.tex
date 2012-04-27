@@ -12,3 +12,10 @@ Dicom-Presenter suffered from a few issues, which took shape of ``Segmentation F
 If the file referenced was unaccessible by the application, the institution process failed. The result in above example is that the \clist{iCloseIcon} pointer remains unchanged by the \clist{QGLWidget::bindTexture} function. Therefore, a NULL value remained in the pointer. If the application tried to access the uncreated object, it failed instantly.
 
 The solution is to test pointers before each attemp to access the referenced object. The necessary condition is, that each pointer  must be initialized to a NULL pointer right after declaration. If pointers are not initialized, there is no simple possibility of how to test, whether they reference to an existing object or do not. If a pointer is not initialized, it contains some random value, which is an adress pointing to some space in the computer memory.
+
+\section{Debugging Graphic Output}
+Dicom-Presenter suffered from a few issues in rendering. The graphic output instanstly disappeard, when pixel-shaders\footnote{See Section \ref{xxx}} were used (on all computers using nVidia GPUs). Despite the fact, that all initializations in Cg Toolkit library were done according to library documentation\cite{xxx}. The Cg Toolkit library offers various possible configurations - from hardware specific referencing to some vendor to general configurations usable on most GPUs. None of the tested configurations solved the problem.
+
+The visual output of Dicom-Presenter is joint from several smaller units, which are added during a few steps. The displayed images must be firstly obtained from the three-dimensional texture, color adjusted, then rendered into Workspace's framebuffer, then the Workspace is rendered into application's framebuffer, other objects are added and finally the applications framebuffer is rendered onto computer screen. The image, which dissapeared could be lost during any of the phases.
+
+When an ordinary application is debugged, the values of all variables can be tracked. Graphic output of the application, which is being prepared in the computer memory, cannot be tracked that easily.
