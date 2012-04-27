@@ -183,8 +183,37 @@ QLabel *label = new QLabel();
 There is a \clist{QImage} object construction on line \ref{lst:qimage}. QImage object is created to provide manipulation with image data already stored in computer memory at location referenced by pointer \clist{data}. Image data will be printed to some position into a \clist{QPixmap} object which is created on line \ref{lst:qpixmap}. This step is needed to perform the assembly of user's workspace from various visual elements. A \clist{QPainter} object created on line \ref{lst:qpainter} allows the printing of a \clist{QImage} object into a \clist{QPixmap} object. A target scene where to \clist{QPainter} object will render must be declared by \clist{::begin()} command (line \ref{lst:begin}). The existing image is printed on declared position on line \ref{lst:draw}. Finally, the workspace is rendered to user's screen on lines \ref{lst:render1} and \ref{lst:render1}.
 
 
-%\section{OpenGL and Qt performance}
+\section{OpenGL and Qt performance}
+Before the OpenGL library could be removed from the application, the impact to the application performance must be estimated. Dicom-Presenter attained 90 frames per second while performing image manipulations such as zoom, contrast change, etc. If the performance after removing OpenGL would be estimated over 30 FPS, OpenGL could be removed. 
 
-%\red{
-%Ukazat mereni performance a ukazat vzorecek na odhad rychlosti vykreslovani.\\
-%}
+When Dicom-Presenter is running, the aplication must perform rendering and other necessary actions each moment. The absence of OpenGL will affect only the rendering part. Therefore, simple model applications were created - these applications performed image manipulations used in Dicom-Presenter. Each task was implemented in OpenGL and without OpenGL and the applications had no other responsibilities. These applications give answer to the question of how much will be rendering affected itself. To estimate the overall performance of Dicom-Presenter, the following account was performed.
+ 
+Consider that the Dicom-Presenter's performance is $f$ frames per second. Thus, the application needs $t=\frac{1}{f}$ seconds to perform all actions necesarry to display one screen image.  Some part of $t$ is consumed by rendering $t_{r}$; the rest is used to perform other actions $t_{o}$. So the complete time to prepare one screen image is a sum of both: $t=t_{r}+t_{o}$. Thus, if OpenGL rendering would be replaced by software rendering in Dicom-Presenter, then the time needed to prepare new screen image would be:
+\begin{equation} \label{T}
+T=t_{o} + t_{s}
+\end{equation} 
+The time necessary perform rendering can be estimated from the model application $t_{r} = \frac{1}{f_{r}}$. And it is also possible to estimate the time needed to do rendering without OpenGL - $t_{s} = \frac{1}{f_{s}}$.
+
+Since both $t_{r}$ and $t_{s}$ are estimable values and $t_{o}$ is unknown, the equation \ref{T} can be modified:
+
+\begin{equation} \label{T}
+T = t - t_{r} + t_{s}
+\end{equation} 
+
+after substitution:
+
+\begin{equation} \label{T}
+T = \frac{1}{f} - \frac{1}{f_{r}} + \frac{1}{f_{s}}
+\end{equation} 
+
+Finally, the performance of Dicom-Presenter without OpenGL can be estimated as:
+
+\begin{equation} \label{estimate}
+F = \left(\frac{1}{f} - \frac{1}{f_{r}} + \frac{1}{f_{s}}\right)^{-1}
+\end{equation}
+
+There were significant differences in performance of the model applications. For example image moving was six times faster, when using OpenGL (See Table ).
+
+
+
+
