@@ -12,7 +12,7 @@ A C++ application usually is not compiled entire in one step. It is divided into
 
 \section{CMake}
 
-CMake allows description of the compilation process. It specifies mainly:
+CMake\cite{cmake_home} allows description of the compilation process. It specifies mainly:
 
 \begin{itemize}
 \item Grouping project files into project libraries.
@@ -20,9 +20,9 @@ CMake allows description of the compilation process. It specifies mainly:
 \item Description of custom build steps.
 \end{itemize}
 
-The most common tools for automized compilation are GNU Automake on Linux OS and Microsoft Visual Studio projects on Windows OS. CMake is more general tool, it allows generating both: GNU Automake files and Microsoft Visual Studio project. Since Dicom-Presenter was supposed to be a multi-platform application, CMake was used for automizing the compilation process.
+The most common tools for automized compilation are GNU Automake on Linux OS and Microsoft Visual Studio projects on Windows OS\cite{msvcompilation}. CMake is more general tool, it allows generating both: GNU Automake files and Microsoft Visual Studio project. Since Dicom-Presenter was supposed to be a multi-platform application, CMake was used for automizing the compilation process.
 
-CMake is often used in open-source projects. Both plib and dcmtk libraries, used in Dicom-Presenter, were equipped with a CMake for script.
+CMake is often used in open-source projects. Both plib\citesec{plibhome} and dcmtk\citesec{dcmtkhome} libraries, used in Dicom-Presenter, were equipped with a CMake for script.
 
 \subsection{CMake Syntax}
 
@@ -127,7 +127,7 @@ A disadvantage of run-time library loading is the amount of necessary declaratio
 \subsection{Compilation of Run-time Loaded Libraries}
 
 
-A run-time loaded \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler needs to know which functions have to be exported. There are two ways for declaring this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} in Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen in Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell a compiler to export the function.
+A run-time loaded \clist{.dll} library is very similar to an \clist{.exe} binary, but there is a function exports table in a \clist{.dll} library\cite{msdn}. Exported functions are accessible from outside of the library, functions not exported are private functions. Therefore, a compiler needs to know which functions have to be exported. There are two ways for declaring this: a \clist{dllexport} macro can be used or a \clist{Module Definition File} can be used. A \clist{Module Definition File} is a file including a list of exported functions using a very simple syntax. There is an example of a \clist{Module Definition File} in Listing \ref{DEF}. An example of using the \clist{dllexport} macro can be seen in Listing \ref{dllspec}. Placing the macro before a function definition is enough to tell a compiler to export the function.
 
 \begin{lstlisting}[label=DEF,caption={A \clist{Module Definition File} of a library called ``Mathfuncs'' including a function called ``PrimeTest''.}]
 LIBRARY   MATHFUNCS
@@ -157,7 +157,7 @@ The function \clist{PrimeTest} (Listing \ref{dllspec}) will be accessible from o
 
 \label{sec:runtimeloading}
 
-Functions from run-time loaded libraries are accessed through function pointers. Therefore, a function pointer of a given type must be declared at the compilation time. The type of the function pointer denotes which input parameters are passed to the function and which variable type will be returned by the function. C/C++ language does not offer type definitions at the runtime, thus the type of the function pointer must be defined at the compilation time. The Listing \ref{runtime} includes a function type declaration at line \ref{lst:typedef}.
+Functions from run-time loaded libraries are accessed through function pointers\cite{msdn}. Therefore, a function pointer of a given type must be declared at the compilation time. The type of the function pointer denotes which input parameters are passed to the function and which variable type will be returned by the function. C/C++ language does not offer type definitions at the runtime, thus the type of the function pointer must be defined at the compilation time. The Listing \ref{runtime} includes a function type declaration at line \ref{lst:typedef}.
 
 Before the desired function from the external library can be accessed, the library module must be loaded into the RAM memory. The library is loaded by calling a \clist{LoadLibrary} function from WinAPI, besides, Qt library offers \clist{QLibrary} class which encapsulates platform-dependent function calls.
 
