@@ -2,7 +2,7 @@
 \vspace{-10mm}
 It is natural, that non-trivial appplication like Dicom-Presenter is, cannot work seemlessly from the first moment. The application was developed on specific hardware configuration and tested on limited set of input data. The next step in software development after implementation usually is testing, which helps to detect problems which could not occur on development machines and input data.
 
-A few various problems appeared after Dicom-Presente's first implementation, these had to be removed in the next step. This chapter focuses on a few problems, which were treated, and are interesting from some point of view.
+A few of various problems appeared after Dicom-Presente's first implementation in preceding work \cite{neskudla}, these had to be removed in the next step. This chapter focuses on a few problems, which were treated, and are interesting from some point of view.
 
 \section{Unsuccesful Object Institution}
 Dicom-Presenter suffered from a few issues, which took shape of ``Segmentation Fault'' on Linux OS or ``Access Violation'' on Windows OS. Both names describe an issue, that the application tries to access a part of memory, which is not reserved for it. The problem occurs very often in C++ environment. Mostly it is caused by unsuccesfull object institution. A few objects in Dicom-Presenter, representing GUI icons, was instanced with a constructor, which took a filepath as an argument:
@@ -18,4 +18,24 @@ Dicom-Presenter suffered from a few issues in rendering. The graphic output inst
 
 The visual output of Dicom-Presenter is joint from several smaller units, which are added during a few steps. The displayed images must be firstly obtained from the three-dimensional texture, color adjusted, then rendered into Workspace's framebuffer, then the Workspace is rendered into application's framebuffer, other objects are added and finally the applications framebuffer is rendered onto computer screen. The image, which dissapeared could be lost during any of the phases.
 
-When an ordinary application is debugged, the values of all variables can be tracked. Graphic output of the application, which is being prepared in the computer memory, cannot be tracked that easily.
+When an ordinary application is debugged, the values of all variables can be tracked. Graphic output of the application, which is being prepared in the computer memory, cannot be tracked that easily. To watch the graphic output continuously inside the application, a special test class must be created. The object could be instanced in any of the rendering classes, it attached the graphic output of the application to its own framebuffer. So, the graphic output could be watched in any place of the application. Since the output was attached to the framebuffer, it was not rendered to computer screen.
+
+\section{Real Data Manipulation}
+When an application is developed, it is tested on some limited set of input data. Likewise, Dicom-Presenter was tested only on MRI studies captured in IKEM institute. The problem was, that all the images were captured on the same MRI device. Therefore, the file header had the same format in all pictures. When Dicom-Presenter was tested on more diverse set of data, gained from various web-pages oriented on medical imaging, the application failed to read half of the data.
+
+After stack tracing the application, the exact place of the problem became clear. The application failed while calling a constructor from DCMTK library:
+
+\clist{iDicomImage = new DicomImage(fileName)}
+
+The problem appeared somewhere inside the external library. The only parameter given to the library is a string with file-path, which cannot be misleading. To recognize the problem, the external library was compiled in Debug mode and stack-traced. The problem was, that the DCMTK library could not recognize file headers of the images.
+
+GDCM\cite{gdcm_home} is a tool, which allows DICOM files header conversion. The conversion, performed on un-readable images, repaired the file header, so the images were fully usable in Dicom-Presenter. The question was how to import the external tool into Dicom-Presenter. Three posibilities became apparent:
+
+\begin{itemize}
+\item Compile GDCM as a .lib or .dll library, use its functions in Dicom-Presenter and link against the library.
+\item Compile GDCM as .exe binary, use GDCM in Dicom-Presenter as external tool.
+\item Compile GDCM as .dll library, load the library at a run-time and use its functions.
+\end{itemize}
+
+The first option was the fastest - using library functions right inside the application had the lowest effect on performance. The problem in this case is, that GDCM library must be present while compilation (.lib) or while run-time (.dll), even if unused. It is a limiting condition, which could affect application portability. The second and the third option are very simillar. GDCM library is treated as an external tool - it's absence will not prevent using the application (outside GDCM related tasks). The GDCM library was finally added as an external binary, since the manipulation is easier then.
+
