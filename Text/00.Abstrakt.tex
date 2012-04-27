@@ -1,0 +1,54 @@
+\thispagestyle{empty}
+
+% příprava:\usepackage{subfig}
+\newbox\odstavecbox
+\newlength\vyskaodstavce
+\newcommand\odstavec[2]{
+    \setbox\odstavecbox=\hbox{
+         \parbox[t]{#1}{#2\vrule width 0pt depth 4pt}}
+    \global\vyskaodstavce=\dp\odstavecbox
+    \box\odstavecbox}
+\newcommand{\delka}{120mm}
+
+
+\newcommand{\pracovisteVed}{\km,\\ \fjfi,\\ \cvut}
+
+\newcommand{\konzultant}{}
+\newcommand{\pracovisteKonz}{}
+
+\newcommand{\klicova}{programování, GUI, grafické uživatelské rozhraní, C++, Qt, DICOM}
+\newcommand{\keywords}{programming, GUI, graphic user interface, C++, Qt, DICOM}   
+
+
+
+{\noindent \bf \large Abstract} \\[5mm]
+\begin{tabular}{l p{10cm}}
+	{\em Master's Thesis}	& 	\\[1mm]
+	{\em Title:}	& \nazeven	\\[1mm]
+	{\em Author:}	& \autor	\\[1mm]
+	{\em Program:} 	& \obor		\\[1mm]
+	{\em Supervisor:}& \vedouci	\\
+				& \km		\\
+				& \fjfi		\\
+				& \cvut		\\[1mm]
+	{\em Keywords:}	& \odstavec{\delka}{\keywords}	\\
+\end{tabular}
+
+This Diploma Thesis describes development of a C++ application, which is used for displaying images caputured on Magnetic Resonance Imaging unit. Prior to this work, the application was partly implemented. This work sets a few goals: redesign the rendering part of the application, implement Multi-planar recontruction and a system for additional plugins. In addition, the thesis focuses on GUI applications programming and compilation of C++ applications in Win32.
+
+
+\vspace{10mm}
+{\noindent \bf \large Abstrakt} \\[5mm]
+\begin{tabular}{l p{10cm}}
+	{\em Diplomová práce}	& 	\\[1mm]
+	{\em Název:}	& \nazevcz	\\[1mm]
+	{\em Autor:}	& \autor	\\[1mm]
+	{\em Keywords:}	& \odstavec{\delka}{\klicova}	\\
+\end{tabular}
+
+Tato diplomová práce se zabývá vývojem programu sloužícího pro zobrazování snímků z magnetické resonance. Na začátku této práce již byla aplikace částečně implementována. Tato diplomová práce se snaží zejména o následující úkoly: kompletně přepsat část aplikace věnující se vykreslování; implementovan systém zobrazení označovaný jako multiplanární rekonstrukce; přidat do aplikace rozhraní umožňující používání přídavných modulů k aplikaci. Dále se pak práce věnuje v obecnější rovině programování aplikací s grafickým uživatelským rozhraním a shrnuje poznatky o překladu C++ aplikací v prostředí Win32.
+
+
+
+
+

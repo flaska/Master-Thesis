@@ -212,7 +212,24 @@ Finally, the performance of Dicom-Presenter without OpenGL can be estimated as:
 F = \left(\frac{1}{f} - \frac{1}{f_{r}} + \frac{1}{f_{s}}\right)^{-1}
 \end{equation}
 
-There were significant differences in performance of the model applications. For example image moving was six times faster, when using OpenGL (See Table ).
+There were significant differences in performance of the model applications. For example image contrast change was six times faster, when using OpenGL (See Table \ref{results}). Still, Dicom-Presenter should display more than 35 frames per second, altough OpenGL would be removed. It is satisfactory performance, so the library was removed (See Section \ref{noOpenGL}).
+
+\begin{table}
+\begin{center}
+\label{results}
+\caption{A performance, reached while performing simple image manipulation tasks only.}
+  \begin{tabular}{| l || l | l | }
+	\hline
+	Task & Used technology  & Frames per Second \\
+    \hline \hline
+    Image moving & Qt & 90 \\ \hline
+    Image Mmving & OpenGL & 600 \\ \hline
+    Contrast change & Qt & 50 \\ \hline
+	Contrast change & OpenGL & 250 \\
+    \hline
+  \end{tabular}
+  \end{center}
+\end{table}
 
 
 
