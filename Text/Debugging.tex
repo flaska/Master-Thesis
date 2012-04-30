@@ -14,7 +14,7 @@ If the file referenced was unaccessible by the application, the institution proc
 The solution is to test the pointer before each attemp to access the referenced object. The necessary condition is, that the pointer  must be initialized to NULL value right after its declaration. If the pointer is not initialized this way, there is no simple possibility to test its incorrectness. If a pointer is not initialized, it contains some random value, which is an adress pointing to some space in the computer memory.
 
 \section{Debugging Graphic Output}
-Dicom-Presenter suffered from a few issues in its rendering part. The graphic output instanstly disappeard, when pixel-shaders\footnote{See Section \ref{xxx}} were used (on computers using nVidia GPUs). Despite the fact, that all initializations related to Cg Toolkit library were done correctly. The Cg Toolkit library can run in various configurations - from hardware specific to general, usable on most GPUs. None of the tested configurations solved the problem.
+Dicom-Presenter suffered from a few issues in its rendering part. The graphic output instanstly disappeard, when pixel-shaders\footnote{Pixel-shader is a program compiled and runned at GPU. It can be used to effectively produce special visual efects such as shading, bump-mapping, etc.} were used (on computers using nVidia GPUs). Despite the fact, that all initializations related to Cg Toolkit library were done correctly. The Cg Toolkit library can run in various configurations - from hardware specific to general, usable on most GPUs. None of the tested configurations solved the problem.
 
 The visual output of Dicom-Presenter is joint from several smaller units, which are added during a few steps. The displayed images must be firstly obtained from a three-dimensional texture, color adjusted, then rendered into a Workspace's framebuffer, then the Workspace framebuffer is rendered into application's framebuffer, other objects are added and finally the application's framebuffer is rendered on computer screen. The image, which dissapeared could be lost during any of the phases.
 
@@ -29,7 +29,7 @@ After stack-tracing the application, the exact place of the problem became clear
 
 The problem appeared somewhere inside the external library. The only parameter given to the library is a string with file-path, which cannot be misleading. To recognize the problem, the external library was compiled in Debug mode and stack-traced. Afterwards, the problem could be identified - the DCMTK library could not recognize file headers of the images.
 
-GDCM\cite{gdcm_home} is a tool, which allows conversion of DICOM files' header. The conversion performed on an un-readable image, repaired the file header that way, that the image could be fully usable in Dicom-Presenter. The question was how to import the external tool into Dicom-Presenter. Three posibilities became apparent:
+GDCM\citesec{gdcm_home} is a tool, which allows conversion of DICOM files' header. The conversion performed on an un-readable image, repaired the file header that way, that the image could be fully usable in Dicom-Presenter. The question was how to import the external tool into Dicom-Presenter. Three posibilities became apparent:
 
 \begin{itemize}
 \item Compile GDCM as a static or dynamic library and link against the library, to use its function inside Dicom-Presenter.

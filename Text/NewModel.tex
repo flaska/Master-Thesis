@@ -102,6 +102,8 @@ The schema is different from usual GUI programming techniques where some GUI fra
 
 Another view to application object model can be described by following actions done, when opening an image. When a user gives a direction to open a DICOM study, at first the Image Explorer is called. Image Explorer creates a new object of Image type. The new Image object calls a 3DTextureManager object to create a new object representing a three-dimensional texture (dicom3DTexture). Then an object of DCMTK library is created to load the data from the hard disk. The object allows decompressing the data and saving them into computer memory in a format mentioned in Section \ref{rawdata}.
 
+\red{Pridat tabulku se seznamem nejzajimavejsich trid a jejich heslovitym popisem.}
+
 \section{Rendering Engine Implementation}
 
 In the first version of Dicom-Presenter, all the rendering was solved with use of OpenGL library. OpenGL global functions could be called anywhere in the application and the OpenGL output was directed to the computer screen instantly. To access images in GPU memory, OpenGL uses integer numbers as handlers. A DICOM study was saved into GPU memory in CDicom3DTexture class and obtained from GPU memory inside a Image class using proper handler (See page 19 in \cite{flaska_bc}).
