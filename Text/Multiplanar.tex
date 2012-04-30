@@ -36,17 +36,17 @@ The similarities to Image and Workspace classes could be solved in several possi
 \item An identical functionality of the class and existing class can be extracted into an abstract class, which will be inherited by both of them.
 \end{itemize}
 
-The most importance was given to the fourth option, because unlike the first option it does not add source code repetition. In addition it does not lead to creating classes with great volume of rarely used source code unlike the second option.
+More emphasis was given to the fourth option, because unlike the first option it does not add source code repetition. In addition it does not lead to creating classes with great volume of rarely used source code unlike the second option.
 
 \section{Implementation Process of Multi-planar Reconstruction}
 
-The class of Multi-planar Reconstruction (further MPR Workspace class), which will hold simillar function as the Workspace, was implemented as a new standalone class. The class has firmly defined layout of including images and respones to mouse events are re-defined. The MPR class owns one object of Image type. New functions for MPR rendering were added to the existing Image class.
+The class of Multi-planar Reconstruction (further MPR Workspace class), which will holds a similar function as the Workspace, was implemented as a new standalone class. This class has firmly defined layout of including images and responses to mouse events are re-defined. The MPR class owns one object of Image type. New functions for MPR rendering were added to the existing Image class.
 
-This solution is fully functional, but it has two disadvanteges:
+This solution is fully functional, but it has two disadvantages:
 
 \begin{itemize}
 \item Firsly, the MPR functions added to the Image class were constantly unused outside MPR.
-\item Secondly, a relation between a Workspace and Images is different to relation between MPR Workspace and displayed Images. The MPR Workspace includes one Image object, which is responsible for rendering all three slices. More reasonable solution would be, that MPR Workspace would own three Image objects, each of them responsible for rendering one slice. This scheme corresponds to previous understandings of Image and Workspace. But moreover it would allow the three slices to by fully adjustable like an ordinary Image object (position, size, zoom, ...). 
+\item Secondly, the relation between a Workspace and Images is different to the relation between MPR Workspace and displayed Images. The MPR Workspace includes one Image object, which is responsible for rendering all three slices. More reasonable solution would be, that MPR Workspace would own three Image objects, each of them responsible for rendering one slice. This scheme corresponds to previous understandings of Image and Workspace. But moreover it would allow the three slices to be fully adjustable like an ordinary Image object (position, size, zoom, ...). 
 \end{itemize}
 
 To remove the first complaint, it will be needed to add the MPR functions to a new class and inherit the existing Image class. To avoid the second disadvantage, it will be needed to change the object design of MPR:
@@ -54,7 +54,7 @@ To remove the first complaint, it will be needed to add the MPR functions to a n
 \begin{itemize}
 \item The responsibilities of processing the user input will be shifted from the MPR Workspace class to the Image class.
 %\item Then, it will be possible to allow moving and resizing the MPR Images along the Workspace easily\footnote{The Image position will be bound to the Image GUI.}.
-\item The next step will be creating an abstract class describing the positions of all three slices.
+\item The next step will be the creation of an abstract class describing the positions of all three slices.
 \item Afterwards, three Image classes will be used for rendering the MPR. Then, the images will be fully accessible for manipulation.
 \end{itemize}
 
