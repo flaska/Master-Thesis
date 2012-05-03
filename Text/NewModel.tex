@@ -1,40 +1,53 @@
 \chapter{Dicom-Presenter Rendering Engine}
 \label{noOpenGL}
 \vspace{-10mm}
-Dicom-Presenter as firstly designed in work \cite{neskudla} was an application depending on cca eight external libraries. The libraries dependency complicated application compilation and deployment. All the libraries must be executable on a target machine.
+Dicom-Presenter as firstly designed in work \cite{neskudla} was an application depending on more than
+ eight external libraries. The libraries dependency complicated application compilation and deployment. All the libraries must be executable on a target machine.
 
-Therefore, an important task was to remove some of the library dependencies. Most of the deployment complications were related to OpenGL\citesec{openglhome} library. Next to OpenGL itself, GLEW\citesec{glewhome}, Cg toolkit\citesec{cgtoolkit} and plib\citesec{plibhome} libraries were used to extend OpenGL functionality. GLEW library is used to allow manipulation with three-dimensional textures. Cg toolkit library was used for contrast and brightness change. Since OpenGL library itself does not offer text rendering, plib library was used to render texts. All the libraries need to be hardware and software supported on the target machine. The OpenGL library requires GPU drivers supporting the library to be installed on the target machine\cite[page 715]{OpenGLhardwaresupport}. GLEW library require the GPU to support spatial textures (among others). Cg toolkit library requires the GPU to support pixel-shader\cite[page~5]{cgtoolkitsupport}. Moreover, the Cg toolkit library requires a hardware-dependent configuration during the compilation time or at run time. Hence, removing OpenGL library with all three dependencies would contribute to application deploy-ability.
+Therefore, an important task was to remove some of the library dependencies. Most of the deployment complications were related to OpenGL\citesec{openglhome} library. Besides OpenGL itself, GLEW\citesec{glewhome}, Cg toolkit\citesec{cgtoolkit} and plib\citesec{plibhome} libraries were used to extend OpenGL functionality. GLEW library is used to allow manipulation with three-dimensional textures. Cg toolkit library was used for contrast and brightness change. Since OpenGL library itself does not offer text rendering, plib library was used to render texts. All the libraries need to be hardware and software supported on the target machine. The OpenGL library requires GPU drivers supporting the library to be installed on the target machine\cite[page 715]{OpenGLhardwaresupport}. GLEW library require the GPU to support spatial textures (among others). Cg toolkit library requires the GPU to support pixel-shader\cite[page~5]{cgtoolkitsupport}. Moreover, the Cg toolkit library requires a hardware-dependent configuration during the compilation time or at run time. Hence, removing OpenGL library with all three dependencies would contribute to application deploy-ability.
 
-The OpenGL library was used in nine of the twenty-six Dicom-Presenter modules. Global OpenGL function were called within the modules considering previous OpenGL function calls done in another modules. Therefore, removing the OpenGL library from the application is a significant intervention to the existing source code. To understand the new non-OpenGL implementation, it is mandatory to be familiar with application object model.
+The OpenGL library was used in nine of the twenty-six Dicom-Presenter modules. Global OpenGL functions were called within various modules in required order - actions such as texture initialization, attaching the texture to a framebuffer, drawing were done each in another module. Therefore, removing the OpenGL library from the application is a significant intervention to the existing source code. To understand the new non-OpenGL implementation, it is important to be familiar with application object model.
 
 \section{Dicom-Presenter Object Model}
 \label{dpobjectmodel}
-Dicom-Presenter consists of twenty six modules, each module includes one class (rarely two classes). The classes can be divided into two groups: classes which represent some visible element (image, workspace, etc.) and classes which maintain only functionality (memory management, file input/output, etc.).
+Dicom-Presenter consists of twenty six modules, each module includes one class (rarely two classes). The classes can be divided into two groups: classes which represent some visible element (image, workspace, etc.) and classes which maintain some support function (memory management, file input/output, etc.).
 
 To understand the hierarchical arrangement of application classes, the following passages describe three views on the object model:
 
 \begin{itemize}
-\item Rendering the visual content. All the classes related to some visible element must be sequentially called to paint their content to buffer container.
+\item Rendering the visual content. All the objects related to some visible element must be sequentially accessed to paint their content to buffer container.
 \item Control events forwarding. Each captured pointing device event must be forwarded to the object to which it belongs.
-\item Image storing. A view on the object model related to the classes maintaining abstract functionalities can start with the actions attached to loading an image from hard disk.
+\item Image storing. A view on the object model focused on image manipulation in the computer memory.
 \end{itemize}
 
 \subsection{Dicom-Presenter Object Model Description}
-As was explained in \ref{dicom-presenter}, Dicom-Presenter application's window consists of the following elements:  Workspace, Image Explorer, Workspace Explorer and Info Panel. The Workspace acts as a main graphic output, it is used for viewing DICOM images. To provide usability of Dicom-Presenter during presentations, several workspace sessions can be opened simultaneously. Therefore, Workspace Explorer acts as a switch among opened workspaces\footnote{The process is similar as workspaces switching in GNOME/KDE.}. Due to the fact that an image can be opened at a number of workspaces simultaneously, Image Explorer is used to manage opened images. The Info Panel holds information about the opened image or the opened workspace.
+As was explained in Section \ref{dicom-presenter}, Dicom-Presenter application's window consists of the following elements:  Workspace, Image Explorer, Workspace Explorer and Info Panel. The Workspace acts as a main graphic output, it is used for viewing DICOM images. To provide usability of Dicom-Presenter during presentations, several workspace sessions can be opened simultaneously. Therefore, Workspace Explorer acts as a switch among opened workspaces\footnote{The process is similar as workspaces switching in GNOME/KDE.}. Due to the fact that an image can be opened at a number of workspaces simultaneously, Image Explorer is used to manage opened images. The Info Panel holds information about the opened image or the opened workspace.
 
-\begin{figure}
-	\caption{Dicom-Presenter classes representing a visible element.}
-	\begin{center}
-	\includegraphics[width=\textwidth]{Text/IMG/dicom-presenter-gui.png}
-	\end{center}
-	\label{paint}
-\end{figure}
+\begin{table}[ht]
+	\captionsetup{tablename=Figures}
+	\caption{A scheme of Dicom-Presenter's GUI.}
+	\centering
+	\begin{tabular}{m{0.5\textwidth} m{0.5\textwidth}}
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot.png}
+		&
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot1_English_Label1.png}
+		\\
+			A visual output of the application. & Three main objects present in the output window.
+		\\
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot1_English_Label2.png}
+		&
+			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_ScreenshotGUI.png}
+		\\
+			Elements owned by the main three objects.  & GUI control elements.			
+		\\
+		\end{tabular}
+\end{table}%
 
 \subsection{Graphic Output Rendering in Dicom-Presenter}
 \label{renderingprocess}
-The aforementioned control elements of Dicom-Presenter Image Explorer and Workspace Explorer are rendered manually. They are not based on any class from Qt library. Therefore, if a graphic output of Dicom-Presenter is rendered all classes representing some graphic element must be called. 
+The aforementioned control elements of Dicom-Presenter Image Explorer and Workspace Explorer are rendered manualy. They are not based on any class from Qt library. Therefore, if a graphic output of Dicom-Presenter is rendered, appropriate functions from all objects, which represent some graphic element, must be called. 
 
-An impulse to render the graphic window can be called at any time from any part of the application. A static function is used to obtain the pointer to the output window, then a function called \clist{paint} is called.
+An impulse to render the graphic window can be sent at any time from any part of the application. A static function is used to obtain the pointer to the output window, then a function called \clist{paint} is called.
 
 The \clist{paint} function of main window object (\clist{CWidget}) then calls paint functions of all elements present in the window: an active Workspace, Workspace Explorer and Image Explorer. All the elements contain smaller sub-elements. The Workspace calls paint functions of all images present appearing on the Workspace, Workspace Explorer calls paint functions of all images containing workspace previews and finally the Image Explorer calls paint functions of all images operated by it. A hierarchy of painted classes can be seen on Figure \ref{hierarchy}.
 \begin{comment}

@@ -1,7 +1,7 @@
 \chapter{Project Build Environment}
 \vspace{-10mm}
 
-Dicom-Presenter is quite a large application. It consists of 5.000 source-code lines and it uses six external libraries. Compilation of such a project should be divided into parts and the linking process should be described in some form. Moreover, external libraries need to be compiled in a compatible configuration. This Chapter sets a goal to describe compilation process of larger projects.
+Compilation of larger projects such as Dicom-Presenter should be divided into parts and the linking process should be described in some form. Moreover, external libraries need to be compiled in a compatible configuration. This Chapter sets a goal to describe compilation process of larger projects.
 
 \section{Application Modules}
 
@@ -200,8 +200,7 @@ Therefore, it is mandatory to distinguish between implementations of C++ Standar
 In addition to the problem explanation the Table \ref{standardlibrarytable} is included. It should help to resolve the purpose of problem when he linker error 2005 is received. 
 
 \begin{table}
-  \label{standardlibrarytable}
-  \caption{A list of four build configurations using different implementation of C++ Standard Library.}
+    \caption{A list of four build configurations using different implementation of C++ Standard Library.\label{standardlibrarytable}}
 \begin{center}
 	\begin{tabular}{| l| l | l |}
 	  \hline                       

@@ -7,11 +7,39 @@ Plugin in computer sciences is an optional addition to some applications. It is 
 
 All segmentation algorithms developed at FNSPE were written in C language due to its performance. Plugins in C language are compiled to a Dynamic-Link libraries and run-time loaded. A theory of C++ libraries and description of run-time loading libraries can be found in Section \ref{library}.
 
-\section{Image Segmentation Algorithms}
+\section{Image Segmentation Algorithms Developed at FNSPE Faculty}
+There are various different approaches to perform image segmantation examined on FNSPE faculty. Two algorithms were converted to be usable in Dicom-Presenter. The first one is based on Graph Theory \cite{loucky}, the second one is based on Level-Set Methods \cite{maca}.
 
-\red{
-Popsat algoritmy Kuby Louckeho a Radka Maci.\\
-}
+\subsection{Image Segmentation Based on Graph Theory}
+The algorithm is based on Minimum Cut problem in Graph Theory. Therefore, a graph based on the image is constructed. The edges of the graph are oriented and weighted. Then the Ford-Fulkerson algorithm is used to find the minimal cut, which describes the boundary of the segmented area.
+
+There are two basic ideas of how to find the boundary of the segmented area:
+\begin{itemize}
+\item It is possible to search for the pairs of pixels, with the highest difference in their intensities.
+\item If some pixels inside the segmented area are known, it is possible to search for pixels with a similar intinesity.
+\end{itemize}
+The algorithm described in the following text comprehends both ideas.
+
+Based on preceding description, the algorithm needs a set of pixels, wich are located inside the segmented area. Let's denote the set $S$ (seed). Besides, a set of pixels outside the area must be given, it is denoted $O$ (outside).
+
+\subsubsection{Creating the Graph based on the Segmented Image}
+Each pixels of the initial image is considered as a vertice of the graph. Two more vertices are added: source and appliance - denoted $s$ and $a$.
+
+Edges of the graph can be divided into three groups. The first group of edges connects each pixel of the graph with its closest four neighbours (denoted $E_{G}$). The second group of edges connects all vertices from $V - O$ with the source $s$ (denoted $E_{s}$). The last group connects all vertices from $V - S$ with the applicance $a$ (denoted $E_{a}$).
+
+\subsubsection{Setting the Edge Weights}
+The next step of the algorithm is to set appropriate weights to the graph edges. Finding the weights is based on the idea, that all the pixels in the segmented area should have similar intensity. 
+
+The process of finding the weights (throughput) of $E_{s}$ vertices is following:
+\begin{itemize}
+\item The edges connecting pixels from $S$ with the source $s$ have the highest weight.
+\item The edges between the source $s$ and vertices from $V - O - S$ have that high weight as much is their intensity similar pixels from from $S$.
+\end{itemize}
+The weights of edges from $E_{a}$ are found similarly. This leads to the fact, that there will be a high flow from source to vertices inside of the segmented area, and also there will be a high flow from vertices outside of the area to appliance.
+
+Finding the weights of edges from $E_{G}$ is based on the idea, that the boundary will be between the pairs of pixels with the greatest difference in their intensity. If the weights of the edges between those pairs of pixels will be set low, then the boundary can be found as minimum cut of the graph.
+
+Therefore, the weight of the edge between pixels $p_{1}$ and $p_{2}$ is set as $D - \left(I_{p_{1}} - I_{p_{2}} \right)$ where $I_{p_{1}}$ is the intensity of the first pixel and $D = I_{max} - I_{min}$ is the difference between the lowest and the highest intensity on the picture.
 
 \section{Plugins System Requirements}
 Rules are needed to be established for plugin libraries - afterwards, a library following these rules should be applicable in Dicom-Presenter. The first thing is to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students required an image with designated segmentable area together with computational parameters as an input. The most reasonable way to insert computation parameters is to generate a GUI interface including any required input elements. This chapter discusses plugins GUI construction done at the application runtime and its connection to the loaded plugin library. A plugin interface was considered to be as simple as possible - a key idea was to require a minimum of source code modifications in existing image segmentation libraries.

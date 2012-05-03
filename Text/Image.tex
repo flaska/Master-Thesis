@@ -13,14 +13,14 @@ A color image consisting of $m \cdot n$ points (pixels) can be described by $m \
  
 %Qt library uses three different formats of 16 bit color information storage\cite{QtDoc}. The formats differ by number of bits distributed to each color and are described by triads of numbers: 5-6-5, 5-5-5, 4-4-4. The first format uses 5 bits for red color, 6 bits for green color and 5 bits for blue color. The numbers of bits for each color are uneven but no redundant bits are present. Both 5-5-5 and 4-4-4 formats include redundant bits for each image pixel\cite[page~37]{fileformatencyclo}.
 
-Qt library allows the display of images, which are actually saved in the computer memory as an array of bytes, in some of the supported formats (such as described above). Next to the color depth formats, image storage can differ by the number of bytes used for storing each image line. If an image has $m \cdot n$ pixels and two bytes are used per pixel (for example 16 bit 5-5-5), there is no rule that $m \cdot n \cdot 2$ bytes will be used. A computer memory in x86 architecture reads its data in elements called words usually consisting of 4 bytes for x86 architecture and 8 bytes for 64-bit architecture. Therefore, image data are in a computer memory are often aligned in order that that each image line starts at a beginning of some 4-byte or 8-byte word\cite{memoryalignment}. For instance, if we consider an image of $100 \cdot 100$ pixels saved with 8 bit pixel depth on 64-bit architecture, each line consisting of $100$ pixels would be saved on $128$ or bytes.
+Qt library allows the display of images, which are actually saved in the computer memory as an array of bytes, in some of the supported formats (such as described above). Beside to the color depth formats, image storage can differ by the number of bytes used for storing each image line. If an image has $m \cdot n$ pixels and two bytes are used per pixel (for example 16 bit 5-5-5), there is no rule that $m \cdot n \cdot 2$ bytes will be used. A computer memory reads its data in elements called words, usually consisting of 4 bytes for x86 architecture and 8 bytes for 64-bit architecture. Therefore, image data is in a computer memory are often aligned in order that that each image line starts at a beginning of some 4-byte or 8-byte word\cite{memoryalignment}. For instance, if we consider an image of $100 \cdot 100$ pixels saved with 8 bit pixel depth on 64-bit architecture, each line consisting of $100$ pixels would be saved on $128$ or bytes.
 
 To conclude, if a picture is reconstructed from uncompressed raw data saved in computer memory, essential indications are: which color storage format is used for each pixel and which bit alignment is used for each pixel-line. These two items of information are enough for correct image reconstruction.
 
 \subsection{Image Construction from Raw Data in Qt Library}
-As mentioned in previous text, DCMTK library allows loading compressed files from hard disk and saves them into the computer memory in one of mentioned data alignment. Qt library allows the display of image data onto computer screen. It is mandatory to coordinate an output of DCMTK and an input of Qt library to be able to display an image properly.
+As mentioned in previous text, DCMTK library allows loading compressed files from hard disk and saves them into the computer memory in one of mentioned data alignment. Qt library provides functions for the display of image data onto computer screen. It is mandatory to coordinate an output of DCMTK and an input of Qt library to be able to display an image properly.
 
-DCMTK library offers a function which saves a copy of loaded image data into a new place in image memory in required data alignment \cite{dcmtksupport}. The function declaration is:
+DCMTK library offers a function which saves a part of loaded image data into a new place in image memory in required data alignment \cite{dcmtksupport}. The function declaration is:
 
 \clist{const void* DicomImage::getOutputData	(const int bits = 0,
 const unsigned long frame = 0,
@@ -28,7 +28,7 @@ const int planar = 0 )}
 
 The first parameter denotes a required data alignment of each pixel; the other two parameters describe the orientation of the image slice inside the three-dimensional texture. The function returns a pointer to the part of memory where image data will be stored.
 
-Furthermore, Qt library offers a construction of its object depending on image data already stored in the computer memory. The object receives a pointer to image data through its constructor. If the image data meets prospective requirements, the object can be called to draw the image at any time, as long as the data is still retained in the computer memory.
+Furthermore, Qt library offers wrapping image data already stored in the computer memory by its Qimage object. The object receives a pointer to image data through its constructor. If the image data meets prospective requirements, the object can be called to draw the image at any time, as long as the data is still retained in the computer memory.
 
 The constructor declaration is:
 
@@ -36,7 +36,7 @@ The constructor declaration is:
 
 The first parameter is a pointer to image data already saved in computer memory. The data is declared as \clist{unsigned char} which is a C++ equivalent of a \clist{byte} type. The last parameter \clist{format} describes a pixel alignment. It describes a number of bytes used for each pixel and a particular way of color information storage. The \clist{bytesPerLine} parameter describes an image line alignment of pixel data.
 
-Qt library itself cannot determine the exact values of above described parameters. Therefore, the parameter values must be known before. A misleading value of parameter describing pixel color storage will lead to false color interpretation of the image. Furthermore, incorrect parameter describing image line alignment can avert image loading or can cause a program failure due to unauthorized memory access\cite{QtDoc}.  
+%Qt library itself cannot determine the exact values of above described parameters. Therefore, the parameter values must be known before. A misleading value of parameter describing pixel color storage will lead to false color interpretation of the image. Furthermore, incorrect parameter describing image line alignment can avert image loading or can cause a program failure due to unauthorized memory access\cite{QtDoc}.  
 
 
 \begin{figure}
@@ -50,7 +50,7 @@ Qt library itself cannot determine the exact values of above described parameter
 \section{Image Enhancement Operations}
 \label{brightnesscontrast}
 
-One of important tasks to re-implement in Dicom-Presenter was an ability to adjust image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with differing imaging properties. The ability to increase image brightness and contrast is mandatory in order to ensure sufficient display quality. Images that are too dark or too gray need to be brightened or need to increase contrast to ensure better observation of physiological findings. Brightness and contrast change is among DICOM users called ``windowing''.
+One of important tasks to re-implement in Dicom-Presenter was an ability to adjust image brightness and contrast. Images which will be opened in Dicom-Presenter can be captured on various MRI units with differing imaging properties. The ability to increase image brightness and contrast is important in order to ensure sufficient display quality. Images that are too dark or too gray need to be brightened or need to increase contrast to ensure better observation of physiological findings. Brightness and contrast change is in the medical imaging community called ``windowing''.
 
 For further needs of this text brightness and contrast need to be defined. 
 
@@ -66,9 +66,9 @@ A gray-scale image can be considered as a matrix of numbers\cite[p.~1]{imageproc
  \end{pmatrix}
 \]
 
-where $ res_{x} $, $res_{y}$ are dimensions of the image. $Im(x,y)$ is a lightness of a pixel.
+where $ res_{x} $, $res_{y}$ are dimensions of the image. $Im(x,y)$ is a brightness of a pixel.
 
-Brightness then can be defined as:
+And overall brightness of the image can be defined as:
 \[
   Brightness(Im) = \frac{1}{res_{x}  \cdot res_{y}}\sum_{\substack{0 \leq x \leq res_{x} \\ 0 \leq y \leq res_{y}}} Im(x,y)
 \]
@@ -78,8 +78,6 @@ Contrast is understood as overall difference in luminosity between bright and da
 \[
 Contrast(Im) = \sqrt{\frac{1}{res_{x} \cdot res_{y}}\sum_{\substack{ 0 \leq x \leq res_{x} \\ 0 \leq y \leq res_{y} }}(Im_{x,y}-Brightness(Im))^2}
 \]
-
-An argument for using these two definitions for brightness and contrast is that they are analogies for mean value and variance of set of values.
 
 If there is a need to increase or decrease image brightness in computer applications simply a constant is added to all image points:
 
@@ -95,20 +93,24 @@ Image contrast is usually adjusted by a linear transformation applied to all ima
   Im(x,y) \longmapsto   (Im(x,y) - 0.5) \cdot c_{contrast} + 0.5
 \end{equation}
 
-A disadvantage of both ways is that some image information is lost. Let's consider an image described by a matrix with elements of integers in range from zero to 255. Let the brightness of the picture increased according to formula \eqref{brightness} with a positive constant $ c_{brightness} $. Then all the points brighter than $ 255 - c_{brightness} $ on original image will have luminosity of 255 regardless their original luminosity. Similarly if contrast would be increased according to formula \eqref{contrast} with a constant $ c_{contrast} $ then all points brighter than $ \frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1) $ will have the same color (maximum white). As well all pixels darker than $ \frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}}) $ will have the same color (maximum black).
+A disadvantage of both ways is that some image information is lost. Let's consider an image described by a matrix with elements of integers in range from zero to 255. Let the brightness of the picture increased according to formula \eqref{brightness} with a positive constant $ c_{brightness} $. Then all the points, brighter than $ 255 - c_{brightness} $ on original image, will have brightness of 255 regardless the original value. Similarly if contrast would be increased according to formula \eqref{contrast} with a constant $ c_{contrast} $ then all points brighter than $ \frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1) $ will have the same color (maximum white). As well all pixels darker than $ \frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}}) $ will have the same color (maximum black).
 
 \subsection{Non-linear contrast change}
-To avoid the loss of information during a contrast change, it is possible to use a more sofisticated function. 
-The function ($y=f(x,c)$) where $c$ is a parameter should meet the following conditions:
-\begin{itemize}
-\item $\|f(x,c) - (k \cdot x + c)\|$ should be minimal for every c
-\item $y$ values for $x<\frac{1}{2} \cdot 255 \cdot (1 - \frac{1}{c_{contrast}})$ should be linearly distrubuted on negative neighborhood of $1$
-\item $y$ values for $x>\frac{1}{2} \cdot 255 \cdot (\frac{1}{c_{contrast}}+1)$ should be linearly distrubuted on positive neighborhood of $0$
-\end{itemize}
-
-A function meeting the criteria was found in work \cite[page~18]{flaska_vu}. The idea was based on behavior of function $tanh(x)$ on $[-\infty,+\infty]$. The function was transformed to interval $[-\frac{1}{2},+\frac{1}{2}]$; shifted to point $x=\frac{1}{2}, y=\frac{1}{2}$ and further transformed to:
+To avoid the loss of information during a contrast change, it is possible to use another function. The function should behave similarly as \ref{contrast}, unlike its values should not get under 0 or exceed 1. The function should be also increasing, to not change the original image, and smooth, if possible. A function meeting the criteria was found in work \cite[page~18]{flaska_vu}. The idea was based on behavior of function $tanh(x)$ on $[-\infty,+\infty]$. The function was transformed to interval $[-\frac{1}{2},+\frac{1}{2}]$; shifted to point $x=\frac{1}{2}, y=\frac{1}{2}$ and further transformed to:
 
  \[ f(x,c)= \bigg[ 1-\tanh(c) \bigg] \cdot \left(1-\frac{1}{2}\right) + \frac{1}{2} \cdot \tanh\left[ 2 \cdot c \cdot \left(x - \frac{1}{2}\right) \right] + \frac{1}{2} \]
+ 
+ $c$ is a parameter describing the transformation. The graph of the function can be seen on Figures \ref{myfunction}.
+
+\begin{table}[ht]
+\captionsetup{tablename=Figures}
+\centering
+\caption{A graph of a function allowing change of image contrast without loss of image data.\label{myfunction}}
+	\begin{tabular}{cc}
+		\includegraphics[width=0.35\textwidth]{Text/IMG/nelinearni1.jpg} & \includegraphics[width=0.35\textwidth]{Text/IMG/nelinearni2.jpg} \\
+		c=1 & c=2\\
+	\end{tabular}
+\end{table}
 
 \subsection{Pixel Manipulations in Qt}
 
@@ -129,9 +131,9 @@ for (int y=0; y<height; y++) {
 }
 \end{lstlisting}
 \end{comment}
-Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color information of a pixel. Function \clist{void QImage::setPixel(int x,int y,QRgb rgb)} is used to save the color information back to the picture. Due to multi-thread programming support the \clist{QImage::setPixel} function offers low performance. Within each function call Qt library must attach and detach a process to shared memory segment where the image data are stored. These steps are performance expensive.
+Function \clist{QRgb QImage::pixel(int x,int y)} is used to retrieve color information of a pixel. Function \clist{void QImage::setPixel(int x,int y,QRgb rgb)} is used to save the color information back to the picture. Due to multi-thread programming support the \clist{QImage::setPixel} function offers low performance. Within each function call Qt library must attach and detach a process to shared memory segment where the image data are stored\cite{QtDoc}. These steps are performance expensive.
 
-Nevertheless, Qt library offers a high performance option to change image pixel data. Image data are modified directly inside the computer memory without a function call from QImage class. A function from QImage class is called just to retrieve a pointer to memory segment containing image data. The code will be following:
+Nevertheless, Qt library offers a high performance option to change image pixel data. Image data are modified directly inside the computer memory without a function call from QImage class. A function from QImage class is called just to retrieve a pointer to the part of the computer memory containing image data. The code will be following:
 
 \begin{lstlisting}[label=fastcontrast,caption={Image enhancement operations performed by direct access into computer memory.},escapeinside={@}{@}]
 QImage image(...);
@@ -143,12 +145,12 @@ for (int y=0; y<height; y++) {
 }
 \end{lstlisting}
 
-Function \clist{QImage::scanLine(int y)} returns a pointer to a segment of memory where is saved \clist{y}-th line of the image. The \clist{QImage::scanLine(int y)} function returns a pointer to \clist{unsigned char} array (byte array). The conversion to \clist{QRgb} array together with using Qt functions for changing pixel data (line \ref{lst:qrgb}) will remove necessary byte conversions related to pixel data alignment. If working with the \clist{unsigned char} array, data alignment rules must be respected. The for-cycle browsing through each image line (line \ref{lst:for}) would be ranged to \clist{2*width}, which is actually the real size of an image line in computer memory (expressed in bytes at 16-bit color depth).
+Function \clist{QImage::scanLine(int y)} returns a pointer to the part of the memory where is saved the \clist{y}-th line of the image. The \clist{QImage::scanLine(int y)} function returns a pointer to \clist{unsigned char} array (byte array). The conversion to \clist{QRgb} array together with using Qt functions for changing pixel data (line \ref{lst:qrgb}) will avoid byte conversions related to pixel data alignment. If working with the \clist{unsigned char} array, data alignment rules must be respected. The for-cycle browsing through each image line (line \ref{lst:for}) would be ranged to \clist{2*width}, which is actually the real size of an image line in computer memory (expressed in bytes at 16-bit color depth).
 
 
 \section{Image Rendering}
 \label{rendering}
-Qt library offers several ways how to create and render graphic scene composing of existing images stored on hard disk. The library includes three different classes which can hold bitmap data: QImage, QPixmap, QPicture. All the classes can act as a scene to be painted onto as well as can be a pattern to be painted. Differences among these classes are\cite{QtDoc}:
+Qt library offers several ways how to create and render graphic scene composing of existing images stored on hard disk. The library includes three different classes which can hold bitmap data: QImage, QPixmap, QPicture. All the classes can act as a scene to be painted onto as well as can be a pattern to be painted onscreen. Differences among these classes are\cite{QtDoc}:
 
 \begin{itemize}
 \item QImage class is optimized for reading and writing images from/into a hard disk and for direct pixel access and manipulation.
@@ -156,7 +158,7 @@ Qt library offers several ways how to create and render graphic scene composing 
 \item QPicture class can record a history of received painting requests and replay them.
 \end{itemize}
 
-Therefore, among other possible ways, the most reasonable solution for rendering existing images from hard
+Therefore, among other possible ways, the most reasonable solution for rendering images will be:
 
 \begin{enumerate}
   \item Save and hold image data in computer memory with QImage objects.
@@ -212,7 +214,7 @@ Finally, the performance of Dicom-Presenter without OpenGL can be estimated as:
 F = \left(\frac{1}{f} - \frac{1}{f_{r}} + \frac{1}{f_{s}}\right)^{-1}
 \end{equation}
 
-There were significant differences in performance of the model applications. For example image contrast change was six times faster, when using OpenGL (See Table \ref{results}). Still, Dicom-Presenter should display more than 35 frames per second, altough OpenGL would be removed. It is satisfactory performance, so the library was removed (See Section \ref{noOpenGL}).
+There were significant differences in performance of the model applications. For example image contrast change was six times faster, when using OpenGL (The results are summarized in Table \ref{results}). Still, Dicom-Presenter should display more than 35 frames per second, altough OpenGL would be removed. It is satisfactory performance, so the library was removed (See Section \ref{noOpenGL}).
 
 \begin{table}
 \begin{center}

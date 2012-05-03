@@ -6,7 +6,7 @@ My predecessor Bc. Pavel Neskudla began the development of an application for vi
 
 DICOM is an abbreviation of Digital Imaging and Communications in Medicine, it is a standard for handling, storing and transmitting medical information\footnote{DICOM standard was created by  U.S. National Electrical Manufacturers Association\citesec{nema}.}. Namely, DICOM standard describes a file format for storing medical data and besides it describes a protocol for exchanging this data. DICOM standard uses common IT standards such as JPEG, TCP/IP, etc. \cite{dicombook}
 
-The main reason DICOM was created was in order to avoid medical data confusion. DICOM files are equipped with a header including patient's information. This permanent attachment of header data to DICOM files should avoid random data substitution. There is information about the patient and the medical facility, as well as a diagnosis in the file header.
+The main reason DICOM was created was to avoid medical data confusion. DICOM files are equipped with a header including patient's information. This permanent attachment of header data to DICOM files should avoid random data substitution. There is information about the patient and the medical facility, as well as a diagnosis in the file header.
 
 \subsection{DICOM Viewers}
 \label{viewers}
@@ -61,9 +61,9 @@ All the DICOM viewers mentioned above are very similar in appearance. A program 
 \label{requirements}
 The IKEM specialists requested a typical DICOM images viewer with a few more specific features not available in freeware programs. A typical DICOM viewer allows the user to open .dcm files and display it. In this case a .dcm file is a jpeg image equipped with a special header, where patient's information is included. MRI images are three-dimensional, thus user has to be able to select, which slice to be displayed. Some DICOM viewers offer a multi-planar image reconstruction. Other offered functions may vary.
 
-There have been two specific requirements towards application functionality requested from IKEM specialists. These were not available in freeware DICOM applications. The most important function was the possibility to open several images at once and display them on the screen simultaneously. The user should be allowed to arrange images on screen to any possible layout he/she prefers. This functionality allows physicians to see two or more different MRI images on screen, so they can easily determine pathological changes of an observed organ. It is useful for studying, or for teaching.
+There have been two specific requirements toward application functionality requested from IKEM specialists. These were not available in freeware DICOM applications. The most important function was the possibility to open several images at once and display them on the screen simultaneously. The user should be allowed to arrange images on screen to any possible layout he/she prefers. This functionality allows physicians to see two or more different MRI images on screen, so they can easily determine pathological changes of an observed organ. It is useful for studying, or for teaching.
 
-There have also been requirements to record user's manipulation with images as a video. Then physician can prepare his presentation of images at home and then play the video to their colleagues at a later point in time.
+There have also been requirements to record user's manipulation with images as a video. Then physician can prepare his presentation of images at home and play the video to their colleagues at a later point in time.
 
 \section{Implementation}
 After summarizing all the application requirements given by IKEM it was necessary choose appropriate technology for application implementation. The aim was to develop a GUI application capable of opening and displaying images, there are several ways to go, so it was the place for a discussion. 
@@ -98,12 +98,6 @@ As was said before, Dicom-Presenter is intended to allow presenting images to ot
 			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot1_English_Label1.png}
 		\\
 			A visual output of the application. & Three main objects present in the output window.
-		\\
-			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_Screenshot1_English_Label2.png}
-		&
-			\includegraphics[width=0.5\textwidth]{Text/IMG/GUI_ScreenshotGUI.png}
-		\\
-			Elements owned by the main three objects.  & GUI control elements.			
 		\\
 		\end{tabular}
 \end{table}%
