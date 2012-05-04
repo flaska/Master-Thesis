@@ -41,6 +41,53 @@ Finding the weights of edges from $E_{G}$ is based on the idea, that the boundar
 
 Therefore, the weight of the edge between pixels $p_{1}$ and $p_{2}$ is set as $D - \left(I_{p_{1}} - I_{p_{2}} \right)$ where $I_{p_{1}}$ is the intensity of the first pixel and $D = I_{max} - I_{min}$ is the difference between the lowest and the highest intensity on the picture.
 
+\begin{figure}[!H]
+ 	\caption{The construction of a graph based on the segmented image. There is the segmented image of the first figure, S and O are a seed and an output. \label{fig:grafy}}
+	\begin{center}
+	\includegraphics[width=0.7\textwidth]{Text/IMG/grafy.jpg}
+	\end{center}
+\end{figure}
+
+\subsection{Algorithm based on Level-set Method}
+
+The algorithm performs expanding a closed curve inside the segmented area. The idea of the algorithm is, that the time evolution of the curve can be described by a two-dimensional real function $\varphi:RxR->R$
+
+Let $\Gamma$ is a curve. Let $\Gamma$ is expanding in each its point \emph{in the normal direction} with speed $v$. Then a function $\varphi$ fulfilling a condition:
+
+\begin{equation}
+\label{lvsfunction}
+\frac{\partial\varphi}{\partial t} = v|\nabla \varphi|
+\end{equation}
+
+describes a time evolution of $\Gamma$ with:
+
+\[
+\Gamma(t) = \{(x, y)|\, \varphi(x, y) = c_{t} \}
+\] 
+
+The condition \ref{lvsfunction} is called Level-set equation. The function $\varphi$ fulfilling the condition is called Level-set function.
+
+\begin{figure}[!H]
+ 	\caption{An evolution of two curves using Level-set function. The Level-set function is highlighted with a red color. \label{fig:levelsetgraf}}
+	\begin{center}
+	\includegraphics[width=0.55\textwidth]{Text/IMG/Level_set_method.jpg}
+	\end{center}
+\end{figure}
+
+The above described curve $\Gamma(t)$ will expand in the normal direction. The goal is to stop expanding the curve at the area boundary. To do so a next member is added to the equation \ref{lvsfunction}. The member should act against the expansion on the area boundary.
+
+A result of edge detection of the segmented image defines a two-dimensional function. The force-member of the equation is defined as negative gradient of the function.
+
+\begin{equation}
+\label{lvsfunctionwithforce}
+\frac{\partial\varphi}{\partial t} = v|\nabla \varphi| - F
+\end{equation}
+
+\subsection{Implementation of Image Segmentation Algorithms}
+\red{jaky je vstup u kuby, jaky je vstup u radka} \\
+\red{jaky je vystup u obou}
+
+
 \section{Plugins System Requirements}
 Rules are needed to be established for plugin libraries - afterwards, a library following these rules should be applicable in Dicom-Presenter. The first thing is to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students required an image with designated segmentable area together with computational parameters as an input. The most reasonable way to insert computation parameters is to generate a GUI interface including any required input elements. This chapter discusses plugins GUI construction done at the application runtime and its connection to the loaded plugin library. A plugin interface was considered to be as simple as possible - a key idea was to require a minimum of source code modifications in existing image segmentation libraries.
 
@@ -172,6 +219,9 @@ func(argi,argc,argd);
 As previously mentioned, FNSPE image segmentation algorithms require computational parameters and an input image with designated area to be segmented. The segmentable area is defined by an initial curve. The entire initial curve has to be placed inside the segmentable area. The curve is then used as a set of initial values for algorithm. Mostly, the curve is iteratively expanded until it traces the area border. Then, the expanded curve fully defines the segmented area.
 
 The initial curve needs to be defined by the user somehow. The most user-friendly way would be to allow the user to paint the initial curve right inside the segmented image using a pointing device (computer mouse, touchscreen, etc.) Qt library offers extensive possibilities to perform free-hand painting into an image.
+
+\red{popsat vstup u kuby a u radka}
+\red{napsat, ze se snimek da poslat do dicom-presenteru}
 
 \subsection{Implementation of User Interaction}
 
