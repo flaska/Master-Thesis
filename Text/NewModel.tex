@@ -115,7 +115,52 @@ The schema is different from usual GUI programming techniques where some GUI fra
 
 Another view to application object model can be described by the following actions carried out, when opening an image. When a user gives a direction to open a DICOM study, at first the Image Explorer is called. Image Explorer creates a new object of Image type. The new Image object calls a 3DTextureManager object to create a new object representing a three-dimensional texture (dicom3DTexture). Then an object of DCMTK library is created to load the data from the hard disk. The object allows the data to be decompressed and then saved into the computer memory in a format mentioned in Section \ref{rawdata}.
 
-\red{Pridat tabulku se seznamem nejzajimavejsich trid a jejich heslovitym popisem.}
+\subsection{List of Reimplemented Classes}
+For a complete view on Dicom-Presenter's object model a complete list of all classes is presented. The classes could be divided into five groups according to their functionality:
+\begin{itemize}
+\item Animation
+	\begin{itemize}
+	\item animation	- captures an animation
+	\item animation Manager	- manages captured animations
+	\item videoConverter - exports the animation to a file
+	\item saveSequenceDialog  - 
+	\end{itemize}
+\item Handling DICOM data
+	\begin{itemize}
+	\item dicom3DTexture - manages three-dimensional data in computer memory
+	\item dicom3DTextureManager - manages opened dicom studies
+	\item dicomHeader - reads DICOM header
+	\item dicomSerieData - reads a set of images and prepares a three-dimensional image 
+	\end{itemize}
+\item Rendering and user interface
+	\begin{itemize}
+	\item glImage - an image
+	\item glImageExplorer - allows browsing images
+	\item glWidget - a container for graphic output
+	\item glWorkspace - a workspace
+	\item glWorkspaceExplorer - allows switching among workspaces
+	\item glWorkspaceSnapshot - a workspace preview in preceding class
+	\item glObject - ancestor class to all classes above 
+	\end{itemize}
+\item Image layout
+	\begin{itemize}
+	\item growingGridLayout - a layout ordering images into rectangular network
+	\item freeLayout - a layout allowing custom image arrangement
+	\item workspaceLayout - ancestor to preceding classes 
+		\end{itemize}
+\item Support classes
+	\begin{itemize}
+	\item mainWindow - an application window
+	\item infoPanel - control elements for advanced image manipulation
+	\item settings - a class including parameters
+	\item workspaceManager - switching among workspaces
+	\end{itemize}
+\end{itemize}
+Naturaly, the classes related to rendering were based on using OpenGL and must be completely rewritten. Besides, the dicom3DTexture and dicomSeriaData classes, which handle storing image data into computer memory, had to be largely rewritten. The other classes are not closely related to OpenGL, but are related to reimplemented classes. Thus their source code was partially modified.
+
+
+
+
 
 \section{Rendering Engine Implementation}
 
@@ -125,39 +170,15 @@ Qt library uses an object-oriented approach to perform image rendering (see Sect
 
 As was described in Section \ref{rendering}, \clist{QPixmap} class is optimized for rendering, \clist{QImage} class is optimized for pixel manipulation. Therefore, images are stored in \clist{QImage} objects and the output is drawn into a \clist{QPixmap} object.
 
-\begin{lstlisting}[language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
-void CWidget::paint(){
-  QPixmap *outputpixmap = new QPixmap(this->width(),this->height());
-  QPainter *@\red{qpainter}@ = new QPainter();
-  @\red{qpainter}@->begin(outputpixmap);
-  if (CWorkspaceManager::GetInstance()->GetActiveWorkspace()) {
-    QRect position(...);
-    CWorkspaceManager::GetInstance()->@\orange{GetActiveWorkspace()->paint}@(@\red{qpainter}@,position);
-  }
-  CImageExplorer::GetInstance()->paint(@\red{qpainter}@);
-  CWorkspaceExplorer::GetInstance()->paint(@\red{qpainter}@);
-  setPixmap(*outputpixmap);
-  repaint(); 
- ...
-}
-\end{lstlisting}
+An important question was, in which order to start reimplementation. It is not possible to reimplement all the nine classes depending on OpenGL and modify all the rest classes in one step. The application would most likely lost it graphics output and it would be diffucult to find the mistake (see Section \ref{dgo}).
+
+It is not possible to modify a few classes, compile the application and test it, since the classes depend on others. The development process was following:
+
+\begin{itemize}
+\item The rendering part of the application had to be re-developed as isolated project.
+\item Then, all the classes were reimplemented and added in groups.
+\end{itemize} 
+
 
 \begin{lstlisting}[language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
-void @\orange{CWorkspace::paint}@(QPainter* @\red{qpainter}@, QRect position){
-  QPixmap* @\lightblue{workspacepixmap}@ = new QPixmap(iSize.x(),iSize.y());
-  QListIterator<CImage*> images(iImages);
-  while(images.hasNext()){
-    CImage *cimage = images.next();
-    QPainter *qpainter2 = new QPainter();
-    qpainter2->begin((QPaintDevice*)@\lightblue{workspacepixmap}@);
-    cimage->paint(qpainter2);
-    if(iActiveImage==cimage){
-      cimage->DrawSelection(qpainter2);
-    }
-    ...
-  }
-  @\red{qpainter}@->drawPixmap(position,*@\lightblue{workspacepixmap}@);
-  DrawBorderRect(@\red{qpainter}@);
-  ...
-}
 \end{lstlisting}

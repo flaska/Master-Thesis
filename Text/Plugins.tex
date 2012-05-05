@@ -1,45 +1,47 @@
 \chapter{Plugin system}
 \vspace{-10mm}
 
-There was a need for image segmentation support in Dicom-Presenter. A few of FNSPE students are working on image segmentation algorithms of MRI images. Therefore, the idea to import these algorithms into Dicom-Presenter has been raised. The best idea was to design a plugin system for importing segmentation algorithms.
+Within the framework of cooperation between FNSPE faculty and IKEM, a
+
+ few of FNSPE students are working on image segmentation algorithms of MRI images. Therefore, the idea to import these algorithms into Dicom-Presenter has been raised. The best idea was to design a plugin system for importing segmentation algorithms.
 Plugin in computer sciences is an optional addition to some applications. It is not usually distributed with the application itself, but can be added by the user according to their needs. An example of a plugin can be an additional python script to Gimp program which allows user to apply 'sepia effect' on their photos. According to the mentioned example, plugins can be written in another language than the application itself, they obtain some new functionality to application.
 
 
 All segmentation algorithms developed at FNSPE were written in C language due to its performance. Plugins in C language are compiled to a Dynamic-Link libraries and run-time loaded. A theory of C++ libraries and description of run-time loading libraries can be found in Section \ref{library}.
 
 \section{Image Segmentation Algorithms Developed at FNSPE Faculty}
-There are various different approaches to perform image segmantation examined on FNSPE faculty. Two algorithms were converted to be usable in Dicom-Presenter. The first one is based on Graph Theory \cite{loucky}, the second one is based on Level-Set Methods \cite{maca}.
+There are various different approaches to perform image segmentation examined on FNSPE faculty. Two algorithms were converted to be usable in Dicom-Presenter. The first one is based on Graph Theory \cite{loucky}, the second one is based on Level-Set Methods \cite{macaradek}.
 
 \subsection{Image Segmentation Based on Graph Theory}
 The algorithm is based on Minimum Cut problem in Graph Theory. Therefore, a graph based on the image is constructed. The edges of the graph are oriented and weighted. Then the Ford-Fulkerson algorithm is used to find the minimal cut, which describes the boundary of the segmented area.
 
-There are two basic ideas of how to find the boundary of the segmented area:
+There are two basic ideas of how to find the boundary of the segmented area\cite{loucky}:
 \begin{itemize}
 \item It is possible to search for the pairs of pixels, with the highest difference in their intensities.
-\item If some pixels inside the segmented area are known, it is possible to search for pixels with a similar intinesity.
+\item If some pixels inside the segmented area are known, it is possible to search for pixels with a similar intensity.
 \end{itemize}
 The algorithm described in the following text comprehends both ideas.
 
-Based on preceding description, the algorithm needs a set of pixels, wich are located inside the segmented area. Let's denote the set $S$ (seed). Besides, a set of pixels outside the area must be given, it is denoted $O$ (outside).
+Based on preceding description, the algorithm needs a set of pixels, which are located inside the segmented area. Let's denote the set $S$ (seed). Besides, a set of pixels outside the area must be given, it is denoted $O$ (outside)\cite{loucky}.
 
 \subsubsection{Creating the Graph based on the Segmented Image}
-Each pixels of the initial image is considered as a vertice of the graph. Two more vertices are added: source and appliance - denoted $s$ and $a$.
+Each pixels of the initial image is considered as a vertex of the graph. Two more vertices are added: source and sink - denoted $s$ and $k$.
 
-Edges of the graph can be divided into three groups. The first group of edges connects each pixel of the graph with its closest four neighbours (denoted $E_{G}$). The second group of edges connects all vertices from $V - O$ with the source $s$ (denoted $E_{s}$). The last group connects all vertices from $V - S$ with the applicance $a$ (denoted $E_{a}$).
+Edges of the graph can be divided into three groups. The first group of edges connects each pixel of the graph with its closest four neighbors (denoted $E_{G}$). The second group of edges connects all vertices from $V - O$ with the source $s$ (denoted $E_{s}$). The last group connects all vertices from $V - S$ with the sink $a$ (denoted $E_{k}$).
 
 \subsubsection{Setting the Edge Weights}
 The next step of the algorithm is to set appropriate weights to the graph edges. Finding the weights is based on the idea, that all the pixels in the segmented area should have similar intensity. 
 
-The process of finding the weights (throughput) of $E_{s}$ vertices is following:
+The process of finding the weights (throughput) of $E_{s}$ vertices is following\cite{loucky}:
 \begin{itemize}
 \item The edges connecting pixels from $S$ with the source $s$ have the highest weight.
 \item The edges between the source $s$ and vertices from $V - O - S$ have that high weight as much is their intensity similar pixels from from $S$.
 \end{itemize}
-The weights of edges from $E_{a}$ are found similarly. This leads to the fact, that there will be a high flow from source to vertices inside of the segmented area, and also there will be a high flow from vertices outside of the area to appliance.
+The weights of edges from $E_{k}$ are found similarly. This leads to the fact, that there will be a high flow from source to vertices inside of the segmented area, and also there will be a high flow from vertices outside of the area to the sink.
 
 Finding the weights of edges from $E_{G}$ is based on the idea, that the boundary will be between the pairs of pixels with the greatest difference in their intensity. If the weights of the edges between those pairs of pixels will be set low, then the boundary can be found as minimum cut of the graph.
 
-Therefore, the weight of the edge between pixels $p_{1}$ and $p_{2}$ is set as $D - \left(I_{p_{1}} - I_{p_{2}} \right)$ where $I_{p_{1}}$ is the intensity of the first pixel and $D = I_{max} - I_{min}$ is the difference between the lowest and the highest intensity on the picture.
+Therefore, the weight of the edge between pixels $p_{1}$ and $p_{2}$ is set as $D - \left(I_{p_{1}} - I_{p_{2}} \right)$ where $I_{p_{1}}$ is the intensity of the first pixel and $D = I_{max} - I_{min}$ is the difference between the lowest and the highest intensity on the picture\cite{loucky}.
 
 \begin{figure}[!H]
  	\caption{The construction of a graph based on the segmented image. There is the segmented image of the first figure, S and O are a seed and an output. \label{fig:grafy}}
@@ -63,7 +65,7 @@ The exact form of the Level-set Equation used in the algorithm is:
 \begin{center}
 \includegraphics{Text/IMG/maca.png}
 \end{center}
-where $g^{0}$ is a function defined by the original image after edge detection. $D$ is called diffusion term, $A$ is called advection term and $S$ is called force term.
+where $g^{0}$ is a function defined by the original image after edge detection. $D$ is called diffusion term, $A$ is called advection term and $S$ is called force term\cite{macaradek}.
 
 \begin{comment}
 The algorithm performs expanding a closed curve inside the segmented area. 
@@ -107,22 +109,22 @@ Both algorithms were implemented as C++ binary applications. The input of both a
 
 The graph-based algorithm needs an image file with highlighted seeds and sinks - pixels inside the area and outside the area. The pixels inside/outside are highlighted with special color, the rest is black.
 
-Since the second algorithm was implemented together with its own user interface written in Matlab, the algorithm needs a text file with a vector describing the initial condition. The vector has a length of $w \cdot h$, where $w$, $h$ are image width, height. Therefore, each number in the vector represents a pixel in the image. If the number is -1 the pixel is outside the segmented are, if the value is 1 the pixel is inside the segmeted area. The C++ binary itself finds a boundary of the designed area.
+Since the second algorithm was implemented together with its own user interface written in Matlab, the algorithm needs a text file with a vector describing the initial condition. The vector has a length of $w \cdot h$, where $w$, $h$ are image width, height. Therefore, each number in the vector represents a pixel in the image. If the number is -1 the pixel is outside the segmented are, if the value is 1 the pixel is inside the segmented area. The C++ binary itself finds a boundary of the designed area.
 
 The idea when designing the plugin system was, that user will be able to draw the initial part of the segmented area inside the original image. It is more similar to the first option of passing the initial values - passing them as an image. This option was implemented in Dicom-Presenter. The input of the second algorithm can be easily transformed to this option.
 
 \section{Plugins System Requirements}
-Rules are needed to be established for plugin libraries - afterwards, a library following these rules should be applicable in Dicom-Presenter. The first thing is to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students required an image with designated segmentable area together with computational parameters as an input. The most reasonable way to insert computation parameters is to generate a GUI interface including any required input elements. This chapter discusses plugins GUI construction done at the application runtime and its connection to the loaded plugin library. A plugin interface was considered to be as simple as possible - a key idea was to require a minimum of source code modifications in existing image segmentation libraries.
+One of the main ideas when developing the plugin system for Dicom-Presenter was, that the system should be flexible enough, that any new image segmentation algorithm developed on FNSPE should be easily convertible to Dicom-Presenter. The first thing was to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students required an image with designated segmentable area together with computational parameters as an input. The most reasonable way to insert computation parameters is to generate a GUI interface including any required input elements. This chapter discusses plugins GUI construction done at the application runtime and its connection to the loaded plugin library. A plugin interface was considered to be as simple as possible - a key idea was to require a minimum of source code modifications in existing image segmentation libraries.
 
 \section{Generating Plugins GUI}
 
-Dicom-Presenter's graphic user interface is built with use of Qt framework. Objects of Qt library classes represent application control elements. The objects can be created and displayed at a runtime according to plugin needs. A mandatory question is which way to choose for plugin GUI description.
+Dicom-Presenter's graphic user interface is built with use of Qt framework. Objects of Qt library classes represent application control elements. The objects can be created and displayed at a runtime according to plugin needs. An important question is which way to choose for plugin GUI description.
 
 Qt library offers its own format of GUI description. There is a tool in Qt SDK\footnote{Qt Software Development Kit is a package for Qt based applications development. SDK includes library files together with a native development IDE.}, which offers an interactive GUI creation. It produces a XML file which describes the GUI. A strong argument for using this solution is that Qt library offers native tools for processing generated GUI description files.
 
-Another possible way is to declare own language for GUI description. Firstly, it was implemented easily: Lines in a description file corresponded to GUI elements. First word of a line determined a type of an element. Other words on the line described element's properties such as default value, minimum and maximum value or matching function in a library. The second step was a transformation to XML standards. The result was similar to the preceding option but distinctive in syntax and naming. 
+Another possible way is to declare own language for GUI description. Firstly, it was implemented easily: Lines in a description file corresponded to GUI elements. First word of a line determined a type of an element. Other words on the line described element's properties such as default value, minimum and maximum value or matching function in a library. The second step was a transformation to XML standards. The result was similar to the preceding option but strict in syntax and naming. 
 
-It would seem that the first solution is more reasonable. No new language is declared, though existing Qt library standard is used. Unfortunately, the Qt library syntax was primarily supposed to be generated by automated tool. The XML code is too complicated to be written manually - there are too many required phrases in the code. Moreover, GUI elements are described by class-names from Qt library - therefore, it is needed to know the Qt library to be able to write a description manually. The only option would be to generate GUI description by the Qt interactive tool. However, it is a complex tool, aimed for creating extensive GUI layouts for large applications. Unlike, segmentation algorithm plugins require only a few control elements (input fields and buttons). It seems more accessible for a programmer to follow a few rules declared in GUI description language created for Dicom-Presenter instead of following the extensive number of rules attached to Qt GUI description language.
+At first look, the first solution seems more reasonable. No new language is declared, though existing Qt library standard is used. Unfortunately, the Qt library syntax was primarily supposed to be generated by automated tool. The XML code is too complicated to be written manually - there are too many required phrases in the code. Moreover, GUI elements are described by class-names from Qt library - therefore, it is needed to know the Qt library to be able to write a description manually. The only option would be to generate GUI description by the Qt interactive tool. However, it is a complex tool, aimed for creating extensive GUI layouts for large applications. Image segmentation plugins require only a few control elements (input fields and buttons). It seems more accessible for a programmer to follow a few rules declared in GUI description language created for Dicom-Presenter instead of following the extensive number of rules attached to Qt GUI description language.
 
 \subsection{Dicom-Presenter GUI Description Language}
 
