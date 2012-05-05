@@ -49,8 +49,26 @@ Therefore, the weight of the edge between pixels $p_{1}$ and $p_{2}$ is set as $
 \end{figure}
 
 \subsection{Algorithm based on Level-set Method}
+The algorithm performs expanding a closed curve inside the segmented area. The curve $\Gamma$ in time $t$ is described by function $u(x,y,t)$:
 
-The algorithm performs expanding a closed curve inside the segmented area. The idea of the algorithm is, that the time evolution of the curve can be described by a two-dimensional real function $\varphi:RxR->R$
+\begin{equation}
+\label{lvsfunction}
+\Gamma(t) = \{(x, y)|\, u(x,y,t) = 0 \}
+\end{equation}
+
+The function $\varphi(x,y,t)$ is called Level-set Function and is defined by a partial differential equation, called Level-set Equation. The members and initial values of the equation describe the function $u$ and therefore describe the behavior of the curve $\Gamma(t)$.
+
+The exact form of the Level-set Equation used in the algorithm is:
+
+\begin{center}
+\includegraphics{Text/IMG/maca.png}
+\end{center}
+where $g^{0}$ is a function defined by the original image after edge detection. $D$ is called diffusion term, $A$ is called advection term and $S$ is called force term.
+
+\begin{comment}
+The algorithm performs expanding a closed curve inside the segmented area. 
+
+The idea of the algorithm is, that the time evolution of the curve can be described by a two-dimensional real function $\varphi:RxR->R$
 
 Let $\Gamma$ is a curve. Let $\Gamma$ is expanding in each its point \emph{in the normal direction} with speed $v$. Then a function $\varphi$ fulfilling a condition:
 
@@ -82,11 +100,16 @@ A result of edge detection of the segmented image defines a two-dimensional func
 \label{lvsfunctionwithforce}
 \frac{\partial\varphi}{\partial t} = v|\nabla \varphi| - F
 \end{equation}
+\end{comment}
 
 \subsection{Implementation of Image Segmentation Algorithms}
-\red{jaky je vstup u kuby, jaky je vstup u radka} \\
-\red{jaky je vystup u obou}
+Both algorithms were implemented as C++ binary applications. The input of both algorithms is a set of two files - a segmented image and a file describing initial values.
 
+The graph-based algorithm needs an image file with highlighted seeds and sinks - pixels inside the area and outside the area. The pixels inside/outside are highlighted with special color, the rest is black.
+
+Since the second algorithm was implemented together with its own user interface written in Matlab, the algorithm needs a text file with a vector describing the initial condition. The vector has a length of $w \cdot h$, where $w$, $h$ are image width, height. Therefore, each number in the vector represents a pixel in the image. If the number is -1 the pixel is outside the segmented are, if the value is 1 the pixel is inside the segmeted area. The C++ binary itself finds a boundary of the designed area.
+
+The idea when designing the plugin system was, that user will be able to draw the initial part of the segmented area inside the original image. It is more similar to the first option of passing the initial values - passing them as an image. This option was implemented in Dicom-Presenter. The input of the second algorithm can be easily transformed to this option.
 
 \section{Plugins System Requirements}
 Rules are needed to be established for plugin libraries - afterwards, a library following these rules should be applicable in Dicom-Presenter. The first thing is to generalize what the libraries will need as an input and output. All three libraries made by FNSPE students required an image with designated segmentable area together with computational parameters as an input. The most reasonable way to insert computation parameters is to generate a GUI interface including any required input elements. This chapter discusses plugins GUI construction done at the application runtime and its connection to the loaded plugin library. A plugin interface was considered to be as simple as possible - a key idea was to require a minimum of source code modifications in existing image segmentation libraries.
