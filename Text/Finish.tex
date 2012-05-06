@@ -1,3 +1,13 @@
 \chapter{Conclusion}
 \vspace{-10mm}
-\red{Zaver!!!}
+The goal of this Master's Thesis was to improve the Dicom-Presenter, to behave similarly to other DICOM viewing applications. The most painful problems of the application were its incompatibility and unstability, which are expectable in a new project.
+
+Firstly, many individual issues of the application were solved, some are described in Chapter \ref{debuggingchapt}. The compatibility problems of the application were predominantly related to OpenGL library. Both Cg toolkit and GLEW library were used in Dicom-Presenter to support OpenGL. After OpenGL removal, there is no more space for similar issues, related to graphic hardware of a target machine. The process of removing the library was complicated, it required a complete reimplementation of all the classes related to rendering and many changes in other classes. 
+
+To behave similarly as other applications, some new functions must be implemented. Firstly, the support of Multi-planar Reconstruction was added to the application. Then, a plugin interface for image segmentation algorithms was added to the application. The plugin system was designed and implemented to be flexible enough to allow importing further libraries without change.
+
+Beside the mentioned tasks, program compilation was finally solved. The compilation was quite problematical, because of dependency on many libraries. Qt, GLEW, Cg toolkit, plib, DCMTK, posix and other libraries had to be compiled before used in Dicom-Presenter. The first three libraries were removed, the main issues with compilation of the other are described in Chapter \ref{compilationchapt}. Furthermore, a script to automate the compilation on both Windows and Linux OS was prepared.
+
+In addition, this thesis summarizes basic knowledge about GUI applications programming and image processing.
+
+If summarized all the mentioned above, the author is confident that the application was significantly improved and should be usable in IKEM institute.

@@ -177,8 +177,66 @@ It is not possible to modify a few classes, compile the application and test it,
 \begin{itemize}
 \item The rendering part of the application had to be re-developed as isolated project.
 \item Then, all the classes were reimplemented and added in groups.
-\end{itemize} 
+\end{itemize}
 
+An example of reimplementation of a particular task can be seen on Listings \ref{opengldraw} and \ref{qtdraw}. Both examples perform the same: images are drawn into the Workspace buffer. As can be seen on the first listing, OpenGL uses global function calls. Although these function calls are mostly related to the following calls, they are often performed across different classes. For example, the code on lines \ref{lst:viewport1} to \ref{lst:viewport2} start preparing OpenGL environment for rendering the images (projection matrix is prepared). The drawing itself is done in another class on lines \ref{lst:glbegin1} to \ref{lst:glbegin2}. This situation concerns all the rendering classes. This was the problem, why all rendering classes must be completely reimplemented.
 
-\begin{lstlisting}[language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx})]
+The second listing shows, that object approach to the problem leads to much more simple sourc-code of the application.
+\begin{lstlisting}[caption={OpenGL implementation of drawing process.\label{opengldraw}},language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx}]
+void CGLWorkspace::DrawToTexture(){
+	...
+	iActualTextureFBO->bind();
+	while (images.hasNext()){
+		...
+		CGLImage *im = images.next();
+		@\label{lst:viewport1}@glViewport(0, 0,iActualTextureInfo.width, iActualTextureInfo.height);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(left, right, bottom, top, 0.1, 90);
+		@\label{lst:viewport2}@glMatrixMode(GL_MODELVIEW); 
+		im->DrawImage();
+		...
+	}
+	...
+}
+
+void CGLImage::DrawImage(){
+	...
+	glBindTexture(GL_TEXTURE_2D, iActualSliceTexture);
+	@\label{lst:glbegin1}@glBegin(GL_QUADS);
+	glTexCoord2d(leftTopTex.x(),rightBottomTex.y()); 
+	glVertex2d(leftTop.x(),rightBottom.y());
+	glTexCoord2d(rightBottomTex.x(),rightBottomTex.y());
+	glVertex2d(rightBottom.x(),rightBottom.y());
+	glTexCoord2d(rightBottomTex.x(),leftTopTex.y());
+	glVertex2d(rightBottom.x(),leftTop.y());
+	glTexCoord2d(leftTopTex.x(),leftTopTex.y());
+	glVertex2d(leftTop.x(),leftTop.y());
+	@\label{lst:glbegin2}@glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glColor3f (0.0,0.0,0.0);
+	...
+}
+\end{lstlisting}
+\begin{lstlisting}[caption={Rendering images to the workspace without OpenGL.\label{qtdraw}},language=,escapeinside={@}{@},morekeywords={zzz,ADD_EXECUTABLE,add_custom_command,add_library,target_link_libraries,OUTPUT,COMMAND,xxx}]
+void CWorkspace::paint(QPainter* painter, QRect position){
+	...
+	QPixmap* outputpixmap = new QPixmap(iSize.x(),iSize.y());
+	while (images.hasNext()){
+		...
+		CImage *cimage = images.next();
+		qpainter->begin((QPaintDevice*)outputpixmap);
+		cimage->paint(qpainter);
+		...
+	}
+	painter->drawPixmap(position,*outputpixmap);
+	...
+}
+void CImage::paint(QPainter* painter){
+	...
+	QImage image = getImage()->copy();
+	painter->drawImage(position,image);
+	DrawBorderRect(painter);
+	DrawIcons(painter);
+}
 \end{lstlisting}
